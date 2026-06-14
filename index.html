@@ -1,793 +1,784 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CineBook - Booking Tiket Bioskop</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan OOP Dart</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #f1f5f9, #dbeafe);
+      line-height: 1.6;
+      color: #1e293b;
+    }
 
-        .app-container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-            min-height: 600px;
-            display: flex;
-            flex-direction: column;
-        }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      position: relative;
+      z-index: 1;
+    }
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
 
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
+    h2 {
+      margin-top: 40px;
+      border-left: 5px solid #2563eb;
+      padding-left: 10px;
+    }
 
-        .header p {
-            font-size: 12px;
-            opacity: 0.8;
-        }
+    p {
+      margin-bottom: 15px;
+    }
 
-        .bottom-nav {
-            display: flex;
-            background: white;
-            border-top: 1px solid #eee;
-            padding: 10px 0;
-            margin-top: auto;
-        }
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      transition: 0.3s;
+      margin-bottom: 20px;
+    }
 
-        .nav-item {
-            flex: 1;
-            text-align: center;
-            padding: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #888;
-        }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    }
 
-        .nav-item.active {
-            color: #667eea;
-            border-top: 3px solid #667eea;
-        }
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
 
-        .nav-item .nav-icon {
-            font-size: 24px;
-        }
+    hr {
+      margin: 50px 0;
+      border: none;
+      height: 1px;
+      background: #cbd5e1;
+    }
 
-        .nav-item .nav-label {
-            font-size: 11px;
-            margin-top: 4px;
-        }
+    footer {
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 1px solid #cbd5e1;
+      font-size: 14px;
+      text-align: center;
+      color: #475569;
+    }
 
-        .content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            max-height: 500px;
-        }
+    /* BUTTON */
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 18px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+    }
 
-        .screen {
-            display: none;
-        }
+    .btn:hover {
+      background: #1e40af;
+    }
 
-        .screen.active {
-            display: block;
-        }
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+    }
 
-        .film-card {
-            background: #f5f5f5;
-            border-radius: 15px;
-            padding: 12px;
-            margin-bottom: 12px;
-            display: flex;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+    .modal-content {
+      position: relative;
+      background: white;
+      width: 90%;
+      max-width: 900px;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 12px;
+      animation: fadeIn 0.3s ease;
+    }
 
-        .film-card.selected {
-            background: linear-gradient(135deg, #667eea20, #764ba220);
-            border: 2px solid #667eea;
-        }
+    .modal iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      border-radius: 10px;
+    }
 
-        .film-poster {
-            width: 60px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 35px;
-        }
+    .close {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 22px;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-        .film-info h4 {
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
+    .close:hover {
+      color: #2563eb;
+    }
 
-        .film-info .rating {
-            color: #ffc107;
-            font-size: 12px;
-        }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
 
-        .film-info .price {
-            color: #667eea;
-            font-weight: bold;
-            margin-top: 5px;
-        }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        .chip-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .chip {
-            padding: 8px 16px;
-            background: #f0f0f0;
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .chip.selected {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .chip.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .screen-label {
-            text-align: center;
-            background: #333;
-            color: white;
-            padding: 8px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 12px;
-        }
-
-        .seat-map {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin: 20px 0;
-        }
-
-        .seat-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .seat-row-label {
-            width: 30px;
-            font-weight: bold;
-        }
-
-        .seat-row-seats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            flex: 1;
-        }
-
-        .seat {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .seat.available {
-            background: #4caf50;
-            color: white;
-        }
-
-        .seat.selected {
-            background: #2196f3;
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .seat.booked {
-            background: #f44336;
-            color: white;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        .legend {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 15px 0;
-            font-size: 11px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-        }
-
-        .summary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 15px;
-            border-radius: 15px;
-            margin: 15px 0;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 13px;
-        }
-
-        .summary-total {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255,255,255,0.3);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
-        }
-
-        .btn-danger {
-            background: #f44336;
-            color: white;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            font-size: 14px;
-        }
-
-        .ticket-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 12px;
-            cursor: pointer;
-        }
-
-        .ticket-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .alert {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: #333;
-            color: white;
-            padding: 12px;
-            border-radius: 10px;
-            text-align: center;
-            z-index: 1000;
-            animation: fadeInUp 0.3s ease;
-        }
-
-        .alert.success { background: #4caf50; }
-        .alert.error { background: #f44336; }
-        .alert.warning { background: #ff9800; }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+    pre {
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid #e2e8f0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="app-container">
-    <div class="header">
-        <h1>🎬 CineBook</h1>
-        <p>Booking Tiket Bioskop Mudah & Cepat</p>
+  <div class="container">
+
+    <h1>Review Sesi 1</h1>
+    <p><b>Nama:</b> Azriel Miracle Yuandre</p>
+    <p><b>NIM:</b> 251410024</p>
+    <p><b>Kelas:</b> SI2A</p>
+
+    <div class="card">
+      <p>
+        Mengingat kembali pilar dasar pemrograman berorientasi objek dalam bahasa Dart sebelum masuk ke topik utama:
+      </p>
+      <ul>
+        <li><b>OOP:</b> Paradigma yang berfokus pada objek sebagai unit utama.</li>
+        <li><b>Class:</b> Blueprint atau cetakan protokol untuk membuat objek.</li>
+        <li><b>Object:</b> Manifestasi runtime atau instance nyata dari sebuah class.</li>
+        <li><b>Constructor:</b> Method khusus yang digunakan untuk inisialisasi objek.</li>
+      </ul>
+
+      <pre>
+// Nama: Azriel Miracle Yuandre
+// Nim: 251410024
+// Kelas: SI2A
+
+class Buku {
+  String judul;
+  Buku(this.judul);
+}
+
+void main() {
+  var buku1 = Buku('Belajar Dart OOP jilid 1 Bersama Babe');
+  print('Judul Buku: ${buku1.judul}');
+}
+  </pre>
+
+      <button class="btn" onclick="openModal('11dc282384908ce64180992dafa3c188')">
+        Lihat Kode
+      </button>
     </div>
 
-    <div class="content" id="content">
-        <!-- Screen Login -->
-        <div id="loginScreen" class="screen">
-            <h3 style="text-align:center; margin-bottom:20px">Welcome Back!</h3>
-            <div class="form-group">
-                <input type="email" id="loginEmail" placeholder="Email" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <input type="password" id="loginPassword" placeholder="Password (min 6 karakter)">
-            </div>
-            <button class="btn btn-primary" onclick="handleLogin()">LOGIN</button>
-            <p style="text-align:center; margin-top:15px; font-size:12px; color:#888">
-                Demo: masukkan email apapun, password minimal 6 karakter
-            </p>
-        </div>
-
-        <!-- Screen Home -->
-        <div id="homeScreen" class="screen">
-            <h3>🎬 Now Showing</h3>
-            <div id="filmList"></div>
-            <h3 style="margin-top:20px">⭐ Top Rated</h3>
-            <div id="topRatedList"></div>
-        </div>
-
-        <!-- Screen Booking -->
-        <div id="bookingScreen" class="screen">
-            <h3>🎥 Pilih Film</h3>
-            <div id="bookingFilmList"></div>
-            
-            <h3>🏢 Pilih Studio</h3>
-            <div class="chip-container" id="studioContainer"></div>
-            
-            <h3>🕐 Pilih Jadwal</h3>
-            <div class="chip-container" id="timeContainer"></div>
-            
-            <h3>💺 Pilih Kursi</h3>
-            <div class="screen-label">LAYAR BIOSKOP</div>
-            <div id="seatMap"></div>
-            <div class="legend">
-                <div class="legend-item"><div class="legend-color" style="background:#4caf50"></div><span>Tersedia</span></div>
-                <div class="legend-item"><div class="legend-color" style="background:#2196f3"></div><span>Pilihan</span></div>
-                <div class="legend-item"><div class="legend-color" style="background:#f44336"></div><span>Terisi</span></div>
-            </div>
-            
-            <div class="summary" id="bookingSummary">
-                <div class="summary-row"><span>🎬 Film</span><span id="summaryFilm">-</span></div>
-                <div class="summary-row"><span>🏢 Studio</span><span id="summaryStudio">-</span></div>
-                <div class="summary-row"><span>🕐 Jadwal</span><span id="summaryTime">-</span></div>
-                <div class="summary-row"><span>💺 Kursi</span><span id="summarySeats">-</span></div>
-                <div class="summary-total" id="summaryTotal">Total: Rp 0</div>
-            </div>
-            
-            <button class="btn btn-primary" onclick="confirmBooking()">KONFIRMASI PEMBAYARAN</button>
-        </div>
-
-        <!-- Screen Tiket -->
-        <div id="ticketScreen" class="screen">
-            <div id="ticketList"></div>
-        </div>
-
-        <!-- Screen Profil -->
-        <div id="profileScreen" class="screen">
-            <div style="text-align:center">
-                <div style="width:80px;height:80px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 15px">
-                    <span style="font-size:40px">👤</span>
-                </div>
-                <h3 id="profileEmail">-</h3>
-                <p style="color:#888">Member since 2026</p>
-            </div>
-            <div class="summary" style="margin-top:20px">
-                <div class="summary-row"><span>🎟️ Total Tiket</span><span id="profileTotalTickets">0</span></div>
-                <div class="summary-row"><span>⭐ Total Poin</span><span id="profileTotalPoints">0</span></div>
-                <div class="summary-row"><span>💰 Total Booking</span><span id="profileTotalSpent">Rp 0</span></div>
-            </div>
-            <button class="btn btn-danger" onclick="handleLogout()" style="margin-top:20px">LOGOUT</button>
-        </div>
+    <div class="card">
+      <h3>JENIS-JENIS CONSTRUCTOR</h3>
+      <p>Dart menyediakan beberapa mekanisme inisialisasi objek untuk berbagai kebutuhan arsitektur:</p>
+      <ol>
+        <li><b>Default Constructor:</b> ClassName()</li>
+        <li><b>Named Constructor:</b> ClassName.name()</li>
+        <li><b>Parameterized Constructor:</b> ClassName(this.param)</li>
+        <li><b>Constant Constructor:</b> const ClassName()</li>
+        <li><b>Factory Constructor:</b> (Akan dibahas pada sesi lanjut)</li>
+      </ol>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item" data-nav="home">
-            <div class="nav-icon">🏠</div>
-            <div class="nav-label">Home</div>
-        </div>
-        <div class="nav-item" data-nav="booking">
-            <div class="nav-icon">🎬</div>
-            <div class="nav-label">Booking</div>
-        </div>
-        <div class="nav-item" data-nav="ticket">
-            <div class="nav-icon">🎟️</div>
-            <div class="nav-label">Tiket</div>
-        </div>
-        <div class="nav-item" data-nav="profile">
-            <div class="nav-icon">👤</div>
-            <div class="nav-label">Profil</div>
-        </div>
-    </div>
-</div>
+    <h2>2. NAMED CONSTRUCTOR - CONTOH DETAIL</h2>
+    <div class="card">
+      <p>
+        Dart memungkinkan pembuatan lebih dari satu konstruktor dalam satu kelas menggunakan Named Constructor. Ini
+        sangat berguna untuk memberikan cara alternatif dalam menginisialisasi objek, seperti dari data JSON.
+      </p>
 
-<script>
-    // ==================== DATA GLOBAL ====================
-    let currentUser = "";
-    let allBookings = [];
-    
-    const films = [
-        { id: 1, name: "Avengers: Endgame", emoji: "🎬", rating: 4.8, price: 50000 },
-        { id: 2, name: "Spider-Man: No Way Home", emoji: "🕷️", rating: 4.7, price: 50000 },
-        { id: 3, name: "Oppenheimer", emoji: "💣", rating: 4.9, price: 60000 },
-        { id: 4, name: "Dune: Part Two", emoji: "🏜️", rating: 4.6, price: 65000 },
-        { id: 5, name: "Joker: Folie à Deux", emoji: "🤡", rating: 4.5, price: 55000 },
-        { id: 6, name: "Inside Out 2", emoji: "😊", rating: 4.4, price: 45000 },
-        { id: 7, name: "Deadpool 3", emoji: "💀", rating: 4.7, price: 55000 },
-        { id: 8, name: "Kung Fu Panda 4", emoji: "🐼", rating: 4.3, price: 45000 }
-    ];
-    
-    const studios = [
-        { id: 1, name: "Studio Reguler", multiplier: 1.0 },
-        { id: 2, name: "Studio VIP", multiplier: 1.5 },
-        { id: 3, name: "Studio IMAX", multiplier: 2.0 }
-    ];
-    
-    const showTimes = ["14:30", "17:00", "19:30", "21:45"];
-    
-    // ==================== VARIABEL BOOKING ====================
-    let selectedFilm = null;
-    let selectedStudio = studios[0];
-    let selectedTime = showTimes[0];
-    let selectedSeats = [];
-    let seatStatus = {};
-    
-    function initSeats() {
-        const rows = ["A", "B", "C", "D", "E", "F"];
-        seatStatus = {};
-        for (let row of rows) {
-            for (let i = 1; i <= 6; i++) {
-                seatStatus[`${row}${i}`] = "available";
-            }
-        }
-        seatStatus["C3"] = "booked";
-        seatStatus["D5"] = "booked";
-        seatStatus["B4"] = "booked";
-        selectedSeats = [];
+      <pre>
+// Nama   : Azriel Miracle Yuandre
+// Nim    : 251410024
+// Kelas  : Si2A
+import 'dart:convert';
+
+class Mobil {
+  String? merk;
+  int? tahun;
+
+  // Parameterized constructor
+  Mobil(this.merk, this.tahun);
+
+  // Named constructor
+  Mobil.baru() {
+    merk = 'Bmw';
+    tahun = 2023;
+  }
+
+  // Named constructor dengan parameter
+  Mobil.dariJson(Map<String, dynamic> json) {
+    merk = json['merk'];
+    tahun = json['tahun'];
+  }
+
+  // Override toString for better print output
+  @override
+  String toString() {
+    return 'Mobil{merk: $merk, tahun: $tahun}';
+  }
+}
+
+void main() {
+  print('--- PRAKTIKUM KELAS MOBIL ---');
+
+  // 1. Constructor default
+  var m1 = Mobil('Ferrari', 2022);
+  print('Mobil 1 (constructor default): $m1');
+
+  // 2. Named constructor .baru
+  var m2 = Mobil.baru();
+  print('Mobil 2 (named constructor .baru): $m2');
+
+  // 3. Named constructor .dariJson
+  String dataJson = '{"merk": "Lamborghini", "tahun": 2023}';
+  Map<String, dynamic> jsonData = jsonDecode(dataJson);
+  var m3 = Mobil.dariJson(jsonData);
+  print('Mobil 3 (named constructor .dariJson): $m3');
+
+  // 4. Contoh lain dengan .dariJson
+  Map<String, dynamic> dataLain = {'merk': 'Porsche', 'tahun': 2024};
+  var m4 = Mobil.dariJson(dataLain);
+  print('Mobil 4 (named constructor .dariJson): $m4');
+
+  print('\n--- SELESAI DEMONSTRASI ---');
+}
+  </pre>
+
+      <button class="btn" onclick="openModal('c94aa90f8dfbd6d807be9c2772d504d2')">
+        Lihat Kode
+      </button>
+    </div>
+
+    <h2>3. Constant Constructor</h2>
+    <div class="card">
+      <p>
+        Konstruktor konstan digunakan untuk membuat objek yang immutable (tidak bisa diubah). Objek yang dibuat dengan
+        const dan nilai yang sama akan menggunakan instance yang sama di memori, sehingga lebih efisien.
+      </p>
+
+      <pre>
+// Nama   : Azriel Miracle Yuandre
+// Nim    : 251410024
+// Kelas  : Si2A
+
+class Warna {
+  final int r, g, b;
+  const Warna(this.r, this.g, this.b);
+
+  @override
+  String toString() {
+    return 'Warna(r: $r, g: $g, b: $b)';
+  }
+}
+
+void main() {
+  const scarlet = Warna(255, 0, 0);
+  const scarletLagi = Warna(254, 0, 0); 
+
+  print(scarlet);
+  print(scarletLagi); 
+  print('Apakah instance sama? ${identical(scarlet, scarletLagi)}'); 
+}
+  </pre>
+
+      <button class="btn" onclick="openModal('d4d3e01d810cb35552170bf7317bd3ee')">
+        Lihat Kode
+      </button>
+    </div>
+
+    <h2>4. CONSTRUCTOR DENGAN INITIALIZER LIST</h2>
+    <div class="card">
+      <p>
+        Initializer List digunakan untuk menginisialisasi field sebelum body konstruktor dijalankan. Ini sering
+        digunakan untuk melakukan validasi atau transformasi data pada field final.
+      </p>
+
+      <pre>
+// Nama   : Azriel Miracle Yuandre
+// Nim    : 251410024
+// Kelas  : Si2A
+
+class Titik {
+  final double x, y;
+
+  Titik(double x, double y)
+    : x = x.abs(),
+      y = y.abs() {
+    print('Titik dibuat di (${this.x}, ${this.y})');
+  }
+}
+
+void main(){
+  print('Membuat objek Titik pertama:');
+  var t1 = Titik(7.5, 2.0); 
+  print('Titik 1: x = ${t1.x}, y = ${t1.y}');
+
+  print('\nMembuat objek Titik kedua dengan nilai negatif:');
+  var t2 = Titik(-8.0, 3.5); 
+  print('Titik 2: x = ${t2.x}, y = ${t2.y}');
+
+  print('\nMembuat objek Titik ketiga dengan nilai negatif di kedua koordinat:');
+  var t3 = Titik(-2.0, -4.0); 
+  print('Titik 3: x = ${t3.x}, y = ${t3.y}');
+}
+  </pre>
+
+      <button class="btn" onclick="openModal('fab6c5b75398c9d1315b8877725646cb')">
+        Lihat Kode
+      </button>
+    </div>
+
+    <h2>5. PRAKTIK 1 - MULTIPLE CONSTRUCTOR</h2>
+    <div class="card">
+      <p>
+        Latihan pembuatan kelas Mahasiswa dengan tiga jenis konstruktor berbeda untuk fleksibilitas instansiasi objek
+        sesuai kebutuhan data:
+      </p>
+
+      <pre>
+// Nama   : Azriel Miracle Yuandre
+// Nim    : 251410024
+// Kelas  : Si2A
+
+class Mahasiswa {
+  String? nama;
+  String? nim;
+
+  Mahasiswa(this.nama, this.nim);
+
+  Mahasiswa.dariMap(Map<String, String> data) {
+    nama = data['nama'];
+    nim = data['nim'];
+  }
+
+  Mahasiswa.tanpaNama() {
+    nama = 'No Namenor';
+    nim = '000001';
+  }
+
+  void info() => print('Mahasiswa: $nama, NIM: $nim');
+}
+
+void main() {
+  var m1 = Mahasiswa('Azriel', '251410024'); 
+  var m2 = Mahasiswa.dariMap({'nama': 'Miracle', 'nim': '251410010'}); 
+  var m3 = Mahasiswa.tanpaNama(); 
+
+  m1.info(); 
+  m2.info(); 
+  m3.info(); 
+}
+  </pre>
+
+      <button class="btn" onclick="openModal('62dba7174bae5127cc47547a6984032c')">
+        Lihat Kode
+      </button>
+    </div>
+
+    <h2>PENGANTAR ENKAPSULASI</h2>
+    <div class="card">
+      <h3>Konsep Enkapsulasi</h3>
+      <p><b>Konsep:</b> Menyembunyikan detail implementasi dari luar.</p>
+      <p><b>Tujuan:</b></p>
+      <ul>
+        <li>Keamanan data</li>
+        <li>Kontrol akses</li>
+        <li>Fleksibilitas perubahan</li>
+      </ul>
+      <p><b>Cara di Dart:</b> Menggunakan underscore (_) untuk private members.</p>
+      <p><b>Public:</b> Dapat diakses dari mana saja (default).</p>
+      <p><b>Private:</b> Hanya dapat diakses dalam file yang sama.</p>
+
+      <pre>
+// Nama   : Azriel Miracle Yuandre
+// Nim    : 251410024
+// Kelas  : Si2A 
+
+class Person {
+  String _nama; 
+  int umur;      
+
+  Person(this._nama, this.umur); 
+
+  void info() => print('Nama: $_nama, Umur: $umur'); 
+}
+
+void main() {
+  var p1 = Person('Azriel Miracle Yuandre', 20); 
+  p1.info(); 
+}
+  </pre>
+
+      <button class="btn" onclick="openModal('46fa1b5e7e941dcc6a3917bb923ea8bb')">
+        Lihat Kode
+      </button>
+    </div>
+
+    <h2>Getter And Setter</h2>
+    <div class="card">
+      <h3>Pengertian Getter dan Setter</h3>
+      <p><b>Getter:</b> Memungkinkan membaca data private dengan kontrol.</p>
+      <p>Sintaks 1: <code>tipeData get namaGetter => _field;</code> (Arrow)</p>
+      <p>Sintaks 2: <code>tipeData namaGetter() { return _field; }</code> (Block)</p>
+
+      <p><b>Setter:</b> Memungkinkan modifikasi data dengan validasi.</p>
+      <p>Sintaks 1: <code>set namaSetter(value) {...}</code> (Set Keyword)</p>
+      <p>Sintaks 2: <code>void namaSetter(value) {...}</code> (Method Approach)</p>
+
+      <pre>
+// Nama   : Azriel Miracle Yuandre
+// Nim    : 251410024
+// Kelas  : Si2A 
+
+class Person {
+  String _nama;
+  int umur;
+  
+  Person(this._nama, this.umur);
+  
+  set setNama(String nama) {
+    _nama = nama;
+  }
+
+  void ubahNama(String nama) {
+    _nama = nama;
+  }
+
+  String getNama() {
+    return _nama;
+  }
+}
+
+void main() {
+  Person p1 = Person("Azriel Miracle Yuandre", 20);
+  print('Umur: ${p1.umur}');
+  
+  p1.ubahNama('Miracle');
+  print('Nama (via Method): ${p1.getNama()}');
+  
+  p1.setNama = 'Azriel Miracle Yuandre';
+  print('Nama (via Setter): ${p1.getNama()}');
+}
+  </pre>
+
+      <button class="btn" onclick="openModal('3dd02b01404a0dc2e8fa0251ab10de6d')">
+        Lihat Kode
+      </button>
+    </div>
+
+    <h2>CONTOH IMPLEMENTASI GETTER & SETTER</h2>
+    <div class="card">
+      <p>
+        Meningkatkan integritas data dengan validasi nilai pada Produk sebelum disimpan:
+      </p>
+      <ul>
+        <li>Nama produk minimal 3 karakter</li>
+        <li>Harga produk harus lebih besar dari 0</li>
+      </ul>
+
+      <pre>
+// Nama   : Azriel Miracle Yuandre
+// Nim    : 251410024
+// Kelas  : Si2A
+
+class Produk {
+  String _nama;
+  double _harga;
+  
+  Produk(this._nama, this._harga);
+  
+  String get nama => _nama;
+  double get harga => _harga;
+  
+  set nama(String value) {
+    if (value.length >= 3) {
+      _nama = value;
+    } else {
+      print('Gagal memperbarui nama: Nama harus memiliki minimal 3 karakter.');
     }
-    
-    function getSeatPrice(seat) {
-        return (seat.startsWith("A") || seat.startsWith("B")) ? 45000 : 75000;
+  }
+  
+  set harga(double value) {
+    if (value > 0) {
+      _harga = value;
+    } else {
+      print('Gagal memperbarui harga: Harga harus lebih besar dari 0.');
     }
-    
-    function getTotalPrice() {
-        let total = 0;
-        for (let seat of selectedSeats) {
-            total += getSeatPrice(seat);
-        }
-        total = Math.floor(total * selectedStudio.multiplier);
-        return total;
+  }
+}
+
+void main() {
+  var p1 = Produk('Asus ROG', 3500.0);
+
+  print('--- Informasi Produk Awal ---');
+  print('Nama Produk: ${p1.nama}');
+  print('Harga Produk: Rp ${p1.harga}');
+
+  print('\n--- Memperbarui Produk ---');
+  p1.nama = 'Monitor 144hz';
+  p1.harga = 12000.0;
+  print('Nama (setelah update): ${p1.nama}');
+
+  print('\n--- Menguji Validasi Setter ---');
+  p1.nama = 'Kulkas'; // Gagal (kurang dari 3 karakter)
+  p1.harga = -1000.0; // Gagal (kurang dari 0)
+}
+  </pre>
+
+      <button class="btn" onclick="openModal('2fa7a88295c0b70c3739a64acf3e6609')">
+        Lihat Kode
+      </button>
+    </div>
+
+    <h2>Praktik Enkapsulasi - Class User</h2>
+    <div class="card">
+      <pre>
+// Nama   : Azriel Miracle Yuandre
+// Nim    : 251410024
+// Kelas  : Si2A
+
+class User {
+  String _username;
+  String _password;
+  String _email;
+
+  User(this._username, this._password, this._email);
+
+  // Getter untuk semua field
+  String get username => _username;
+  String get email => _email;
+
+  // Setter dengan validasi
+  set username(String v) {
+    if (v.length >= 5) {
+      _username = v;
+    } else {
+      print('Username minimal 7 karakter');
     }
-    
-    function showAlert(message, type = "success") {
-        const alert = document.createElement("div");
-        alert.className = `alert ${type}`;
-        alert.innerHTML = message;
-        document.body.appendChild(alert);
-        setTimeout(() => alert.remove(), 2000);
+  }
+
+  set password(String v) {
+    if (v.length >= 8) {
+      _password = v;
+    } else {
+      print('Password minimal 20 karakter');
     }
-    
-    function showScreen(screenId) {
-        document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-        document.getElementById(`${screenId}Screen`).classList.add("active");
-        
-        document.querySelectorAll(".nav-item").forEach(nav => nav.classList.remove("active"));
-        document.querySelector(`.nav-item[data-nav="${screenId}"]`).classList.add("active");
-        
-        if (screenId === "home") renderHome();
-        else if (screenId === "booking") renderBooking();
-        else if (screenId === "ticket") renderTickets();
-        else if (screenId === "profile") renderProfile();
+  }
+
+  set email(String v) {
+    if (v.contains('@')) {
+      _email = v;
+    } else {
+      print('Format email salah (Harus mengandung @)');
     }
-    
-    function handleLogin() {
-        const email = document.getElementById("loginEmail").value.trim();
-        const password = document.getElementById("loginPassword").value;
-        
-        if (!email) {
-            showAlert("Masukkan email!", "error");
-            return;
-        }
-        if (password.length < 6) {
-            showAlert("Password minimal 6 karakter!", "error");
-            return;
-        }
-        
-        currentUser = email;
-        showAlert("Login berhasil! Selamat datang, " + email);
-        initSeats();
-        selectedFilm = films[0];
-        renderHome();
-        showScreen("home");
+  }
+
+  void info() => print('User: $_username, Pass: $_password, Email: $_email');
+}
+
+void main() {
+  var u1 = User('Azriel', '10001', 'admin.com');
+  u1.username = 'Azrielmy';
+  u1.password = 'thegreat1';
+  u1.email = 'Azriel@gmail.com';
+  u1.info();
+}
+  </pre>
+
+      <button class="btn" onclick="openModal('1ce7965bdae8cb30413f2126fd140bbc')">
+        Lihat Kode
+      </button>
+    </div>
+
+    <h2>Studi Kasus Sistem Login</h2>
+    <div class="card">
+      <pre>
+// Nama   : Azriel Miracle Yuandre
+// Nim    : 251410024
+// Kelas  : Si2A
+
+class User {
+  String _username;
+  String _password;
+
+  User(this._username, this._password);
+  
+  String get username => _username;
+
+  bool login(String username, String password) {
+    return _username == username && _password == password;
+  }
+
+  void gantiPassword(String lama, String baru) {
+    if (_password == lama) {
+      if (baru.length >= 8) {
+        _password = baru;
+        print('Password Anda berhasil diubah.');
+      } else {
+        print('Gagal: Password baru minimal 8 karakter.');
+      }
+    } else {
+      print('Gagal: Password lama tidak cocok.');
     }
-    
-    function handleLogout() {
-        currentUser = "";
-        allBookings = [];
-        document.getElementById("loginEmail").value = "";
-        document.getElementById("loginPassword").value = "";
-        showScreen("login");
-        showAlert("Logout berhasil!");
+  }
+}
+
+void main() {
+  print('--- MEMBUAT AKUN BARU ---');
+  final User u1 = User('super_Miracle', 'rahasia123');
+  
+  print('--- PROSES VERIFIKASI LOGIN ---');
+  if (u1.login('super_Miracle', 'rahasia123')) {
+    print('Selamat datang! Anda berhasil masuk.');
+  }
+
+  print('\n--- PERUBAHAN KATA SANDI ---');
+  u1.gantiPassword('rahasia123', 'superSecret789');
+  u1.gantiPassword('salahPass', 'cobaCoba'); // Percobaan gagal
+}
+  </pre>
+
+      <button class="btn" onclick="openModal('dcf4b00cade35460b7a7dbcea44561b3')">
+        Lihat Kode
+      </button>
+    </div>
+
+    <h2>Latihan Bank</h2>
+    <div class="card">
+      <pre>
+// Nama   : Azriel Miracle Yuandre
+// Nim    : 251410024
+// Kelas  : Si2A
+
+class RekeningBank {
+  String _nomorRekening;
+  double _saldo;
+
+  RekeningBank(this._nomorRekening, this._saldo);
+
+  void deposit(double jml) {
+    if (jml > 0) {
+      _saldo += jml;
+      print('Deposit Rp $jml Berhasil.');
     }
-    
-    function renderHome() {
-        const filmList = document.getElementById("filmList");
-        filmList.innerHTML = films.map(film => `
-            <div class="film-card" onclick="selectFilmFromHome(${film.id})">
-                <div class="film-poster">${film.emoji}</div>
-                <div class="film-info">
-                    <h4>${film.name}</h4>
-                    <div class="rating">⭐ ${film.rating}</div>
-                    <div class="price">Rp ${film.price.toLocaleString()}</div>
-                </div>
-            </div>
-        `).join("");
-        
-        const topRated = [...films].sort((a,b) => b.rating - a.rating).slice(0,5);
-        document.getElementById("topRatedList").innerHTML = topRated.map(film => `
-            <div class="film-card" onclick="selectFilmFromHome(${film.id})">
-                <div class="film-poster">${film.emoji}</div>
-                <div class="film-info">
-                    <h4>${film.name}</h4>
-                    <div class="rating">⭐ ${film.rating}</div>
-                </div>
-            </div>
-        `).join("");
+  }
+
+  void tarik(double jml) {
+    if (jml > 0 && _saldo >= jml) {
+      _saldo -= jml;
+      print('Tarik Rp $jml Berhasil.');
+    } else {
+      print('Gagal: Saldo tidak cukup atau input tidak valid.');
     }
-    
-    function selectFilmFromHome(filmId) {
-        selectedFilm = films.find(f => f.id === filmId);
-        initSeats();
-        renderBooking();
-        showScreen("booking");
-        showAlert(`Film ${selectedFilm.name} dipilih`);
+  }
+
+  void cekSaldo() {
+    print('Rekening: $_nomorRekening | Saldo: Rp $_saldo');
+  }
+}
+
+void main() {
+  print('--- TRANSAKSI PERTAMA ---');
+  var rekeningSaya = RekeningBank('1234-5678-90', 5000000);
+  rekeningSaya.cekSaldo();
+  
+  print('\n--- MELAKUKAN PENARIKAN ---');
+  rekeningSaya.tarik(1000000);
+  rekeningSaya.cekSaldo();
+}
+  </pre>
+
+      <button class="btn" onclick="openModal('a9c8ab069ebb9a3ec290ddb07e3a044e')">
+        Lihat Kode
+      </button>
+    </div>
+
+    <footer>
+      <h2>Kesimpulan</h2>
+      <pre>
+<p>
+1. Dart memiliki berbagai jenis constructor untuk fleksibilitas objek.
+
+2. Enkapsulasi melindungi data dengan menggunakan private field (prefix underscore).
+
+3. Getter & setter memberikan kontrol akses yang aman terhadap data private</p>
+     </pre>
+    </footer>
+
+  </div>
+
+  <!-- MODAL DINAMIS (Cukup Satu Saja) -->
+  <div id="dynamicModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <iframe id="modalIframe" src=""></iframe>
+    </div>
+  </div>
+
+  <script>
+    function openModal(gistId) {
+      const modal = document.getElementById("dynamicModal");
+      const iframe = document.getElementById("modalIframe");
+
+      // Load link secara otomatis saat diklik
+      iframe.src = `https://dartpad.dev/embed-dart.html?id=${gistId}&null_safety=true&run=true&theme=light`;
+      modal.style.display = "block";
+      document.body.style.overflow = "hidden"; // Biar ga bisa scroll saat modal buka
     }
-    
-    function renderBooking() {
-        document.getElementById("bookingFilmList").innerHTML = films.map(film => `
-            <div class="film-card ${selectedFilm?.id === film.id ? 'selected' : ''}" onclick="selectFilmForBooking(${film.id})">
-                <div class="film-poster">${film.emoji}</div>
-                <div class="film-info">
-                    <h4>${film.name}</h4>
-                    <div class="price">Rp ${film.price.toLocaleString()}</div>
-                </div>
-            </div>
-        `).join("");
-        
-        document.getElementById("studioContainer").innerHTML = studios.map(studio => `
-            <div class="chip ${selectedStudio?.id === studio.id ? 'selected' : ''}" onclick="selectStudioForBooking(${studio.id})">
-                ${studio.name} (${studio.multiplier}x)
-            </div>
-        `).join("");
-        
-        document.getElementById("timeContainer").innerHTML = showTimes.map(time => `
-            <div class="chip ${selectedTime === time ? 'selected' : ''}" onclick="selectTimeForBooking('${time}')">
-                ${time}
-            </div>
-        `).join("");
-        
-        const rows = ["A", "B", "C", "D", "E", "F"];
-        let seatHtml = "";
-        for (let row of rows) {
-            seatHtml += `<div class="seat-row">
-                <div class="seat-row-label">${row}</div>
-                <div class="seat-row-seats">`;
-            for (let i = 1; i <= 6; i++) {
-                const seat = `${row}${i}`;
-                const status = seatStatus[seat] || "available";
-                const isSelected = selectedSeats.includes(seat);
-                let seatClass = "seat";
-                if (status === "booked") seatClass += " booked";
-                else if (isSelected) seatClass += " selected";
-                else seatClass += " available";
-                
-                seatHtml += `<div class="${seatClass}" onclick="toggleSeat('${seat}')">${seat}</div>`;
-            }
-            seatHtml += `</div></div>`;
-        }
-        document.getElementById("seatMap").innerHTML = seatHtml;
-        
-        document.getElementById("summaryFilm").innerText = selectedFilm?.name || "-";
-        document.getElementById("summaryStudio").innerText = selectedStudio?.name || "-";
-        document.getElementById("summaryTime").innerText = selectedTime;
-        document.getElementById("summarySeats").innerText = selectedSeats.length ? selectedSeats.join(", ") : "-";
-        document.getElementById("summaryTotal").innerHTML = `Total: Rp ${getTotalPrice().toLocaleString()}`;
+
+    function closeModal() {
+      const modal = document.getElementById("dynamicModal");
+      const iframe = document.getElementById("modalIframe");
+
+      modal.style.display = "none";
+      iframe.src = ""; // Bersihkan iframe biar ga berat
+      document.body.style.overflow = "auto";
     }
-    
-    function selectFilmForBooking(filmId) {
-        selectedFilm = films.find(f => f.id === filmId);
-        initSeats();
-        renderBooking();
-        showAlert(`Film ${selectedFilm.name} dipilih`);
+
+    // Klik di luar modal untuk tutup
+    window.onclick = function (event) {
+      const modal = document.getElementById("dynamicModal");
+      if (event.target == modal) closeModal();
     }
-    
-    function selectStudioForBooking(studioId) {
-        selectedStudio = studios.find(s => s.id === studioId);
-        renderBooking();
-    }
-    
-    function selectTimeForBooking(time) {
-        selectedTime = time;
-        renderBooking();
-    }
-    
-    function toggleSeat(seat) {
-        if (seatStatus[seat] === "booked") {
-            showAlert(`Kursi ${seat} sudah dipesan!`, "error");
-            return;
-        }
-        
-        if (selectedSeats.includes(seat)) {
-            selectedSeats = selectedSeats.filter(s => s !== seat);
-            seatStatus[seat] = "available";
-        } else {
-            selectedSeats.push(seat);
-            seatStatus[seat] = "selected";
-        }
-        renderBooking();
-    }
-    
-    function confirmBooking() {
-        if (!selectedFilm) {
-            showAlert("Pilih film terlebih dahulu!", "error");
-            return;
-        }
-        if (selectedSeats.length === 0) {
-            showAlert("Pilih minimal 1 kursi!", "error");
-            return;
-        }
-        
-        const ticketId = Date.now().toString().slice(-8);
-        const booking = {
-            id: ticketId,
-            film: selectedFilm.name,
-            studio: selectedStudio.name,
-            time: selectedTime,
-            seats: [...selectedSeats],
-            total: getTotalPrice(),
-            date: new Date().toISOString()
-        };
-        allBookings.push(booking);
-        
-        showAlert("Booking berhasil! 🎉");
-        renderTickets();
-        showScreen("ticket");
-        initSeats();
-        selectedFilm = films[0];
-        selectedStudio = studios[0];
-        selectedTime = showTimes[0];
-    }
-    
-    function renderTickets() {
-        const container = document.getElementById("ticketList");
-        if (allBookings.length === 0) {
-            container.innerHTML = `
-                <div style="text-align:center; padding:40px">
-                    <div style="font-size:50px">🎟️</div>
-                    <p style="margin-top:10px; color:#888">Belum ada tiket</p>
-                    <p style="font-size:12px; color:#888">Silakan booking tiket terlebih dahulu</p>
-                </div>
-            `;
-            return;
-        }
-        
-        container.innerHTML = allBookings.map((booking, idx) => `
-            <div class="ticket-card" onclick="showTicketDetail(${idx})">
-                <div class="ticket-header">
-                    <strong>${booking.film}</strong>
-                    <span style="font-size:10px">ID: ${booking.id}</span>
-                </div>
-                <div style="font-size:12px; margin-bottom:5px">${booking.studio} • ${booking.time}</div>
-                <div style="font-size:12px">Kursi: ${booking.seats.join(", ")}</div>
-                <hr style="margin:10px 0; border-color:rgba(255,255,255,0.2)">
-                <div style="display:flex; justify-content:space-between">
-                    <span>Total: Rp ${booking.total.toLocaleString()}</span>
-                    <span style="cursor:pointer; background:rgba(255,255,255,0.2); padding:4px 12px; border-radius:20px" onclick="event.stopPropagation(); cancelBooking(${idx})">Batalkan</span>
-                </div>
-            </div>
-        `).join("");
-    }
-    
-    function showTicketDetail(idx) {
-        const booking = allBookings[idx];
-        alert(`🎟️ E-TICKET\n\nFilm: ${booking.film}\nStudio: ${booking.studio}\nJadwal: ${booking.time}\nKursi: ${booking.seats.join(", ")}\nTotal: Rp ${booking.total.toLocaleString()}\n\nID Tiket: ${booking.id}`);
-    }
-    
-    function cancelBooking(idx) {
-        if (confirm("Yakin ingin membatalkan tiket ini?")) {
-            const cancelled = allBookings.splice(idx, 1)[0];
-            showAlert(`Tiket ${cancelled.film} dibatalkan`, "warning");
-            renderTickets();
-        }
-    }
-    
-    function renderProfile() {
-        document.getElementById("profileEmail").innerText = currentUser;
-        const totalTickets = allBookings.length;
-        const totalSpent = allBookings.reduce((sum, b) => sum + b.total, 0);
-        document.getElementById("profileTotalTickets").innerText = totalTickets;
-        document.getElementById("profileTotalPoints").innerText = totalTickets * 10;
-        document.getElementById("profileTotalSpent").innerHTML = `Rp ${totalSpent.toLocaleString()}`;
-    }
-    
-    document.querySelectorAll(".nav-item").forEach(nav => {
-        nav.addEventListener("click", () => {
-            const screen = nav.dataset.nav;
-            if (currentUser) {
-                if (screen === "home") renderHome();
-                else if (screen === "booking") { initSeats(); selectedFilm = films[0]; renderBooking(); }
-                else if (screen === "ticket") renderTickets();
-                else if (screen === "profile") renderProfile();
-                showScreen(screen);
-            } else {
-                showAlert("Silakan login terlebih dahulu!", "error");
-            }
-        });
-    });
-    
-    initSeats();
-    selectedFilm = films[0];
-    showScreen("login");
-</script>
+  </script>
 
 </body>
-</html>
+
+    </html>
