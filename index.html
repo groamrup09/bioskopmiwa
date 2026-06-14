@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -19,7 +18,6 @@
             padding: 20px;
         }
 
-        /* Container Utama */
         .app-container {
             max-width: 500px;
             margin: 0 auto;
@@ -32,7 +30,6 @@
             flex-direction: column;
         }
 
-        /* Header */
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -50,7 +47,6 @@
             opacity: 0.8;
         }
 
-        /* Bottom Navigation */
         .bottom-nav {
             display: flex;
             background: white;
@@ -82,7 +78,6 @@
             margin-top: 4px;
         }
 
-        /* Konten */
         .content {
             flex: 1;
             padding: 20px;
@@ -98,7 +93,6 @@
             display: block;
         }
 
-        /* Kartu Film */
         .film-card {
             background: #f5f5f5;
             border-radius: 15px;
@@ -142,7 +136,6 @@
             margin-top: 5px;
         }
 
-        /* Chip (Studio, Jadwal, Snack) */
         .chip-container {
             display: flex;
             flex-wrap: wrap;
@@ -169,7 +162,6 @@
             cursor: not-allowed;
         }
 
-        /* Denah Kursi */
         .screen-label {
             text-align: center;
             background: #333;
@@ -256,7 +248,6 @@
             border-radius: 4px;
         }
 
-        /* Ringkasan */
         .summary {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -280,7 +271,6 @@
             border-top: 1px solid rgba(255,255,255,0.3);
         }
 
-        /* Tombol */
         .btn {
             width: 100%;
             padding: 14px;
@@ -307,7 +297,6 @@
             color: white;
         }
 
-        /* Form */
         .form-group {
             margin-bottom: 15px;
         }
@@ -320,7 +309,6 @@
             font-size: 14px;
         }
 
-        /* Tiket Card */
         .ticket-card {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -336,13 +324,6 @@
             margin-bottom: 10px;
         }
 
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 20px;
-        }
-
-        /* Alert */
         .alert {
             position: fixed;
             bottom: 20px;
@@ -376,13 +357,11 @@
 <body>
 
 <div class="app-container">
-    <!-- Header -->
     <div class="header">
         <h1>🎬 CineBook</h1>
         <p>Booking Tiket Bioskop Mudah & Cepat</p>
     </div>
 
-    <!-- Konten -->
     <div class="content" id="content">
         <!-- Screen Login -->
         <div id="loginScreen" class="screen">
@@ -391,7 +370,7 @@
                 <input type="email" id="loginEmail" placeholder="Email" autocomplete="off">
             </div>
             <div class="form-group">
-                <input type="password" id="loginPassword" placeholder="Password">
+                <input type="password" id="loginPassword" placeholder="Password (min 6 karakter)">
             </div>
             <button class="btn btn-primary" onclick="handleLogin()">LOGIN</button>
             <p style="text-align:center; margin-top:15px; font-size:12px; color:#888">
@@ -405,8 +384,6 @@
             <div id="filmList"></div>
             <h3 style="margin-top:20px">⭐ Top Rated</h3>
             <div id="topRatedList"></div>
-            <h3 style="margin-top:20px">🍿 Snacks</h3>
-            <div id="snackList"></div>
         </div>
 
         <!-- Screen Booking -->
@@ -463,7 +440,6 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <div class="nav-item" data-nav="home">
             <div class="nav-icon">🏠</div>
@@ -515,7 +491,6 @@
     let selectedSeats = [];
     let seatStatus = {};
     
-    // Inisialisasi kursi
     function initSeats() {
         const rows = ["A", "B", "C", "D", "E", "F"];
         seatStatus = {};
@@ -543,7 +518,6 @@
         return total;
     }
     
-    // ==================== FUNGSI UI ====================
     function showAlert(message, type = "success") {
         const alert = document.createElement("div");
         alert.className = `alert ${type}`;
@@ -565,7 +539,6 @@
         else if (screenId === "profile") renderProfile();
     }
     
-    // ==================== LOGIN ====================
     function handleLogin() {
         const email = document.getElementById("loginEmail").value.trim();
         const password = document.getElementById("loginPassword").value;
@@ -596,7 +569,6 @@
         showAlert("Logout berhasil!");
     }
     
-    // ==================== RENDER HOME ====================
     function renderHome() {
         const filmList = document.getElementById("filmList");
         filmList.innerHTML = films.map(film => `
@@ -620,23 +592,6 @@
                 </div>
             </div>
         `).join("");
-        
-        const snacks = [
-            { name: "Popcorn", price: 25000, emoji: "🍿" },
-            { name: "Soda", price: 15000, emoji: "🥤" },
-            { name: "Nacho", price: 20000, emoji: "🌮" },
-            { name: "Hotdog", price: 18000, emoji: "🌭" },
-            { name: "Candy", price: 10000, emoji: "🍬" }
-        ];
-        document.getElementById("snackList").innerHTML = snacks.map(snack => `
-            <div class="film-card">
-                <div class="film-poster" style="font-size:30px">${snack.emoji}</div>
-                <div class="film-info">
-                    <h4>${snack.name}</h4>
-                    <div class="price">Rp ${snack.price.toLocaleString()}</div>
-                </div>
-            </div>
-        `).join("");
     }
     
     function selectFilmFromHome(filmId) {
@@ -647,9 +602,7 @@
         showAlert(`Film ${selectedFilm.name} dipilih`);
     }
     
-    // ==================== RENDER BOOKING ====================
     function renderBooking() {
-        // Film list
         document.getElementById("bookingFilmList").innerHTML = films.map(film => `
             <div class="film-card ${selectedFilm?.id === film.id ? 'selected' : ''}" onclick="selectFilmForBooking(${film.id})">
                 <div class="film-poster">${film.emoji}</div>
@@ -660,21 +613,18 @@
             </div>
         `).join("");
         
-        // Studio container
         document.getElementById("studioContainer").innerHTML = studios.map(studio => `
             <div class="chip ${selectedStudio?.id === studio.id ? 'selected' : ''}" onclick="selectStudioForBooking(${studio.id})">
-                ${studio.name}
+                ${studio.name} (${studio.multiplier}x)
             </div>
         `).join("");
         
-        // Time container
         document.getElementById("timeContainer").innerHTML = showTimes.map(time => `
             <div class="chip ${selectedTime === time ? 'selected' : ''}" onclick="selectTimeForBooking('${time}')">
                 ${time}
             </div>
         `).join("");
         
-        // Seat map
         const rows = ["A", "B", "C", "D", "E", "F"];
         let seatHtml = "";
         for (let row of rows) {
@@ -696,7 +646,6 @@
         }
         document.getElementById("seatMap").innerHTML = seatHtml;
         
-        // Summary
         document.getElementById("summaryFilm").innerText = selectedFilm?.name || "-";
         document.getElementById("summaryStudio").innerText = selectedStudio?.name || "-";
         document.getElementById("summaryTime").innerText = selectedTime;
@@ -768,7 +717,6 @@
         selectedTime = showTimes[0];
     }
     
-    // ==================== RENDER TIKET ====================
     function renderTickets() {
         const container = document.getElementById("ticketList");
         if (allBookings.length === 0) {
@@ -801,7 +749,7 @@
     
     function showTicketDetail(idx) {
         const booking = allBookings[idx];
-        alert(`🎟️ E-TICKET\n\nFilm: ${booking.film}\nStudio: ${booking.studio}\nJadwal: ${booking.time}\nKursi: ${booking.seats.join(", ")}\nTotal: Rp ${booking.total.toLocaleString()}\n\nQR Code: [SIMULASI]\nID Tiket: ${booking.id}`);
+        alert(`🎟️ E-TICKET\n\nFilm: ${booking.film}\nStudio: ${booking.studio}\nJadwal: ${booking.time}\nKursi: ${booking.seats.join(", ")}\nTotal: Rp ${booking.total.toLocaleString()}\n\nID Tiket: ${booking.id}`);
     }
     
     function cancelBooking(idx) {
@@ -812,7 +760,6 @@
         }
     }
     
-    // ==================== RENDER PROFIL ====================
     function renderProfile() {
         document.getElementById("profileEmail").innerText = currentUser;
         const totalTickets = allBookings.length;
@@ -822,7 +769,6 @@
         document.getElementById("profileTotalSpent").innerHTML = `Rp ${totalSpent.toLocaleString()}`;
     }
     
-    // ==================== NAVIGATION ====================
     document.querySelectorAll(".nav-item").forEach(nav => {
         nav.addEventListener("click", () => {
             const screen = nav.dataset.nav;
@@ -838,7 +784,6 @@
         });
     });
     
-    // ==================== INIT ====================
     initSeats();
     selectedFilm = films[0];
     showScreen("login");
