@@ -11,7 +11,7 @@
       font-family: 'Segoe UI', Arial, sans-serif;
       margin: 0;
       padding: 40px 20px;
-      background: linear-gradient(135deg, #f1f5f9, #dbeafe);
+      background: linear-gradient(135deg, #6B2C8C, #9B4D96, #E88D8D);
       line-height: 1.6;
       color: #1e293b;
     }
@@ -167,35 +167,35 @@
 
   <div class="container">
 
-    <h1>Review Sesi 1</h1>
-    <p><b>Nama:</b> Azriel Miracle Yuandre</p>
-    <p><b>NIM:</b> 251410024</p>
+    <h1>Cinebook</h1>
+    <p><b>Nama:</b> Azriel Miracle Yuandre x Esti Anggraini</p>
     <p><b>Kelas:</b> SI2A</p>
 
     <div class="card">
-      <p>
-        Mengingat kembali pilar dasar pemrograman berorientasi objek dalam bahasa Dart sebelum masuk ke topik utama:
-      </p>
-      <ul>
-        <li><b>OOP:</b> Paradigma yang berfokus pada objek sebagai unit utama.</li>
-        <li><b>Class:</b> Blueprint atau cetakan protokol untuk membuat objek.</li>
-        <li><b>Object:</b> Manifestasi runtime atau instance nyata dari sebuah class.</li>
-        <li><b>Constructor:</b> Method khusus yang digunakan untuk inisialisasi objek.</li>
-      </ul>
-
       <pre>
-// Nama: Azriel Miracle Yuandre
-// Nim: 251410024
-// Kelas: SI2A
+class Film {
+  int _id;
+  String _nama;
+  String _emoji;
+  double _rating;
+  int _harga;
 
-class Buku {
-  String judul;
-  Buku(this.judul);
+  Film(this._id, this._nama, this._emoji, this._rating, this._harga);
+
+  int get id => _id;
+  String get nama => _nama;
+  String get emoji => _emoji;
+  double get rating => _rating;
+  int get harga => _harga;
+
+  void tampilkanInfo() {
+    print("$_id. $_emoji $_nama ⭐ $_rating - Rp $_harga");
+  }
 }
 
 void main() {
-  var buku1 = Buku('Belajar Dart OOP jilid 1 Bersama Babe');
-  print('Judul Buku: ${buku1.judul}');
+  Film film1 = Film(1, "Avengers", "🦸", 4.8, 50000);
+  film1.tampilkanInfo();
 }
   </pre>
 
@@ -204,80 +204,25 @@ void main() {
       </button>
     </div>
 
+    <h2>Class Studio</h2>
     <div class="card">
-      <h3>JENIS-JENIS CONSTRUCTOR</h3>
-      <p>Dart menyediakan beberapa mekanisme inisialisasi objek untuk berbagai kebutuhan arsitektur:</p>
-      <ol>
-        <li><b>Default Constructor:</b> ClassName()</li>
-        <li><b>Named Constructor:</b> ClassName.name()</li>
-        <li><b>Parameterized Constructor:</b> ClassName(this.param)</li>
-        <li><b>Constant Constructor:</b> const ClassName()</li>
-        <li><b>Factory Constructor:</b> (Akan dibahas pada sesi lanjut)</li>
-      </ol>
-    </div>
-
-    <h2>2. NAMED CONSTRUCTOR - CONTOH DETAIL</h2>
-    <div class="card">
-      <p>
-        Dart memungkinkan pembuatan lebih dari satu konstruktor dalam satu kelas menggunakan Named Constructor. Ini
-        sangat berguna untuk memberikan cara alternatif dalam menginisialisasi objek, seperti dari data JSON.
-      </p>
 
       <pre>
-// Nama   : Azriel Miracle Yuandre
-// Nim    : 251410024
-// Kelas  : Si2A
-import 'dart:convert';
+class Studio {
+  int id;
+  String nama;
+  double multiplier;
 
-class Mobil {
-  String? merk;
-  int? tahun;
+  Studio(this.id, this.nama, this.multiplier);
 
-  // Parameterized constructor
-  Mobil(this.merk, this.tahun);
-
-  // Named constructor
-  Mobil.baru() {
-    merk = 'Bmw';
-    tahun = 2023;
-  }
-
-  // Named constructor dengan parameter
-  Mobil.dariJson(Map<String, dynamic> json) {
-    merk = json['merk'];
-    tahun = json['tahun'];
-  }
-
-  // Override toString for better print output
-  @override
-  String toString() {
-    return 'Mobil{merk: $merk, tahun: $tahun}';
+  void tampilkanInfo() {
+    print("$id. $nama (${multiplier}x harga)");
   }
 }
 
 void main() {
-  print('--- PRAKTIKUM KELAS MOBIL ---');
-
-  // 1. Constructor default
-  var m1 = Mobil('Ferrari', 2022);
-  print('Mobil 1 (constructor default): $m1');
-
-  // 2. Named constructor .baru
-  var m2 = Mobil.baru();
-  print('Mobil 2 (named constructor .baru): $m2');
-
-  // 3. Named constructor .dariJson
-  String dataJson = '{"merk": "Lamborghini", "tahun": 2023}';
-  Map<String, dynamic> jsonData = jsonDecode(dataJson);
-  var m3 = Mobil.dariJson(jsonData);
-  print('Mobil 3 (named constructor .dariJson): $m3');
-
-  // 4. Contoh lain dengan .dariJson
-  Map<String, dynamic> dataLain = {'merk': 'Porsche', 'tahun': 2024};
-  var m4 = Mobil.dariJson(dataLain);
-  print('Mobil 4 (named constructor .dariJson): $m4');
-
-  print('\n--- SELESAI DEMONSTRASI ---');
+  Studio studio1 = Studio(1, "Regular", 1.0);
+  studio1.tampilkanInfo();
 }
   </pre>
 
@@ -286,35 +231,37 @@ void main() {
       </button>
     </div>
 
-    <h2>3. Constant Constructor</h2>
+    <h2>Class vip studio </h2>
     <div class="card">
-      <p>
-        Konstruktor konstan digunakan untuk membuat objek yang immutable (tidak bisa diubah). Objek yang dibuat dengan
-        const dan nilai yang sama akan menggunakan instance yang sama di memori, sehingga lebih efisien.
-      </p>
 
       <pre>
-// Nama   : Azriel Miracle Yuandre
-// Nim    : 251410024
-// Kelas  : Si2A
+class Studio {
+  int id;
+  String nama;
+  double multiplier;
 
-class Warna {
-  final int r, g, b;
-  const Warna(this.r, this.g, this.b);
+  Studio(this.id, this.nama, this.multiplier);
+
+  void tampilkanInfo() {
+    print("$id. $nama (${multiplier}x harga)");
+  }
+}
+
+class VIPStudio extends Studio {
+  String fasilitas;
+
+  VIPStudio(int id, String nama, double multiplier, this.fasilitas)
+      : super(id, nama, multiplier);
 
   @override
-  String toString() {
-    return 'Warna(r: $r, g: $g, b: $b)';
+  void tampilkanInfo() {
+    print("$id. $nama (${multiplier}x harga) 🎁 $fasilitas");
   }
 }
 
 void main() {
-  const scarlet = Warna(255, 0, 0);
-  const scarletLagi = Warna(254, 0, 0); 
-
-  print(scarlet);
-  print(scarletLagi); 
-  print('Apakah instance sama? ${identical(scarlet, scarletLagi)}'); 
+  VIPStudio vip = VIPStudio(1, "VIP Gold", 2.0, "Recliner + Snack");
+  vip.tampilkanInfo();
 }
   </pre>
 
@@ -323,40 +270,39 @@ void main() {
       </button>
     </div>
 
-    <h2>4. CONSTRUCTOR DENGAN INITIALIZER LIST</h2>
+    <h2>Class kursi</h2>
     <div class="card">
-      <p>
-        Initializer List digunakan untuk menginisialisasi field sebelum body konstruktor dijalankan. Ini sering
-        digunakan untuk melakukan validasi atau transformasi data pada field final.
-      </p>
 
       <pre>
-// Nama   : Azriel Miracle Yuandre
-// Nim    : 251410024
-// Kelas  : Si2A
+class Kursi {
+  String kode;
+  String status;
+  int harga;
 
-class Titik {
-  final double x, y;
+  Kursi(this.kode, this.status, this.harga);
 
-  Titik(double x, double y)
-    : x = x.abs(),
-      y = y.abs() {
-    print('Titik dibuat di (${this.x}, ${this.y})');
+  bool get isAvailable => status == "available";
+  bool get isBooked => status == "booked";
+
+  void pilih() {
+    if (isAvailable) status = "selected";
+  }
+
+  void batalPilih() {
+    if (status == "selected") status = "available";
   }
 }
 
-void main(){
-  print('Membuat objek Titik pertama:');
-  var t1 = Titik(7.5, 2.0); 
-  print('Titik 1: x = ${t1.x}, y = ${t1.y}');
+void main() {
+  Kursi k1 = Kursi("A1", "available", 50000);
 
-  print('\nMembuat objek Titik kedua dengan nilai negatif:');
-  var t2 = Titik(-8.0, 3.5); 
-  print('Titik 2: x = ${t2.x}, y = ${t2.y}');
+  print(k1.status); // available
 
-  print('\nMembuat objek Titik ketiga dengan nilai negatif di kedua koordinat:');
-  var t3 = Titik(-2.0, -4.0); 
-  print('Titik 3: x = ${t3.x}, y = ${t3.y}');
+  k1.pilih();
+  print(k1.status); // selected
+
+  k1.batalPilih();
+  print(k1.status); // available
 }
   </pre>
 
@@ -365,45 +311,50 @@ void main(){
       </button>
     </div>
 
-    <h2>5. PRAKTIK 1 - MULTIPLE CONSTRUCTOR</h2>
+    <h2>Class Pemesanan</h2>
     <div class="card">
-      <p>
-        Latihan pembuatan kelas Mahasiswa dengan tiga jenis konstruktor berbeda untuk fleksibilitas instansiasi objek
-        sesuai kebutuhan data:
-      </p>
 
       <pre>
-// Nama   : Azriel Miracle Yuandre
-// Nim    : 251410024
-// Kelas  : Si2A
+class Pemesanan {
+  String id;
+  String film;
+  String studio;
+  String waktu;
+  List<String> kursi;
+  int total;
 
-class Mahasiswa {
-  String? nama;
-  String? nim;
+  Pemesanan({
+    required this.id,
+    required this.film,
+    required this.studio,
+    required this.waktu,
+    required this.kursi,
+    required this.total,
+  });
 
-  Mahasiswa(this.nama, this.nim);
-
-  Mahasiswa.dariMap(Map<String, String> data) {
-    nama = data['nama'];
-    nim = data['nim'];
+  void tampilkanDetail() {
+    print("\n┌─────────────────────────────────────────┐");
+    print("│ 🎟️ TIKET #${id.length > 6 ? id.substring(id.length - 6) : id}");
+    print("│ Film    : $film");
+    print("│ Studio  : $studio");
+    print("│ Waktu   : $waktu");
+    print("│ Kursi   : ${kursi.join(", ")}");
+    print("│ Total   : Rp $total");
+    print("└─────────────────────────────────────────┘");
   }
-
-  Mahasiswa.tanpaNama() {
-    nama = 'No Namenor';
-    nim = '000001';
-  }
-
-  void info() => print('Mahasiswa: $nama, NIM: $nim');
 }
 
 void main() {
-  var m1 = Mahasiswa('Azriel', '251410024'); 
-  var m2 = Mahasiswa.dariMap({'nama': 'Miracle', 'nim': '251410010'}); 
-  var m3 = Mahasiswa.tanpaNama(); 
+  Pemesanan p = Pemesanan(
+    id: "TRX123456",
+    film: "Avengers",
+    studio: "VIP",
+    waktu: "19:00",
+    kursi: ["A1", "A2"],
+    total: 100000,
+  );
 
-  m1.info(); 
-  m2.info(); 
-  m3.info(); 
+  p.tampilkanDetail();
 }
   </pre>
 
@@ -412,37 +363,42 @@ void main() {
       </button>
     </div>
 
-    <h2>PENGANTAR ENKAPSULASI</h2>
+    <h2>Class User</h2>
     <div class="card">
-      <h3>Konsep Enkapsulasi</h3>
-      <p><b>Konsep:</b> Menyembunyikan detail implementasi dari luar.</p>
-      <p><b>Tujuan:</b></p>
-      <ul>
-        <li>Keamanan data</li>
-        <li>Kontrol akses</li>
-        <li>Fleksibilitas perubahan</li>
-      </ul>
-      <p><b>Cara di Dart:</b> Menggunakan underscore (_) untuk private members.</p>
-      <p><b>Public:</b> Dapat diakses dari mana saja (default).</p>
-      <p><b>Private:</b> Hanya dapat diakses dalam file yang sama.</p>
-
       <pre>
-// Nama   : Azriel Miracle Yuandre
-// Nim    : 251410024
-// Kelas  : Si2A 
+class Pemesanan {
+  int total;
 
-class Person {
-  String _nama; 
-  int umur;      
+  Pemesanan(this.total);
+}
 
-  Person(this._nama, this.umur); 
+class User {
+  String email;
+  List<Pemesanan> riwayatPemesanan = [];
 
-  void info() => print('Nama: $_nama, Umur: $umur'); 
+  User(this.email);
+
+  void tambahPemesanan(Pemesanan p) {
+    riwayatPemesanan.add(p);
+  }
+
+  int getTotalBelanja() {
+    int total = 0;
+    for (var p in riwayatPemesanan) {
+      total += p.total;
+    }
+    return total;
+  }
 }
 
 void main() {
-  var p1 = Person('Azriel Miracle Yuandre', 20); 
-  p1.info(); 
+  User user = User("user@gmail.com");
+
+  user.tambahPemesanan(Pemesanan(50000));
+  user.tambahPemesanan(Pemesanan(75000));
+
+  print(user.email);
+  print(user.getTotalBelanja());
 }
   </pre>
 
@@ -450,297 +406,6 @@ void main() {
         Lihat Kode
       </button>
     </div>
-
-    <h2>Getter And Setter</h2>
-    <div class="card">
-      <h3>Pengertian Getter dan Setter</h3>
-      <p><b>Getter:</b> Memungkinkan membaca data private dengan kontrol.</p>
-      <p>Sintaks 1: <code>tipeData get namaGetter => _field;</code> (Arrow)</p>
-      <p>Sintaks 2: <code>tipeData namaGetter() { return _field; }</code> (Block)</p>
-
-      <p><b>Setter:</b> Memungkinkan modifikasi data dengan validasi.</p>
-      <p>Sintaks 1: <code>set namaSetter(value) {...}</code> (Set Keyword)</p>
-      <p>Sintaks 2: <code>void namaSetter(value) {...}</code> (Method Approach)</p>
-
-      <pre>
-// Nama   : Azriel Miracle Yuandre
-// Nim    : 251410024
-// Kelas  : Si2A 
-
-class Person {
-  String _nama;
-  int umur;
-  
-  Person(this._nama, this.umur);
-  
-  set setNama(String nama) {
-    _nama = nama;
-  }
-
-  void ubahNama(String nama) {
-    _nama = nama;
-  }
-
-  String getNama() {
-    return _nama;
-  }
-}
-
-void main() {
-  Person p1 = Person("Azriel Miracle Yuandre", 20);
-  print('Umur: ${p1.umur}');
-  
-  p1.ubahNama('Miracle');
-  print('Nama (via Method): ${p1.getNama()}');
-  
-  p1.setNama = 'Azriel Miracle Yuandre';
-  print('Nama (via Setter): ${p1.getNama()}');
-}
-  </pre>
-
-      <button class="btn" onclick="openModal('3dd02b01404a0dc2e8fa0251ab10de6d')">
-        Lihat Kode
-      </button>
-    </div>
-
-    <h2>CONTOH IMPLEMENTASI GETTER & SETTER</h2>
-    <div class="card">
-      <p>
-        Meningkatkan integritas data dengan validasi nilai pada Produk sebelum disimpan:
-      </p>
-      <ul>
-        <li>Nama produk minimal 3 karakter</li>
-        <li>Harga produk harus lebih besar dari 0</li>
-      </ul>
-
-      <pre>
-// Nama   : Azriel Miracle Yuandre
-// Nim    : 251410024
-// Kelas  : Si2A
-
-class Produk {
-  String _nama;
-  double _harga;
-  
-  Produk(this._nama, this._harga);
-  
-  String get nama => _nama;
-  double get harga => _harga;
-  
-  set nama(String value) {
-    if (value.length >= 3) {
-      _nama = value;
-    } else {
-      print('Gagal memperbarui nama: Nama harus memiliki minimal 3 karakter.');
-    }
-  }
-  
-  set harga(double value) {
-    if (value > 0) {
-      _harga = value;
-    } else {
-      print('Gagal memperbarui harga: Harga harus lebih besar dari 0.');
-    }
-  }
-}
-
-void main() {
-  var p1 = Produk('Asus ROG', 3500.0);
-
-  print('--- Informasi Produk Awal ---');
-  print('Nama Produk: ${p1.nama}');
-  print('Harga Produk: Rp ${p1.harga}');
-
-  print('\n--- Memperbarui Produk ---');
-  p1.nama = 'Monitor 144hz';
-  p1.harga = 12000.0;
-  print('Nama (setelah update): ${p1.nama}');
-
-  print('\n--- Menguji Validasi Setter ---');
-  p1.nama = 'Kulkas'; // Gagal (kurang dari 3 karakter)
-  p1.harga = -1000.0; // Gagal (kurang dari 0)
-}
-  </pre>
-
-      <button class="btn" onclick="openModal('2fa7a88295c0b70c3739a64acf3e6609')">
-        Lihat Kode
-      </button>
-    </div>
-
-    <h2>Praktik Enkapsulasi - Class User</h2>
-    <div class="card">
-      <pre>
-// Nama   : Azriel Miracle Yuandre
-// Nim    : 251410024
-// Kelas  : Si2A
-
-class User {
-  String _username;
-  String _password;
-  String _email;
-
-  User(this._username, this._password, this._email);
-
-  // Getter untuk semua field
-  String get username => _username;
-  String get email => _email;
-
-  // Setter dengan validasi
-  set username(String v) {
-    if (v.length >= 5) {
-      _username = v;
-    } else {
-      print('Username minimal 7 karakter');
-    }
-  }
-
-  set password(String v) {
-    if (v.length >= 8) {
-      _password = v;
-    } else {
-      print('Password minimal 20 karakter');
-    }
-  }
-
-  set email(String v) {
-    if (v.contains('@')) {
-      _email = v;
-    } else {
-      print('Format email salah (Harus mengandung @)');
-    }
-  }
-
-  void info() => print('User: $_username, Pass: $_password, Email: $_email');
-}
-
-void main() {
-  var u1 = User('Azriel', '10001', 'admin.com');
-  u1.username = 'Azrielmy';
-  u1.password = 'thegreat1';
-  u1.email = 'Azriel@gmail.com';
-  u1.info();
-}
-  </pre>
-
-      <button class="btn" onclick="openModal('1ce7965bdae8cb30413f2126fd140bbc')">
-        Lihat Kode
-      </button>
-    </div>
-
-    <h2>Studi Kasus Sistem Login</h2>
-    <div class="card">
-      <pre>
-// Nama   : Azriel Miracle Yuandre
-// Nim    : 251410024
-// Kelas  : Si2A
-
-class User {
-  String _username;
-  String _password;
-
-  User(this._username, this._password);
-  
-  String get username => _username;
-
-  bool login(String username, String password) {
-    return _username == username && _password == password;
-  }
-
-  void gantiPassword(String lama, String baru) {
-    if (_password == lama) {
-      if (baru.length >= 8) {
-        _password = baru;
-        print('Password Anda berhasil diubah.');
-      } else {
-        print('Gagal: Password baru minimal 8 karakter.');
-      }
-    } else {
-      print('Gagal: Password lama tidak cocok.');
-    }
-  }
-}
-
-void main() {
-  print('--- MEMBUAT AKUN BARU ---');
-  final User u1 = User('super_Miracle', 'rahasia123');
-  
-  print('--- PROSES VERIFIKASI LOGIN ---');
-  if (u1.login('super_Miracle', 'rahasia123')) {
-    print('Selamat datang! Anda berhasil masuk.');
-  }
-
-  print('\n--- PERUBAHAN KATA SANDI ---');
-  u1.gantiPassword('rahasia123', 'superSecret789');
-  u1.gantiPassword('salahPass', 'cobaCoba'); // Percobaan gagal
-}
-  </pre>
-
-      <button class="btn" onclick="openModal('dcf4b00cade35460b7a7dbcea44561b3')">
-        Lihat Kode
-      </button>
-    </div>
-
-    <h2>Latihan Bank</h2>
-    <div class="card">
-      <pre>
-// Nama   : Azriel Miracle Yuandre
-// Nim    : 251410024
-// Kelas  : Si2A
-
-class RekeningBank {
-  String _nomorRekening;
-  double _saldo;
-
-  RekeningBank(this._nomorRekening, this._saldo);
-
-  void deposit(double jml) {
-    if (jml > 0) {
-      _saldo += jml;
-      print('Deposit Rp $jml Berhasil.');
-    }
-  }
-
-  void tarik(double jml) {
-    if (jml > 0 && _saldo >= jml) {
-      _saldo -= jml;
-      print('Tarik Rp $jml Berhasil.');
-    } else {
-      print('Gagal: Saldo tidak cukup atau input tidak valid.');
-    }
-  }
-
-  void cekSaldo() {
-    print('Rekening: $_nomorRekening | Saldo: Rp $_saldo');
-  }
-}
-
-void main() {
-  print('--- TRANSAKSI PERTAMA ---');
-  var rekeningSaya = RekeningBank('1234-5678-90', 5000000);
-  rekeningSaya.cekSaldo();
-  
-  print('\n--- MELAKUKAN PENARIKAN ---');
-  rekeningSaya.tarik(1000000);
-  rekeningSaya.cekSaldo();
-}
-  </pre>
-
-      <button class="btn" onclick="openModal('a9c8ab069ebb9a3ec290ddb07e3a044e')">
-        Lihat Kode
-      </button>
-    </div>
-
-    <footer>
-      <h2>Kesimpulan</h2>
-      <pre>
-<p>
-1. Dart memiliki berbagai jenis constructor untuk fleksibilitas objek.
-
-2. Enkapsulasi melindungi data dengan menggunakan private field (prefix underscore).
-
-3. Getter & setter memberikan kontrol akses yang aman terhadap data private</p>
-     </pre>
-    </footer>
 
   </div>
 
