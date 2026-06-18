@@ -1,449 +1,360 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>APK CINEBOOK</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Diagram - CineBook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <style>
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      margin: 0;
-      padding: 40px 20px;
-      background: linear-gradient(135deg, #6B2C8C, #9B4D96, #E88D8D);
-      line-height: 1.6;
-      color: #1e293b;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            padding: 30px;
+            color: #fff;
+        }
 
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      position: relative;
-      z-index: 1;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #FFD700, #FF6B6B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
 
-    h2 {
-      margin-top: 40px;
-      border-left: 5px solid #2563eb;
-      padding-left: 10px;
-    }
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
 
-    p {
-      margin-bottom: 15px;
-    }
+        .diagram-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
 
-    .card {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-      transition: 0.3s;
-      margin-bottom: 20px;
-    }
+        .class-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid #FFD700;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 200px;
+            max-width: 280px;
+            flex: 1;
+            transition: transform 0.3s;
+        }
 
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
-    }
+        .class-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
 
-    iframe {
-      width: 100%;
-      height: 500px;
-      border: none;
-      border-radius: 10px;
-      margin-top: 15px;
-    }
+        .class-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFD700;
+            text-align: center;
+            border-bottom: 2px solid #FFD700;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
 
-    hr {
-      margin: 50px 0;
-      border: none;
-      height: 1px;
-      background: #cbd5e1;
-    }
+        .class-section {
+            margin: 8px 0;
+        }
 
-    footer {
-      margin-top: 60px;
-      padding-top: 20px;
-      border-top: 1px solid #cbd5e1;
-      font-size: 14px;
-      text-align: center;
-      color: #475569;
-    }
+        .class-section-title {
+            font-size: 12px;
+            color: #FF6B6B;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
 
-    /* BUTTON */
-    .btn {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 18px;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: 0.3s;
-    }
+        .attr-item, .method-item {
+            font-size: 12px;
+            padding: 3px 0;
+            padding-left: 10px;
+            font-family: 'Courier New', monospace;
+            color: #ddd;
+        }
 
-    .btn:hover {
-      background: #1e40af;
-    }
+        .attr-item {
+            color: #87CEEB;
+        }
 
-    /* MODAL */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-    }
+        .method-item {
+            color: #98FB98;
+        }
 
-    .modal-content {
-      position: relative;
-      background: white;
-      width: 90%;
-      max-width: 900px;
-      margin: 5% auto;
-      padding: 20px;
-      border-radius: 12px;
-      animation: fadeIn 0.3s ease;
-    }
+        .method-item .params {
+            color: #FFB6C1;
+        }
 
-    .modal iframe {
-      width: 100%;
-      height: 500px;
-      border: none;
-      border-radius: 10px;
-    }
+        .relationship {
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+            padding: 10px 0;
+        }
 
-    .close {
-      position: absolute;
-      right: 15px;
-      top: 10px;
-      font-size: 22px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+        .legend {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border: 1px solid #FFD70033;
+        }
 
-    .close:hover {
-      color: #2563eb;
-    }
+        .legend h3 {
+            color: #FFD700;
+            margin-bottom: 15px;
+        }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
+        .legend-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
 
-    pre {
-      background: #f8fafc;
-      padding: 15px;
-      border-radius: 8px;
-      overflow-x: auto;
-      border: 1px solid #e2e8f0;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-  </style>
+        .legend-color {
+            width: 30px;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <h1>📊 CLASS DIAGRAM CINEBOOK</h1>
+        <p class="subtitle">Sistem Pemesanan Tiket Bioskop - Konsep OOP</p>
 
-  <div class="container">
+        <div class="diagram-container">
 
-    <h1>Cinebook</h1>
-    <p><b>Nama:</b> Azriel Miracle Yuandre x Esti Anggraini</p>
-    <p><b>Kelas:</b> SI2A</p>
+            <!-- CLASS FILM -->
+            <div class="class-box">
+                <div class="class-name">🎬 FILM</div>
+                <div class="class-section">
+                    <div class="class-section-title">— ATRIBUT —</div>
+                    <div class="attr-item">- judul: String</div>
+                    <div class="attr-item">- harga: int</div>
+                    <div class="attr-item">- rating: int</div>
+                    <div class="attr-item">- genre: String</div>
+                </div>
+                <div class="class-section">
+                    <div class="class-section-title">— METHOD —</div>
+                    <div class="method-item">+ info(): String</div>
+                    <div class="method-item">+ hargaDiskon(<span class="params">int</span>): int</div>
+                    <div class="method-item">+ cocokAnak: bool</div>
+                    <div class="method-item">+ durasiJam: String</div>
+                </div>
+            </div>
 
-    <div class="card">
-      <pre>
-class Film {
-  int _id;
-  String _nama;
-  String _emoji;
-  double _rating;
-  int _harga;
+            <!-- CLASS KURSI -->
+            <div class="class-box">
+                <div class="class-name">💺 KURSI</div>
+                <div class="class-section">
+                    <div class="class-section-title">— ATRIBUT —</div>
+                    <div class="attr-item">- kode: String</div>
+                    <div class="attr-item">- dipesan: bool</div>
+                    <div class="attr-item">- harga: int</div>
+                </div>
+                <div class="class-section">
+                    <div class="class-section-title">— METHOD —</div>
+                    <div class="method-item">+ tersedia: bool</div>
+                    <div class="method-item">+ pesan(): void</div>
+                    <div class="method-item">+ batalPesan(): void</div>
+                    <div class="method-item">+ tampil: String</div>
+                </div>
+            </div>
 
-  Film(this._id, this._nama, this._emoji, this._rating, this._harga);
+            <!-- CLASS TEATER -->
+            <div class="class-box">
+                <div class="class-name">🏢 TEATER</div>
+                <div class="class-section">
+                    <div class="class-section-title">— ATRIBUT —</div>
+                    <div class="attr-item">- nama: String</div>
+                    <div class="attr-item">- jam: String</div>
+                    <div class="attr-item">- kursi: List&lt;Kursi&gt;</div>
+                </div>
+                <div class="class-section">
+                    <div class="class-section-title">— METHOD —</div>
+                    <div class="method-item">+ pesanKursi(<span class="params">String</span>): bool</div>
+                    <div class="method-item">+ batalKursi(<span class="params">String</span>): bool</div>
+                    <div class="method-item">+ cariKursi(<span class="params">String</span>): Kursi?</div>
+                    <div class="method-item">+ terjual: int</div>
+                    <div class="method-item">+ pendapatan: int</div>
+                    <div class="method-item">+ info(): String</div>
+                    <div class="method-item">+ denah(): String</div>
+                </div>
+            </div>
 
-  int get id => _id;
-  String get nama => _nama;
-  String get emoji => _emoji;
-  double get rating => _rating;
-  int get harga => _harga;
+            <!-- CLASS DISKON -->
+            <div class="class-box">
+                <div class="class-name">🎫 DISKON</div>
+                <div class="class-section">
+                    <div class="class-section-title">— ATRIBUT —</div>
+                    <div class="attr-item">- kode: String</div>
+                    <div class="attr-item">- potongan: int</div>
+                    <div class="attr-item">- minimalBeli: int</div>
+                </div>
+                <div class="class-section">
+                    <div class="class-section-title">— METHOD —</div>
+                    <div class="method-item">+ hitungDiskon(<span class="params">int</span>): int</div>
+                    <div class="method-item">+ info(): String</div>
+                </div>
+            </div>
 
-  void tampilkanInfo() {
-    print("$_id. $_emoji $_nama ⭐ $_rating - Rp $_harga");
-  }
-}
+            <!-- CLASS TIKET -->
+            <div class="class-box">
+                <div class="class-name">🎟️ TIKET</div>
+                <div class="class-section">
+                    <div class="class-section-title">— ATRIBUT —</div>
+                    <div class="attr-item">- id: String</div>
+                    <div class="attr-item">- nama: String</div>
+                    <div class="attr-item">- film: String</div>
+                    <div class="attr-item">- teater: String</div>
+                    <div class="attr-item">- jam: String</div>
+                    <div class="attr-item">- kursi: String</div>
+                    <div class="attr-item">- total: int</div>
+                    <div class="attr-item">- hargaAwal: int</div>
+                    <div class="attr-item">- kodeDiskon: String</div>
+                    <div class="attr-item">- diskonTerpakai: int</div>
+                </div>
+                <div class="class-section">
+                    <div class="class-section-title">— METHOD —</div>
+                    <div class="method-item">+ cetak(): String</div>
+                    <div class="method-item">+ ringkasan(): String</div>
+                    <div class="method-item">+ hargaPerTiket: int</div>
+                </div>
+            </div>
 
-void main() {
-  Film film1 = Film(1, "Avengers", "🦸", 4.8, 50000);
-  film1.tampilkanInfo();
-}
-  </pre>
+            <!-- CLASS PEMBELI -->
+            <div class="class-box">
+                <div class="class-name">👤 PEMBELI</div>
+                <div class="class-section">
+                    <div class="class-section-title">— ATRIBUT —</div>
+                    <div class="attr-item">- nama: String</div>
+                    <div class="attr-item">- tiket: List&lt;Tiket&gt;</div>
+                </div>
+                <div class="class-section">
+                    <div class="class-section-title">— METHOD —</div>
+                    <div class="method-item">+ beli(<span class="params">Tiket</span>): void</div>
+                    <div class="method-item">+ totalTiket: int</div>
+                    <div class="method-item">+ totalBelanja: int</div>
+                    <div class="method-item">+ totalHemat: int</div>
+                    <div class="method-item">+ info(): String</div>
+                    <div class="method-item">+ daftarFilm(): String</div>
+                </div>
+            </div>
 
-      <button class="btn" onclick="openModal('11dc282384908ce64180992dafa3c188')">
-        Lihat Kode
-      </button>
+            <!-- CLASS BIOSKOP -->
+            <div class="class-box" style="min-width: 300px;">
+                <div class="class-name">🏛️ BIOSKOP</div>
+                <div class="class-section">
+                    <div class="class-section-title">— ATRIBUT —</div>
+                    <div class="attr-item">- nama: String</div>
+                    <div class="attr-item">- daftarTeater: List&lt;Teater&gt;</div>
+                    <div class="attr-item">- daftarPembeli: List&lt;Pembeli&gt;</div>
+                    <div class="attr-item">- daftarDiskon: List&lt;Diskon&gt;</div>
+                </div>
+                <div class="class-section">
+                    <div class="class-section-title">— METHOD —</div>
+                    <div class="method-item">+ tambahTeater(<span class="params">Teater</span>): void</div>
+                    <div class="method-item">+ tambahPembeli(<span class="params">Pembeli</span>): void</div>
+                    <div class="method-item">+ tambahDiskon(<span class="params">Diskon</span>): void</div>
+                    <div class="method-item">+ cariTeater(<span class="params">String</span>): Teater?</div>
+                    <div class="method-item">+ cariPembeli(<span class="params">String</span>): Pembeli?</div>
+                    <div class="method-item">+ cariDiskon(<span class="params">String</span>): Diskon?</div>
+                    <div class="method-item">+ totalTiketTerjual: int</div>
+                    <div class="method-item">+ totalPendapatan: int</div>
+                    <div class="method-item">+ info(): String</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RELATIONSHIP -->
+        <div class="relationship">
+            <p>📌 Hubungan Antar Class:</p>
+            <p>
+                <strong>Bioskop</strong> 1 ─── * <strong>Teater</strong> ─── 1 ─── * <strong>Kursi</strong>
+                &nbsp;|&nbsp;
+                <strong>Bioskop</strong> 1 ─── * <strong>Pembeli</strong> ─── 1 ─── * <strong>Tiket</strong>
+                &nbsp;|&nbsp;
+                <strong>Bioskop</strong> 1 ─── * <strong>Diskon</strong>
+                &nbsp;|&nbsp;
+                <strong>Teater</strong> 1 ─── 1 <strong>Film</strong>
+            </p>
+        </div>
+
+        <!-- LEGEND -->
+        <div class="legend">
+            <h3>📖 KETERANGAN</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #87CEEB;"></div>
+                    <span><strong>Atribut ( - )</strong> = private / data yang disimpan</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #98FB98;"></div>
+                    <span><strong>Method ( + )</strong> = public / fungsi yang bisa dipanggil</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FFB6C1;"></div>
+                    <span><strong>Parameter</strong> = data yang diterima method</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FFD700;"></div>
+                    <span><strong>1 ─── *</strong> = Satu ke banyak (One to Many)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FF6B6B;"></div>
+                    <span><strong>1 ─── 1</strong> = Satu ke satu (One to One)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FFD70033;"></div>
+                    <span><strong>Class</strong> = Cetakan untuk membuat objek</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 CineBook - Dibuat untuk tugas Pemrograman Berorientasi Objek</p>
+            <p>Azriel Miracle Yuandre & Esti Anggraini | SI2A</p>
+        </footer>
     </div>
-
-    <h2>Class Studio</h2>
-    <div class="card">
-
-      <pre>
-class Studio {
-  int id;
-  String nama;
-  double multiplier;
-
-  Studio(this.id, this.nama, this.multiplier);
-
-  void tampilkanInfo() {
-    print("$id. $nama (${multiplier}x harga)");
-  }
-}
-
-void main() {
-  Studio studio1 = Studio(1, "Regular", 1.0);
-  studio1.tampilkanInfo();
-}
-  </pre>
-
-      <button class="btn" onclick="openModal('c94aa90f8dfbd6d807be9c2772d504d2')">
-        Lihat Kode
-      </button>
-    </div>
-
-    <h2>Class vip studio </h2>
-    <div class="card">
-
-      <pre>
-class Studio {
-  int id;
-  String nama;
-  double multiplier;
-
-  Studio(this.id, this.nama, this.multiplier);
-
-  void tampilkanInfo() {
-    print("$id. $nama (${multiplier}x harga)");
-  }
-}
-
-class VIPStudio extends Studio {
-  String fasilitas;
-
-  VIPStudio(int id, String nama, double multiplier, this.fasilitas)
-      : super(id, nama, multiplier);
-
-  @override
-  void tampilkanInfo() {
-    print("$id. $nama (${multiplier}x harga) 🎁 $fasilitas");
-  }
-}
-
-void main() {
-  VIPStudio vip = VIPStudio(1, "VIP Gold", 2.0, "Recliner + Snack");
-  vip.tampilkanInfo();
-}
-  </pre>
-
-      <button class="btn" onclick="openModal('d4d3e01d810cb35552170bf7317bd3ee')">
-        Lihat Kode
-      </button>
-    </div>
-
-    <h2>Class kursi</h2>
-    <div class="card">
-
-      <pre>
-class Kursi {
-  String kode;
-  String status;
-  int harga;
-
-  Kursi(this.kode, this.status, this.harga);
-
-  bool get isAvailable => status == "available";
-  bool get isBooked => status == "booked";
-
-  void pilih() {
-    if (isAvailable) status = "selected";
-  }
-
-  void batalPilih() {
-    if (status == "selected") status = "available";
-  }
-}
-
-void main() {
-  Kursi k1 = Kursi("A1", "available", 50000);
-
-  print(k1.status); // available
-
-  k1.pilih();
-  print(k1.status); // selected
-
-  k1.batalPilih();
-  print(k1.status); // available
-}
-  </pre>
-
-      <button class="btn" onclick="openModal('fab6c5b75398c9d1315b8877725646cb')">
-        Lihat Kode
-      </button>
-    </div>
-
-    <h2>Class Pemesanan</h2>
-    <div class="card">
-
-      <pre>
-class Pemesanan {
-  String id;
-  String film;
-  String studio;
-  String waktu;
-  List<String> kursi;
-  int total;
-
-  Pemesanan({
-    required this.id,
-    required this.film,
-    required this.studio,
-    required this.waktu,
-    required this.kursi,
-    required this.total,
-  });
-
-  void tampilkanDetail() {
-    print("\n┌─────────────────────────────────────────┐");
-    print("│ 🎟️ TIKET #${id.length > 6 ? id.substring(id.length - 6) : id}");
-    print("│ Film    : $film");
-    print("│ Studio  : $studio");
-    print("│ Waktu   : $waktu");
-    print("│ Kursi   : ${kursi.join(", ")}");
-    print("│ Total   : Rp $total");
-    print("└─────────────────────────────────────────┘");
-  }
-}
-
-void main() {
-  Pemesanan p = Pemesanan(
-    id: "TRX123456",
-    film: "Avengers",
-    studio: "VIP",
-    waktu: "19:00",
-    kursi: ["A1", "A2"],
-    total: 100000,
-  );
-
-  p.tampilkanDetail();
-}
-  </pre>
-
-      <button class="btn" onclick="openModal('62dba7174bae5127cc47547a6984032c')">
-        Lihat Kode
-      </button>
-    </div>
-
-    <h2>Class User</h2>
-    <div class="card">
-      <pre>
-class Pemesanan {
-  int total;
-
-  Pemesanan(this.total);
-}
-
-class User {
-  String email;
-  List<Pemesanan> riwayatPemesanan = [];
-
-  User(this.email);
-
-  void tambahPemesanan(Pemesanan p) {
-    riwayatPemesanan.add(p);
-  }
-
-  int getTotalBelanja() {
-    int total = 0;
-    for (var p in riwayatPemesanan) {
-      total += p.total;
-    }
-    return total;
-  }
-}
-
-void main() {
-  User user = User("user@gmail.com");
-
-  user.tambahPemesanan(Pemesanan(50000));
-  user.tambahPemesanan(Pemesanan(75000));
-
-  print(user.email);
-  print(user.getTotalBelanja());
-}
-  </pre>
-
-      <button class="btn" onclick="openModal('46fa1b5e7e941dcc6a3917bb923ea8bb')">
-        Lihat Kode
-      </button>
-    </div>
-
-  </div>
-
-  <!-- MODAL DINAMIS (Cukup Satu Saja) -->
-  <div id="dynamicModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <iframe id="modalIframe" src=""></iframe>
-    </div>
-  </div>
-
-  <script>
-    function openModal(gistId) {
-      const modal = document.getElementById("dynamicModal");
-      const iframe = document.getElementById("modalIframe");
-
-      // Load link secara otomatis saat diklik
-      iframe.src = `https://dartpad.dev/embed-dart.html?id=${gistId}&null_safety=true&run=true&theme=light`;
-      modal.style.display = "block";
-      document.body.style.overflow = "hidden"; // Biar ga bisa scroll saat modal buka
-    }
-
-    function closeModal() {
-      const modal = document.getElementById("dynamicModal");
-      const iframe = document.getElementById("modalIframe");
-
-      modal.style.display = "none";
-      iframe.src = ""; // Bersihkan iframe biar ga berat
-      document.body.style.overflow = "auto";
-    }
-
-    // Klik di luar modal untuk tutup
-    window.onclick = function (event) {
-      const modal = document.getElementById("dynamicModal");
-      if (event.target == modal) closeModal();
-    }
-  </script>
-
 </body>
-
-    </html>
+</html>
