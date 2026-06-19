@@ -1,7 +1,11 @@
-// ==================== Pemesanan tiket bioskop online ====================
+// ==================== CINEBOOK - VERSI SEDERHANA (10 PEMESANAN) ====================
+// Penerapan: 1 Class = 1 Tanggung Jawab Tunggal (Single Responsibility)
 // Nama: Azriel Miracle Yuandre & Esti Anggraini
 // Kelas: SI2A
 
+// ===================================================================================
+// 1. MODEL DATA (hanya menyimpan data, tidak ada logika bisnis)
+// ===================================================================================
 class Film {
   final String judul, genre;
   final int harga, rating;
@@ -18,11 +22,11 @@ class Kursi {
 class Teater {
   final String nama, jam;
   final Film film;
-  final List<Kursi> kursi;
+  final List kursi;
   Teater(this.nama, this.film, this.jam) : kursi = _buatKursi();
   
-  static List<Kursi> _buatKursi() {
-    final list = <Kursi>[];
+  static List _buatKursi() {
+    final list = [];
     for (final b in ['A','B','C','D','E','F']) {
       for (var i = 1; i <= 8; i++) {
         list.add(Kursi('$b$i', (b == 'A' || b == 'B') ? 45000 : 75000));
@@ -42,16 +46,16 @@ class Tiket {
 // 2. REPOSITORY (menyimpan dan mencari data)
 // ===================================================================================
 class Bioskop {
-  final List<Film> film = [];
-  final List<Teater> teater = [];
-  final List<Tiket> tiket = [];
-  final List<String> pembeli = [];
+  final List film = [];
+  final List teater = [];
+  final List tiket = [];
+  final List pembeli = [];
 
   Teater? cariTeater(String nama) => 
-      teater.cast<Teater?>().firstWhere((t) => t!.nama == nama, orElse: () => null);
+      teater.cast().firstWhere((t) => t!.nama == nama, orElse: () => null);
   
   Kursi? cariKursi(Teater t, String kode) =>
-      t.kursi.cast<Kursi?>().firstWhere((k) => k!.kode == kode, orElse: () => null);
+      t.kursi.cast().firstWhere((k) => k!.kode == kode, orElse: () => null);
 }
 
 // ===================================================================================
@@ -62,9 +66,9 @@ class PemesananService {
   PemesananService(this.data);
 
   // Fungsi: pesan kursi
-  Tiket? pesan(String nama, Teater teater, List<String> kodeKursi) {
+  Tiket? pesan(String nama, Teater teater, List kodeKursi) {
     // Kumpulkan kursi yang tersedia
-    final dipesan = <Kursi>[];
+    final dipesan = [];
     for (final kode in kodeKursi) {
       final kursi = data.cariKursi(teater, kode);
       if (kursi != null && !kursi.dipesan) dipesan.add(kursi);
@@ -101,7 +105,7 @@ class PemesananService {
 // 4. VIEW/LAPORAN (hanya format output)
 // ===================================================================================
 class Laporan {
-  static String film(List<Film> daftar) => daftar.map((f) => 
+  static String film(List daftar) => daftar.map((f) => 
       "🎬 ${f.judul} | ${f.genre} | ⭐${f.rating}/5 | Rp${f.harga}").join('\n');
 
   static String tiket(Tiket t) => 
@@ -166,7 +170,7 @@ void main() {
   ];
 
   for (final p in pesanan) {
-    final hasil = service.pesan(p[0] as String, p[1] as Teater, p[2] as List<String>);
+    final hasil = service.pesan(p[0] as String, p[1] as Teater, p[2] as List);
     if (hasil != null) {
       print("   ✅ ${p[0]}: ${p[2]} - ${p[1].film.judul} (Rp${hasil.total})");
     } else {
