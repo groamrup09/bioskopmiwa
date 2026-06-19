@@ -87,7 +87,9 @@ void main() {
   
   // Tampilkan film
   print("\n📽️ FILM:");
-  for (final f in film) print(f.info());
+  for (final f in film) {
+    print(f.info());
+  }
   
   // Pemesanan
   print("\n📋 PEMESANAN:");
