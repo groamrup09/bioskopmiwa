@@ -1197,9 +1197,7 @@ void main() {
   
   // Tampilkan film
   print("\n📽️ FILM:");
-  for (final f in film) {
-    print(f.info());
-  }
+  for (final f in film) print(f.info());
   
   // Pemesanan
   print("\n📋 PEMESANAN:");
@@ -1214,14 +1212,13 @@ void main() {
     ["Andi",   2, 2, "15:00", ["A1","A2"]],
     ["Dewi",   2, 2, "15:00", ["A3"]],
     ["Rizky",  0, 0, "19:30", ["B2"]],
-    ["Maya",   1, 1, "21:00", ["E1"]],a
+    ["Maya",   1, 1, "21:00", ["E1"]],
   ];
   
   for (final p in pesanan) {
     final nama = p[0] as String;
     final f = film[p[1] as int];
     final s = studio[p[2] as int];
-    final _ = p[3] as String;
     final kodeKursi = (p[4] as List).cast<String>();
     
     final beli = pembeli.firstWhere((x) => x.nama == nama);
