@@ -1021,24 +1021,24 @@
         <div class="simulator-panel">
             <h2>🧠 PENERAPAN PILAR OOP (OBJECT ORIENTED PROGRAMMING)</h2>
 
-            <div class="oop-grid">
-                <div class="oop-card">
-                    <h4>1. ENKAPSULASI</h4>
-                    <p>Atribut <code>dipesan</code> pada class <code>Kursi</code> bersifat privat dan hanya dapat diubah melalui method <code>pesan()</code> dan <code>batalPesan()</code>. Setiap class bertanggung jawab atas datanya sendiri.</p>
-                </div>
-                <div class="oop-card">
-                    <h4>2. PEWARISAN (INHERITANCE)</h4>
-                    <p>Kelas Film dan Studio mewarisi data dasar dari kelas induk. Ini menghindari redundansi properti dasar seperti nama, harga, dan ketersediaan.</p>
-                </div>
-                <div class="oop-card">
-                    <h4>3. POLIMORFISME</h4>
-                    <p>Metode tampilkanInfo() di kelas induk di-override pada kelas Film dan Studio untuk memproses dan mencetak properti spesifik masing-masing objek.</p>
-                </div>
-                <div class="oop-card">
-                    <h4>4. INTERAKSI OBJEK</h4>
-                    <p>Objek Pembeli memanggil metode pada objek Film dan Kursi untuk mengubah ketersediaan. Hubungan pemesanan diabadikan menggunakan objek Tiket.</p>
-                </div>
-            </div>
+          <div class="oop-grid">
+    <div class="oop-card">
+        <h4>1. ENKAPSULASI</h4>
+        <p>Atribut dipesan pada class Kursi bersifat privat dan hanya dapat diubah melalui method pesan() dan batalPesan(). Setiap class bertanggung jawab atas datanya sendiri tanpa bisa diakses langsung dari luar.</p>
+    </div>
+    <div class="oop-card">
+        <h4>2. SINGLE RESPONSIBILITY</h4>
+        <p>Setiap class memiliki 1 tanggung jawab: Film (data film), Studio (data studio), Kursi (status kursi), Pembeli (data pembeli), Tiket (data transaksi). Tidak ada class yang menangani banyak tugas sekaligus.</p>
+    </div>
+    <div class="oop-card">
+        <h4>3. INTERAKSI OBJEK</h4>
+        <p>Pembeli memiliki Tiket melalui relasi 1-to-many. Tiket menyimpan referensi ke Film, Studio, dan Kursi yang dipesan. Perubahan status kursi dilakukan melalui method pesan() dan batalPesan().</p>
+    </div>
+    <div class="oop-card">
+        <h4>4. ABSTRACTION</h4>
+        <p>Setiap class menyembunyikan detail internal dan hanya mengekspos method yang diperlukan. Pengguna class cukup memanggil info(), pesan(), beliTiket(), atau cetak() tanpa perlu tahu cara kerja di dalamnya.</p>
+    </div>
+</div>
         </div>
 
         <div class="simulator-panel">
