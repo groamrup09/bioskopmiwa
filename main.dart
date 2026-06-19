@@ -56,21 +56,18 @@ void main() {
   print("   🎬 CINEBOOK - SISTEM TIKET SEDERHANA");
   print("=" * 50);
   
-  // Data film
   final film = [
     const Film(1, "Avengers: Endgame", 50000, 5, "Action"),
     const Film(2, "Oppenheimer", 60000, 5, "Drama"),
     const Film(3, "Inside Out 2", 45000, 4, "Animation"),
   ];
   
-  // Data studio
   final studio = [
     const Studio(1, "Teater 1 (Reguler)", 1.0),
     const Studio(2, "Teater 2 (VIP)", 1.5),
     const Studio(3, "Teater 3 (IMAX)", 2.0),
   ];
   
-  // Data kursi
   final kursi = <Kursi>[];
   for (final b in ['A','B','C','D','E','F']) {
     for (var i = 1; i <= 8; i++) {
@@ -79,19 +76,16 @@ void main() {
     }
   }
   
-  // Data pembeli
   final pembeli = [
     Pembeli("Azriel"), Pembeli("Esti"), Pembeli("Ratu"), Pembeli("Alicia"), Pembeli("Budi"),
     Pembeli("Siti"), Pembeli("Andi"), Pembeli("Dewi"), Pembeli("Rizky"), Pembeli("Maya"),
   ];
   
-  // Tampilkan film
   print("\n📽️ FILM:");
   for (final f in film) {
     print(f.info());
   }
   
-  // Pemesanan
   print("\n📋 PEMESANAN:");
   int counter = 1;
   final pesanan = [
@@ -141,7 +135,6 @@ void main() {
     print("   ✅ $nama: ${f.judul} - ${tiket.kursi} (Rp$total)");
   }
   
-  // Tampilkan tiket
   print("\n🎟️ TIKET:");
   for (final p in pembeli) {
     for (final t in p.tiketList) {
@@ -149,12 +142,6 @@ void main() {
     }
   }
   
-  // Batal kursi
-  final batal = kursi.firstWhere((k) => k.kode == 'A1');
-  batal.batalPesan();
-  print("\n🔄 BATAL A1: ✅ Berhasil");
-  
-  // Ringkasan
   int jual = 0, dana = 0, pembeliBeli = 0;
   for (final p in pembeli) {
     if (p.tiketList.isNotEmpty) pembeliBeli++;
@@ -163,6 +150,6 @@ void main() {
       dana += t.total;
     }
   }
-  print("\n📊 Total: $jual tiket | Rp$dana | $pembeliBeli pembeli");
+  print("📊 Total: $jual tiket | Rp$dana | $pembeliBeli pembeli");
   print("🎬 TERIMA KASIH!");
 }
