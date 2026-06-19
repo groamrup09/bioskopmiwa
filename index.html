@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineBook - Pemesanan Tiket Bioskop | SI2A</title>
     <style>
-        /* ==================== RESET & GLOBAL ==================== */
+     
         * {
             margin: 0;
             padding: 0;
@@ -912,11 +912,6 @@
         </div>
 
         <div class="simulator-panel">
-            <h2>🎫 PROMO DISKON</h2>
-            <div class="diskon-grid" id="diskonGrid"></div>
-        </div>
-
-        <div class="simulator-panel">
             <h2>📌 CARA BOOKING</h2>
             <ol style="padding-left:20px; color:#aaa; line-height:2;">
                 <li>Klik tab <strong>Booking</strong> di atas</li>
@@ -964,11 +959,7 @@
                         <button class="btn btn-small" data-time="21:45" onclick="pilihWaktu('21:45')">21:45</button>
                     </div>
 
-                    <h3 style="color:#FFD700; font-size:15px; margin-top:20px;">🎫 KODE DISKON</h3>
-                    <div class="form-row">
-                        <input type="text" id="kodeDiskonInput" placeholder="Masukkan kode diskon (STUDENT10, FAMILY20, WEEKEND15)">
-                    </div>
-                </div>
+                
 
                 <!-- KANAN: Denah Kursi -->
                 <div>
@@ -1115,64 +1106,7 @@ classDiagram
                 </div>
             </div>
 
-            <!-- Tab: Alur Pemesanan -->
-            <div class="diag-tab-content hidden-tab" id="diag-booking">
-                <div class="mermaid">
-flowchart TD
-    Start[Mulai Pemesanan] --> Input[Pilih Pelanggan Film Studio Jam dan Kursi]
-    Input --> BtnClick[Klik PESAN TIKET]
-    BtnClick --> C1{Film Dipilih?}
-    C1 -->|Tidak| E1[Alert Pilih film terlebih dahulu]
-    E1 --> SelesaiNode[Selesai]
-    C1 -->|Ya| C2{Kursi Dipilih lebih dari 0?}
-    C2 -->|Tidak| E2[Alert Pilih minimal 1 kursi]
-    E2 --> SelesaiNode
-    C2 -->|Ya| CalcBase[Hitung Harga Awal]
-    CalcBase --> C3{Kode Diskon Valid dan Syarat Terpenuhi?}
-    C3 -->|Ya| ApplyDiskon[Potong Harga dan Catat Kode Diskon]
-    C3 -->|Tidak| NoDiskon[Gunakan Harga Awal Tanpa Potongan]
-    ApplyDiskon --> GenTicket[Buat Objek Tiket dengan ID Unik]
-    NoDiskon --> GenTicket
-    GenTicket --> SaveTicket[Simpan ke daftar tiket dan status kursi dipesan]
-    SaveTicket --> RefreshUI[Panggil renderTiket dan buka tab Tiket Saya]
-    RefreshUI --> ResetState[Panggil resetBooking]
-    ResetState --> SelesaiNode
-                </div>
-            </div>
-
-            <!-- Tab: Alur Diskon -->
-            <div class="diag-tab-content hidden-tab" id="diag-discount">
-                <div class="mermaid">
-flowchart TD
-    Start[Mulai Cek Diskon] --> InputCode[Input Kode Diskon]
-    InputCode --> CalcBase[Hitung Total Awal]
-    CalcBase --> CheckCode{Kode Cocok?}
-    
-    CheckCode -->|STUDENT10| C_Stud{Total lebih dari Rp 50000?}
-    CheckCode -->|FAMILY20| C_Fam{Total lebih dari Rp 100000?}
-    CheckCode -->|WEEKEND15| C_Wkend{Total lebih dari Rp 75000?}
-    CheckCode -->|Lainnya atau Kosong| NoDis[Diskon sama dengan 0]
-    
-    C_Stud -->|Ya| ApplyStud[Diskon 10 persen]
-    C_Stud -->|Tidak| NoDis
-    
-    C_Fam -->|Ya| ApplyFam[Diskon 20 persen]
-    C_Fam -->|Tidak| NoDis
-    
-    C_Wkend -->|Ya| ApplyWkend[Diskon 15 persen]
-    C_Wkend -->|Tidak| NoDis
-    
-    ApplyStud --> CalcFinal[Hitung Total Akhir]
-    ApplyFam --> CalcFinal
-    ApplyWkend --> CalcFinal
-    NoDis --> CalcFinal
-    
-    CalcFinal --> ShowSummary[Update Ringkasan dan Total Biaya]
-    ShowSummary --> SelesaiNode[Selesai]
-                </div>
-            </div>
-        </div>
-    </div>
+  
 
     <!-- ============================================================ -->
     <!-- TAB: SOURCE CODE -->
@@ -1187,532 +1121,199 @@ flowchart TD
                     <button class="btn-copy" onclick="openDartpadInline()">RUN ON DARTPAD</button>
                     <button class="btn-copy" onclick="copyCode('code-dart')">COPY CODE</button>
                 </div>
-                <pre><code id="code-dart">// ==================== CINEBOOK - APLIKASI PEMESANAN TIKET BIOSKOP ====================
+                <pre><code id="code-dart">// ==================== CINEBOOK - VERSI SEDERHANA (10 PEMESANAN) ====================
+// Penerapan: 1 Class = 1 Tanggung Jawab Tunggal (Single Responsibility)
 // Nama: Azriel Miracle Yuandre & Esti Anggraini
 // Kelas: SI2A
 
 // ===================================================================================
-// CLASS 1: FILM
+// 1. MODEL DATA (hanya menyimpan data, tidak ada logika bisnis)
 // ===================================================================================
 class Film {
-  String judul;
-  int harga;
-  int rating;
-  String genre;
-
-  Film(this.judul, this.harga, this.rating, this.genre);
-
-  String info() {
-    return "🎬 $judul | $genre | ⭐ $rating/5 | Rp $harga";
-  }
+  final String judul, genre;
+  final int harga, rating;
+  const Film(this.judul, this.harga, this.rating, this.genre);
 }
 
-// ===================================================================================
-// CLASS 2: KURSI
-// ===================================================================================
 class Kursi {
-  String kode;
+  final String kode;
+  final int harga;
   bool dipesan;
-  int harga;
-
-  Kursi(this.kode, this.dipesan, this.harga);
-
-  bool get tersedia => !dipesan;
-  void pesan() => dipesan = true;
-  void batalPesan() => dipesan = false;
-  String get tampil => dipesan ? "[XX]" : "[$kode]";
+  Kursi(this.kode, this.harga, {this.dipesan = false});
 }
 
-// ===================================================================================
-// CLASS 3: TEATER
-// ===================================================================================
 class Teater {
-  String nama;
-  Film film;
-  String jam;
-  List<Kursi> kursi = [];
-
-  Teater(this.nama, this.film, this.jam) {
-    for (var b in ["A","B","C","D","E","F"]) {
+  final String nama, jam;
+  final Film film;
+  final List<Kursi> kursi;
+  Teater(this.nama, this.film, this.jam) : kursi = _buatKursi();
+  
+  static List<Kursi> _buatKursi() {
+    final list = <Kursi>[];
+    for (final b in ['A','B','C','D','E','F']) {
       for (var i = 1; i <= 8; i++) {
-        int harga = (b == "A" || b == "B") ? 45000 : 75000;
-        kursi.add(Kursi("$b$i", false, harga));
+        list.add(Kursi('$b$i', (b == 'A' || b == 'B') ? 45000 : 75000));
       }
     }
-  }
-
-  bool pesanKursi(String kode) {
-    for (var k in kursi) {
-      if (k.kode == kode && k.tersedia) {
-        k.pesan();
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool batalKursi(String kode) {
-    for (var k in kursi) {
-      if (k.kode == kode && !k.tersedia) {
-        k.batalPesan();
-        return true;
-      }
-    }
-    return false;
-  }
-
-  Kursi? cariKursi(String kode) {
-    for (var k in kursi) {
-      if (k.kode == kode) return k;
-    }
-    return null;
-  }
-
-  int get terjual {
-    int count = 0;
-    for (var k in kursi) {
-      if (!k.tersedia) count++;
-    }
-    return count;
-  }
-
-  int get pendapatan {
-    int total = 0;
-    for (var k in kursi) {
-      if (!k.tersedia) total += k.harga;
-    }
-    return total;
-  }
-
-  String info() {
-    return "\n🏢 $nama - ${film.judul} ($jam)\n   Tiket terjual: ${terjual} dari ${kursi.length}\n   Pendapatan: Rp $pendapatan";
-  }
-
-  String denah() {
-    String hasil = "\n   LAYAR BIOSKOP - ${film.judul}\n   ====================\n";
-    List<String> baris = ["A", "B", "C", "D", "E", "F"];
-    for (var b in baris) {
-      hasil += "   $b  ";
-      for (var i = 0; i < 8; i++) {
-        var k = kursi.firstWhere((k) => k.kode == "$b${i+1}");
-        hasil += "${k.tampil} ";
-      }
-      hasil += "\n";
-    }
-    hasil += "\n   🟢 Tersedia  🔴 Terisi";
-    return hasil;
+    return list;
   }
 }
 
-// ===================================================================================
-// CLASS 4: DISKON
-// ===================================================================================
-class Diskon {
-  String kode;
-  int potongan;
-  int minimalBeli;
-
-  Diskon(this.kode, this.potongan, this.minimalBeli);
-
-  int hitungDiskon(int total) {
-    if (total >= minimalBeli) {
-      return total - (total * potongan ~/ 100);
-    }
-    return total;
-  }
-
-  String info() {
-    return "🎫 $kode | Potongan ${potongan}% | Min. beli Rp $minimalBeli";
-  }
-}
-
-// ===================================================================================
-// CLASS 5: TIKET
-// ===================================================================================
 class Tiket {
-  String id;
-  String nama;
-  String film;
-  String teater;
-  String jam;
-  String kursi;
-  int total;
-  int hargaAwal;
-  String kodeDiskon;
-  int diskonTerpakai;
-
-  Tiket({
-    required this.id,
-    required this.nama,
-    required this.film,
-    required this.teater,
-    required this.jam,
-    required this.kursi,
-    required this.total,
-    required this.hargaAwal,
-    required this.kodeDiskon,
-    required this.diskonTerpakai,
-  });
-
-  String cetak() {
-    String diskonInfo = "";
-    if (diskonTerpakai > 0) {
-      diskonInfo = "\n│ Diskon   : -Rp $diskonTerpakai ($kodeDiskon)";
-    }
-    return "\n┌─────────────────────────────────────────────────┐\n"
-         "│              🎟️ TIKET BIOSKOP 🎟️              │\n"
-         "├─────────────────────────────────────────────────┤\n"
-         "│ Nama     : $nama\n"
-         "│ Film     : $film\n"
-         "│ Teater   : $teater\n"
-         "│ Jam      : $jam\n"
-         "│ Kursi    : $kursi\n"
-         "│ Harga Awal: Rp $hargaAwal$diskonInfo\n"
-         "├─────────────────────────────────────────────────┤\n"
-         "│ Total    : Rp $total\n"
-         "│ Status   : ✅ LUNAS\n"
-         "└─────────────────────────────────────────────────┘";
-  }
-
-  String ringkasan() {
-    return "$film - $kursi - Rp $total${diskonTerpakai > 0 ? " (hemat Rp $diskonTerpakai)" : ""}";
-  }
+  final String nama, film, teater, jam, kursi;
+  final int total;
+  const Tiket(this.nama, this.film, this.teater, this.jam, this.kursi, this.total);
 }
 
 // ===================================================================================
-// CLASS 6: PEMBELI
-// ===================================================================================
-class Pembeli {
-  String nama;
-  List<Tiket> tiket = [];
-
-  Pembeli(this.nama);
-
-  void beli(Tiket t) => tiket.add(t);
-
-  int get totalTiket => tiket.length;
-
-  int get totalBelanja {
-    int total = 0;
-    for (var t in tiket) {
-      total += t.total;
-    }
-    return total;
-  }
-
-  int get totalHemat {
-    int total = 0;
-    for (var t in tiket) {
-      total += t.diskonTerpakai;
-    }
-    return total;
-  }
-
-  String info() {
-    return "👤 $nama | Tiket: $totalTiket | Belanja: Rp $totalBelanja | Hemat: Rp $totalHemat";
-  }
-
-  String daftarFilm() {
-    if (tiket.isEmpty) return "   $nama belum nonton film apapun.";
-    List<String> list = [];
-    for (var t in tiket) {
-      if (!list.contains(t.film)) list.add(t.film);
-    }
-    return "   $nama sudah menonton: ${list.join(", ")}";
-  }
-}
-
-// ===================================================================================
-// CLASS 7: BIOSKOP
+// 2. REPOSITORY (menyimpan dan mencari data)
 // ===================================================================================
 class Bioskop {
-  String nama;
-  List<Teater> daftarTeater = [];
-  List<Pembeli> daftarPembeli = [];
-  List<Diskon> daftarDiskon = [];
+  final List<Film> film = [];
+  final List<Teater> teater = [];
+  final List<Tiket> tiket = [];
+  final List<String> pembeli = [];
 
-  Bioskop(this.nama);
+  Teater? cariTeater(String nama) => 
+      teater.cast<Teater?>().firstWhere((t) => t!.nama == nama, orElse: () => null);
+  
+  Kursi? cariKursi(Teater t, String kode) =>
+      t.kursi.cast<Kursi?>().firstWhere((k) => k!.kode == kode, orElse: () => null);
+}
 
-  void tambahTeater(Teater t) => daftarTeater.add(t);
-  void tambahPembeli(Pembeli p) => daftarPembeli.add(p);
-  void tambahDiskon(Diskon d) => daftarDiskon.add(d);
+// ===================================================================================
+// 3. SERVICE (logika bisnis - 1 method = 1 fungsi)
+// ===================================================================================
+class PemesananService {
+  final Bioskop data;
+  PemesananService(this.data);
 
-  Teater? cariTeater(String nama) {
-    for (var t in daftarTeater) {
-      if (t.nama == nama) return t;
+  // Fungsi: pesan kursi
+  Tiket? pesan(String nama, Teater teater, List<String> kodeKursi) {
+    // Kumpulkan kursi yang tersedia
+    final dipesan = <Kursi>[];
+    for (final kode in kodeKursi) {
+      final kursi = data.cariKursi(teater, kode);
+      if (kursi != null && !kursi.dipesan) dipesan.add(kursi);
     }
-    return null;
-  }
+    if (dipesan.isEmpty) return null;
 
-  Pembeli? cariPembeli(String nama) {
-    for (var p in daftarPembeli) {
-      if (p.nama == nama) return p;
-    }
-    return null;
-  }
-
-  Diskon? cariDiskon(String kode) {
-    for (var d in daftarDiskon) {
-      if (d.kode == kode) return d;
-    }
-    return null;
-  }
-
-  int get totalTiketTerjual {
+    // Tandai dipesan
     int total = 0;
-    for (var t in daftarTeater) {
-      total += t.terjual;
+    for (final k in dipesan) {
+      k.dipesan = true;
+      total += k.harga;
     }
-    return total;
+    data.pembeli.add(nama);
+
+    // Buat & simpan tiket
+    final tiket = Tiket(nama, teater.film.judul, teater.nama, teater.jam,
+                        dipesan.map((k) => k.kode).join(', '), total);
+    data.tiket.add(tiket);
+    return tiket;
   }
 
-  int get totalPendapatan {
-    int total = 0;
-    for (var t in daftarTeater) {
-      total += t.pendapatan;
+  // Fungsi: batal kursi
+  bool batal(Teater teater, String kode) {
+    final kursi = data.cariKursi(teater, kode);
+    if (kursi != null && kursi.dipesan) {
+      kursi.dipesan = false;
+      return true;
     }
-    return total;
-  }
-
-  String info() {
-    String hasil = "\n🏢 ${nama.toUpperCase()}\n";
-    hasil += "   Teater: ${daftarTeater.length} | Pembeli: ${daftarPembeli.length}\n";
-    hasil += "   Total Tiket: $totalTiketTerjual | Pendapatan: Rp $totalPendapatan";
-    return hasil;
+    return false;
   }
 }
 
 // ===================================================================================
-// MAIN PROGRAM
+// 4. VIEW/LAPORAN (hanya format output)
+// ===================================================================================
+class Laporan {
+  static String film(List<Film> daftar) => daftar.map((f) => 
+      "🎬 ${f.judul} | ${f.genre} | ⭐${f.rating}/5 | Rp${f.harga}").join('\n');
+
+  static String tiket(Tiket t) => 
+      "\n┌─────────────────────────────────┐\n"
+      "│        🎟️ TIKET BIOSKOP        │\n"
+      "├─────────────────────────────────┤\n"
+      "│ Nama  : ${t.nama}\n"
+      "│ Film  : ${t.film}\n"
+      "│ Jam   : ${t.jam} | ${t.teater}\n"
+      "│ Kursi : ${t.kursi}\n"
+      "│ Total : Rp${t.total}\n"
+      "└─────────────────────────────────┘";
+
+  static String ringkasan(Bioskop data) {
+    int jual = data.teater.fold(0, (s, t) => s + t.kursi.where((k) => k.dipesan).length);
+    int dana = data.teater.fold(0, (s, t) => s + t.kursi.where((k) => k.dipesan).fold(0, (a, k) => a + k.harga));
+    return "📊 Total: $jual tiket | Rp$dana";
+  }
+}
+
+// ===================================================================================
+// 5. MAIN (orkestrasi - menjalankan program)
 // ===================================================================================
 void main() {
-  // 1. Buat Film
-  var f1 = Film("Avengers: Endgame", 50000, 5, "Action");
-  var f2 = Film("Oppenheimer", 60000, 5, "Drama");
-  var f3 = Film("Inside Out 2", 45000, 4, "Animation");
-  var f4 = Film("Spider-Man", 50000, 5, "Action");
-  var f5 = Film("Joker 2", 55000, 4, "Drama");
-
-  List<Film> daftarFilm = [f1, f2, f3, f4, f5];
-
-  // 2. Buat Teater
-  var t1 = Teater("Teater 1", f1, "19:30");
-  var t2 = Teater("Teater 2", f2, "21:00");
-  var t3 = Teater("Teater 3", f3, "15:00");
-
-  List<Teater> semuaTeater = [t1, t2, t3];
-
-  // 3. Buat Diskon
-  var d1 = Diskon("STUDENT10", 10, 50000);
-  var d2 = Diskon("FAMILY20", 20, 100000);
-  var d3 = Diskon("WEEKEND15", 15, 75000);
-
-  List<Diskon> daftarDiskon = [d1, d2, d3];
-
-  // 4. Buat Bioskop
-  var bioskop = Bioskop("CineBook Cinema");
-  for (var t in semuaTeater) {
-    bioskop.tambahTeater(t);
-  }
-  for (var d in daftarDiskon) {
-    bioskop.tambahDiskon(d);
-  }
-
-  // 5. Buat Pembeli (15 orang)
-  List<Pembeli> pembeli = [
-    Pembeli("Azriel"), Pembeli("Esti"), Pembeli("Ratu"),
-    Pembeli("Alicia"), Pembeli("Budi"), Pembeli("Siti"),
-    Pembeli("Andi"), Pembeli("Dewi"), Pembeli("Rizky"),
-    Pembeli("Maya"), Pembeli("Doni"), Pembeli("Nina"),
-    Pembeli("Fajar"), Pembeli("Lina"), Pembeli("Rizki")
-  ];
-  for (var p in pembeli) {
-    bioskop.tambahPembeli(p);
-  }
-
-  // 6. Data Pemesanan (nama, teater, kursi, diskon)
-  List<Map<String, dynamic>> pesanan = [
-    {"nama": "Azriel", "teater": t1, "kursi": ["A1", "A2"], "diskon": "STUDENT10"},
-    {"nama": "Esti", "teater": t1, "kursi": ["A3"], "diskon": null},
-    {"nama": "Ratu", "teater": t2, "kursi": ["C1", "C2"], "diskon": "FAMILY20"},
-    {"nama": "Alicia", "teater": t2, "kursi": ["C3"], "diskon": null},
-    {"nama": "Budi", "teater": t1, "kursi": ["B1"], "diskon": "WEEKEND15"},
-    {"nama": "Siti", "teater": t1, "kursi": ["B2", "B3"], "diskon": null},
-    {"nama": "Andi", "teater": t2, "kursi": ["D1"], "diskon": "STUDENT10"},
-    {"nama": "Dewi", "teater": t2, "kursi": ["D2", "D3"], "diskon": null},
-    {"nama": "Rizky", "teater": t1, "kursi": ["B4"], "diskon": "FAMILY20"},
-    {"nama": "Maya", "teater": t2, "kursi": ["E1"], "diskon": null},
-    {"nama": "Doni", "teater": t1, "kursi": ["A4", "A5"], "diskon": "WEEKEND15"},
-    {"nama": "Nina", "teater": t2, "kursi": ["E2", "E3"], "diskon": null},
-    {"nama": "Fajar", "teater": t3, "kursi": ["A1", "A2"], "diskon": "STUDENT10"},
-    {"nama": "Lina", "teater": t3, "kursi": ["A3"], "diskon": null},
-    {"nama": "Rizki", "teater": t3, "kursi": ["B1", "B2"], "diskon": "FAMILY20"},
+  // Data film
+  final film = [
+    const Film("Avengers: Endgame", 50000, 5, "Action"),
+    const Film("Oppenheimer", 60000, 5, "Drama"),
+    const Film("Inside Out 2", 45000, 4, "Animation"),
   ];
 
-  // ========== TAMPILKAN OUTPUT ==========
-  String output = "";
+  // Data teater
+  final t1 = Teater("Teater 1", film[0], "19:30");
+  final t2 = Teater("Teater 2", film[1], "21:00");
+  final t3 = Teater("Teater 3", film[2], "15:00");
 
-  // HEADER
-  output += "\n==========================================";
-  output += "\n       🎬 CINEBOOK - PEMESANAN TIKET";
-  output += "\n==========================================";
+  // Setup
+  final bioskop = Bioskop();
+  bioskop.film.addAll(film);
+  bioskop.teater.addAll([t1, t2, t3]);
+  final service = PemesananService(bioskop);
 
-  // DAFTAR FILM
-  output += "\n\n📽️ DAFTAR FILM TERSEDIA:";
-  output += "\n==========================================";
-  for (var f in daftarFilm) {
-    output += "\n${f.info()}";
-  }
-
-  // DAFTAR DISKON
-  output += "\n\n🎫 DAFTAR DISKON:";
-  output += "\n==========================================";
-  for (var d in daftarDiskon) {
-    output += "\n${d.info()}";
-  }
-
-  // PROSES PEMESANAN
-  output += "\n\n📋 PROSES PEMESANAN";
-  output += "\n==========================================";
-
-  for (var data in pesanan) {
-    String nama = data["nama"] as String;
-    Teater t = data["teater"] as Teater;
-    List<String> kursiDipilih = data["kursi"] as List<String>;
-    String? kodeDiskon = data["diskon"] as String?;
-
-    var p = bioskop.cariPembeli(nama)!;
-
-    output += "\n\n👤 ${p.nama} - ${t.nama} (${t.film.judul})";
-
-    List<String> berhasil = [];
-    int total = 0;
-
-    for (var kode in kursiDipilih) {
-      if (t.pesanKursi(kode)) {
-        var k = t.cariKursi(kode)!;
-        berhasil.add(kode);
-        total += k.harga;
-        output += "\n   ✅ Kursi $kode berhasil";
-      } else {
-        output += "\n   ❌ Kursi $kode gagal (sudah dipesan)";
-      }
-    }
-
-    if (berhasil.isNotEmpty) {
-      int hargaAwal = total;
-      int diskonTerpakai = 0;
-      String diskonPakai = "-";
-
-      if (kodeDiskon != null) {
-        var diskon = bioskop.cariDiskon(kodeDiskon);
-        if (diskon != null) {
-          int totalSetelahDiskon = diskon.hitungDiskon(total);
-          diskonTerpakai = total - totalSetelahDiskon;
-          total = totalSetelahDiskon;
-          diskonPakai = kodeDiskon;
-        }
-      }
-
-      var tiket = Tiket(
-        id: "TIX${DateTime.now().millisecondsSinceEpoch.toString().substring(6)}",
-        nama: p.nama,
-        film: t.film.judul,
-        teater: t.nama,
-        jam: t.jam,
-        kursi: berhasil.join(", "),
-        total: total,
-        hargaAwal: hargaAwal,
-        kodeDiskon: diskonPakai,
-        diskonTerpakai: diskonTerpakai,
-      );
-      p.beli(tiket);
-
-      if (diskonTerpakai > 0) {
-        output += "\n   🎫 Diskon $diskonPakai: hemat Rp $diskonTerpakai";
-      }
-    }
-  }
-
-  // DEMO BATAL KURSI
-  output += "\n\n==========================================";
-  output += "\n         🔄 DEMO BATAL KURSI";
-  output += "\n==========================================";
-
-  output += "\n\n📍 Batalkan kursi A1 di Teater 1...";
-  if (t1.batalKursi("A1")) {
-    output += "\n   ✅ Kursi A1 berhasil dibatalkan!";
-  } else {
-    output += "\n   ❌ Gagal membatalkan kursi A1";
-  }
-
-  output += "\n\n📍 Batalkan kursi Z9 di Teater 1...";
-  if (t1.batalKursi("Z9")) {
-    output += "\n   ✅ Kursi Z9 berhasil dibatalkan!";
-  } else {
-    output += "\n   ❌ Kursi Z9 tidak ditemukan atau tidak sedang dipesan";
-  }
-
-  // CETAK SEMUA TIKET
-  output += "\n\n==========================================";
-  output += "\n         🎟️ SEMUA TIKET";
-  output += "\n==========================================";
-
-  for (var p in pembeli) {
-    for (var t in p.tiket) {
-      output += t.cetak();
-    }
-  }
-
-  // DAFTAR FILM PER PEMBELI
-  output += "\n\n==========================================";
-  output += "\n         📽️ DAFTAR FILM PER PEMBELI";
-  output += "\n==========================================";
-
-  for (var p in pembeli) {
-    output += "\n${p.daftarFilm()}";
-  }
-
-  // LAPORAN PEMBELI
-  output += "\n\n==========================================";
-  output += "\n         👥 LAPORAN PEMBELI";
-  output += "\n==========================================";
-
-  for (var p in pembeli) {
-    output += "\n${p.info()}";
-  }
-
-  // LAPORAN TEATER
-  output += "\n\n==========================================";
-  output += "\n         📊 LAPORAN PENJUALAN";
-  output += "\n==========================================";
-
-  int totalTiket = 0;
-  int totalPendapatan = 0;
-
-  for (var t in semuaTeater) {
-    output += t.info();
-    totalTiket += t.terjual;
-    totalPendapatan += t.pendapatan;
-  }
-
-  output += "\n\n📌 TOTAL KESELURUHAN:";
-  output += "\n   Tiket terjual: $totalTiket tiket";
-  output += "\n   Total pendapatan: Rp $totalPendapatan";
+  // Output
+  print("=" * 50);
+  print("   🎬 CINEBOOK - SISTEM TIKET SEDERHANA");
+  print("=" * 50);
+  print("\n📽️ FILM:\n${Laporan.film(film)}");
   
-  int totalHemat = 0;
-  for (var p in pembeli) {
-    totalHemat += p.totalHemat;
-  }
-  if (totalHemat > 0) {
-    output += "\n   Total hemat diskon: Rp $totalHemat";
+  // Pemesanan (10 data)
+  print("\n📋 PEMESANAN:");
+  final pesanan = [
+    ["Azriel", t1, ["A1","A2"]],
+    ["Esti",   t1, ["A3"]],
+    ["Ratu",   t2, ["C1","C2"]],
+    ["Alicia", t2, ["C3"]],
+    ["Budi",   t1, ["B1"]],
+    ["Siti",   t2, ["D1","D2"]],
+    ["Andi",   t3, ["A1","A2"]],
+    ["Dewi",   t3, ["A3"]],
+    ["Rizky",  t1, ["B2"]],
+    ["Maya",   t2, ["E1"]],
+  ];
+
+  for (final p in pesanan) {
+    final hasil = service.pesan(p[0] as String, p[1] as Teater, p[2] as List<String>);
+    if (hasil != null) {
+      print("   ✅ ${p[0]}: ${p[2]} - ${p[1].film.judul} (Rp${hasil.total})");
+    } else {
+      print("   ❌ ${p[0]}: Gagal memesan ${p[2]}");
+    }
   }
 
-  output += "\n\n==========================================";
-  output += "\n       🎬 TERIMA KASIH!";
-  output += "\n==========================================\n";
+  // Tampilkan tiket
+  print("\n🎟️ TIKET:");
+  for (final t in bioskop.tiket) {
+    print(Laporan.tiket(t));
+  }
 
-  print(output);
+  // Batal kursi
+  print("\n🔄 BATAL: A1 di Teater 1");
+  print("   ${service.batal(t1, 'A1') ? '✅ Berhasil' : '❌ Gagal'}");
+
+  // Ringkasan
+  print("\n${Laporan.ringkasan(bioskop)}");
+  print("\n🎬 TERIMA KASIH!");
 }</code></pre>
             </div>
         </div>
