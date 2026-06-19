@@ -672,6 +672,68 @@
         .tab-content.active {
             display: block;
         }
+
+        /* ==================== DIAGRAM TABS ==================== */
+        .diag-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            border-bottom: 1px solid #2a2a5a;
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .diag-tab-btn {
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid #2a2a5a;
+            border-radius: 6px;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .diag-tab-btn:hover {
+            border-color: #FFD700;
+            color: #fff;
+        }
+
+        .diag-tab-btn.active {
+            background: rgba(255, 215, 0, 0.1);
+            color: #FFD700;
+            border-color: #FFD700;
+        }
+
+        .diag-tab-content {
+            transition: opacity 0.35s ease;
+        }
+
+        .diag-tab-content.hidden-tab {
+            position: absolute;
+            visibility: hidden;
+            height: 0;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .diag-tab-content.active {
+            position: relative;
+            visibility: visible;
+            height: auto;
+            opacity: 1;
+        }
+        
+        .mermaid {
+            background: #0a0a22;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #2a2a5a;
+            display: flex;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -725,6 +787,11 @@
         </div>
 
         <div class="simulator-panel">
+            <h2>🎫 PROMO DISKON</h2>
+            <div class="diskon-grid" id="diskonGrid"></div>
+        </div>
+
+        <div class="simulator-panel">
             <h2>📌 CARA BOOKING</h2>
             <ol style="padding-left:20px; color:#aaa; line-height:2;">
                 <li>Klik tab <strong>Booking</strong> di atas</li>
@@ -772,7 +839,10 @@
                         <button class="btn btn-small" data-time="21:45" onclick="pilihWaktu('21:45')">21:45</button>
                     </div>
 
-                    
+                    <h3 style="color:#FFD700; font-size:15px; margin-top:20px;">🎫 KODE DISKON</h3>
+                    <div class="form-row">
+                        <input type="text" id="kodeDiskonInput" placeholder="Masukkan kode diskon (STUDENT10, FAMILY20, WEEKEND15)">
+                    </div>
                 </div>
 
                 <!-- KANAN: Denah Kursi -->
@@ -861,45 +931,120 @@
         </div>
 
         <div class="simulator-panel">
-            <h2>📊 DIAGRAM KELAS (UML)</h2>
-            <div style="font-family:'Courier New',monospace; font-size:13px; color:#aaa; background:#0a0a22; padding:20px; border-radius:12px; overflow-x:auto; white-space:pre;">
-                ┌─────────────────────┐          ┌─────────────────────┐
-                │       FILM          │          │      STUDIO          │
-                ├─────────────────────┤          ├─────────────────────┤
-                │ - id: int           │          │ - id: int           │
-                │ - judul: String     │          │ - nama: String      │
-                │ - harga: int        │          │ - multiplier: double│
-                │ - rating: int       │          ├─────────────────────┤
-                ├─────────────────────┤          │ + info(): String    │
-                │ + info(): String    │          └─────────────────────┘
-                └─────────────────────┘                    △
-                         │                                 │
-                         │ (Memiliki)                      │ (Memiliki)
-                         │ 1                              │ 1
-                         ▼                                 │
-                ┌─────────────────────┐          ┌─────────────────────┐
-                │       TIKET         │          │       KURSI          │
-                ├─────────────────────┤          ├─────────────────────┤
-                │ - id: String        │          │ - kode: String      │
-                │ - pembeli: String   │          │ - dipesan: bool     │
-                │ - film: String      │          │ - harga: int        │
-                │ - studio: String    │          ├─────────────────────┤
-                │ - kursi: String     │          │ + pesan(): void     │
-                │ - total: int        │          │ + batalPesan(): void│
-                ├─────────────────────┤          └─────────────────────┘
-                │ + cetak(): String   │
-                └─────────────────────┘
-                         │
-                         │ (Memiliki)
-                         │ *
-                ┌─────────────────────┐
-                │      PEMBELI        │
-                ├─────────────────────┤
-                │ - nama: String      │
-                │ - tiket: List       │
-                ├─────────────────────┤
-                │ + beliTiket(): void │
-                └─────────────────────┘
+            <h2>📊 DIAGRAM LOGIKA &amp; ALUR SISTEM</h2>
+            <div style="color: #888; font-size: 14px; margin-bottom: 20px;">Visualisasi diagram kelas OOP dan diagram alur pemesanan tiket pada sistem CineBook.</div>
+            
+            <div class="diag-tabs">
+                <button class="diag-tab-btn active" onclick="switchDiagramTab(event, 'diag-uml')">Diagram Kelas (UML)</button>
+                <button class="diag-tab-btn" onclick="switchDiagramTab(event, 'diag-booking')">Alur Pemesanan (Flowchart)</button>
+                <button class="diag-tab-btn" onclick="switchDiagramTab(event, 'diag-discount')">Alur Perhitungan Diskon</button>
+            </div>
+
+            <!-- Tab: UML -->
+            <div class="diag-tab-content active" id="diag-uml">
+                <div class="mermaid">
+classDiagram
+    class Film {
+        +int id
+        +String judul
+        +int harga
+        +int rating
+        +String genre
+        +info()
+    }
+    class Studio {
+        +int id
+        +String nama
+        +double multiplier
+        +info()
+    }
+    class Kursi {
+        +String kode
+        +bool dipesan
+        +int harga
+        +String tipe
+        +pesan()
+        +batalPesan()
+    }
+    class Pembeli {
+        +String nama
+        +List tiketList
+        +beliTiket()
+    }
+    class Tiket {
+        +String id
+        +String nama
+        +String film
+        +String studio
+        +String kursi
+        +int total
+        +int hargaAwal
+        +String diskon
+        +String tanggal
+        +cetak()
+    }
+    Pembeli --> Tiket : Memiliki
+    Tiket --> Film : Memesan
+    Tiket --> Studio : Di
+    Tiket --> Kursi : Memilih
+                </div>
+            </div>
+
+            <!-- Tab: Alur Pemesanan -->
+            <div class="diag-tab-content hidden-tab" id="diag-booking">
+                <div class="mermaid">
+flowchart TD
+    Start[Mulai Pemesanan] --> Input[Pilih Pelanggan Film Studio Jam dan Kursi]
+    Input --> BtnClick[Klik PESAN TIKET]
+    BtnClick --> C1{Film Dipilih?}
+    C1 -->|Tidak| E1[Alert Pilih film terlebih dahulu]
+    E1 --> SelesaiNode[Selesai]
+    C1 -->|Ya| C2{Kursi Dipilih lebih dari 0?}
+    C2 -->|Tidak| E2[Alert Pilih minimal 1 kursi]
+    E2 --> SelesaiNode
+    C2 -->|Ya| CalcBase[Hitung Harga Awal]
+    CalcBase --> C3{Kode Diskon Valid dan Syarat Terpenuhi?}
+    C3 -->|Ya| ApplyDiskon[Potong Harga dan Catat Kode Diskon]
+    C3 -->|Tidak| NoDiskon[Gunakan Harga Awal Tanpa Potongan]
+    ApplyDiskon --> GenTicket[Buat Objek Tiket dengan ID Unik]
+    NoDiskon --> GenTicket
+    GenTicket --> SaveTicket[Simpan ke daftar tiket dan status kursi dipesan]
+    SaveTicket --> RefreshUI[Panggil renderTiket dan buka tab Tiket Saya]
+    RefreshUI --> ResetState[Panggil resetBooking]
+    ResetState --> SelesaiNode
+                </div>
+            </div>
+
+            <!-- Tab: Alur Diskon -->
+            <div class="diag-tab-content hidden-tab" id="diag-discount">
+                <div class="mermaid">
+flowchart TD
+    Start[Mulai Cek Diskon] --> InputCode[Input Kode Diskon]
+    InputCode --> CalcBase[Hitung Total Awal]
+    CalcBase --> CheckCode{Kode Cocok?}
+    
+    CheckCode -->|STUDENT10| C_Stud{Total lebih dari Rp 50000?}
+    CheckCode -->|FAMILY20| C_Fam{Total lebih dari Rp 100000?}
+    CheckCode -->|WEEKEND15| C_Wkend{Total lebih dari Rp 75000?}
+    CheckCode -->|Lainnya atau Kosong| NoDis[Diskon sama dengan 0]
+    
+    C_Stud -->|Ya| ApplyStud[Diskon 10 persen]
+    C_Stud -->|Tidak| NoDis
+    
+    C_Fam -->|Ya| ApplyFam[Diskon 20 persen]
+    C_Fam -->|Tidak| NoDis
+    
+    C_Wkend -->|Ya| ApplyWkend[Diskon 15 persen]
+    C_Wkend -->|Tidak| NoDis
+    
+    ApplyStud --> CalcFinal[Hitung Total Akhir]
+    ApplyFam --> CalcFinal
+    ApplyWkend --> CalcFinal
+    NoDis --> CalcFinal
+    
+    CalcFinal --> ShowSummary[Update Ringkasan dan Total Biaya]
+    ShowSummary --> SelesaiNode[Selesai]
+                </div>
             </div>
         </div>
     </div>
@@ -1370,6 +1515,79 @@
     renderPembeli();
     initSeats();
     updateSummary();
+
+    // ========================================================================
+    // DIAGRAM TABS CONTROLLER & MERMAID INITIALIZATION
+    // ========================================================================
+    function switchDiagramTab(evt, tabId) {
+        const contents = document.getElementsByClassName('diag-tab-content');
+        for (let i = 0; i < contents.length; i++) {
+            contents[i].classList.remove('active');
+            contents[i].classList.add('hidden-tab');
+        }
+
+        const buttons = document.getElementsByClassName('diag-tab-btn');
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].classList.remove('active');
+        }
+
+        const activeContent = document.getElementById(tabId);
+        activeContent.classList.remove('hidden-tab');
+        activeContent.classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: {
+        background: 'transparent',
+        primaryColor: '#0a0a22',
+        primaryTextColor: '#f8f9fa',
+        primaryBorderColor: '#FFD700',
+        lineColor: '#FFD700',
+        secondaryColor: '#FFD700',
+        tertiaryColor: '#0a0a22',
+        edgeLabelBackground: '#0a0a22',
+        nodeBorder: '#FFD700',
+        mainBkg: '#0a0a22',
+        actorBorder: '#FFD700',
+        actorBkg: '#0a0a22',
+        labelBoxBkgColor: '#0a0a22',
+        labelBoxBorderColor: '#FFD700',
+        labelTextColor: '#f8f9fa',
+        loopBkgColor: '#0a0a22',
+        loopBorderColor: '#FFD700',
+        noteBorderColor: '#FFD700',
+        noteBkgColor: '#0a0a22',
+        classText: '#f8f9fa'
+      }
+    });
+
+    async function renderMermaidManual() {
+        const els = document.querySelectorAll('.mermaid');
+        for (let i = 0; i < els.length; i++) {
+            const el = els[i];
+            const code = el.textContent;
+            try {
+                const { svg } = await mermaid.render('mermaid-svg-' + i, code);
+                el.innerHTML = svg;
+            } catch (err) {
+                console.error('Mermaid Error in diagram ' + i + ':', err);
+                const logCont = document.getElementById('logContainer');
+                if (logCont) {
+                    logCont.innerHTML += `<div class="log-line error">Mermaid Syntax Error (Diagram ${i}): ${err.message}</div>`;
+                }
+                alert('Syntax Error in diagram ' + i + ':\n' + err.message);
+            }
+        }
+    }
+    
+    // Tunggu sebentar agar DOM benar-benar siap
+    setTimeout(renderMermaidManual, 500);
 </script>
 
 </body>
