@@ -607,32 +607,7 @@
             }
         }
 
-        /* ==================== DISKON ==================== */
-        .diskon-grid {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-
-        .diskon-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(46, 204, 113, 0.3);
-            border-radius: 12px;
-            padding: 15px 20px;
-            min-width: 150px;
-        }
-
-        .diskon-card .kode {
-            font-weight: bold;
-            color: #2ecc71;
-            font-size: 18px;
-        }
-
-        .diskon-card .potongan {
-            color: #FFD700;
-            font-size: 14px;
-        }
+       
 
         /* ==================== TABS ==================== */
         .tabs {
@@ -1169,7 +1144,6 @@
                 <div class="summary-row"><span>🏢 Studio</span><span id="summaryStudio">-</span></div>
                 <div class="summary-row"><span>🕐 Jam</span><span id="summaryTime">-</span></div>
                 <div class="summary-row"><span>💺 Kursi</span><span id="summarySeats">-</span></div>
-                <div class="summary-row"><span>🎫 Diskon</span><span id="summaryDiskon">-</span></div>
                 <div class="summary-row summary-total"><span>💰 Total</span><span id="summaryTotal">Rp 0</span></div>
             </div>
 
@@ -1238,7 +1212,6 @@
             <div class="diag-tabs">
                 <button class="diag-tab-btn active" onclick="switchDiagramTab(event, 'diag-uml')">Diagram Kelas (UML)</button>
                 <button class="diag-tab-btn" onclick="switchDiagramTab(event, 'diag-booking')">Alur Pemesanan (Flowchart)</button>
-                <button class="diag-tab-btn" onclick="switchDiagramTab(event, 'diag-discount')">Alur Perhitungan Diskon</button>
             </div>
 
             <!-- Tab: UML -->
@@ -1283,7 +1256,6 @@ classDiagram
         +String kursi
         +int total
         +int hargaAwal
-        +String diskon
         +String tanggal
         +cetak()
     }
@@ -1306,18 +1278,20 @@ classDiagram
 flowchart TD
     Start[Mulai Pemesanan] --> Input[Pilih Pelanggan Film Studio Jam dan Kursi]
     Input --> BtnClick[Klik PESAN TIKET]
+
     BtnClick --> C1{Film Dipilih?}
-    C1 -->|Tidak| E1[Alert Pilih film terlebih dahulu]
+
+    C1 -->|Tidak| E1[Alert: Pilih film terlebih dahulu]
     E1 --> SelesaiNode[Selesai]
+
     C1 -->|Ya| C2{Kursi Dipilih lebih dari 0?}
-    C2 -->|Tidak| E2[Alert Pilih minimal 1 kursi]
+
+    C2 -->|Tidak| E2[Alert: Pilih minimal 1 kursi]
     E2 --> SelesaiNode
+
     C2 -->|Ya| CalcBase[Hitung Harga Awal]
-    CalcBase --> C3{Kode Diskon Valid dan Syarat Terpenuhi?}
-    C3 -->|Ya| ApplyDiskon[Potong Harga dan Catat Kode Diskon]
-    C3 -->|Tidak| NoDiskon[Gunakan Harga Awal Tanpa Potongan]
-    ApplyDiskon --> GenTicket[Buat Objek Tiket dengan ID Unik]
-    NoDiskon --> GenTicket
+    CalcBase --> GenTicket[Generate Tiket]
+
     GenTicket --> SaveTicket[Simpan ke daftar tiket dan status kursi dipesan]
     SaveTicket --> RefreshUI[Panggil renderTiket dan buka tab Tiket Saya]
     RefreshUI --> ResetState[Panggil resetBooking]
@@ -1325,58 +1299,55 @@ flowchart TD
                             </div>
                         </div>
                     </div>
-                    <div class="pseudocode-wrapper">
-                        <div class="pseudocode-header">
-                            <div class="dots">
-                                <span class="dot red"></span>
-                                <span class="dot yellow"></span>
-                                <span class="dot green"></span>
-                            </div>
-                            <div class="title">📋 Pseudocode Pemesanan Tiket</div>
-                            <div style="width: 42px;"></div>
-                        </div>
-                        <pre><span class="comment">// Algoritma Pemesanan Tiket CineBook</span>
+                   <div class="pseudocode-wrapper">
+    <div class="pseudocode-header">
+        <div class="dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+        </div>
+        <div class="title">📋 Pseudocode Pemesanan Tiket</div>
+        <div style="width: 42px;"></div>
+    </div>
+
+    <pre>
+<span class="comment">// Algoritma Pemesanan Tiket CineBook</span>
 <span class="keyword">ALGORITMA</span> PemesananTiket
+
 <span class="keyword">DEKLARASI</span>:
     pembeli: <span class="keyword">String</span>
     film: <span class="keyword">Objek</span> Film
     studio: <span class="keyword">Objek</span> Studio
     jam: <span class="keyword">String</span>
     kursiSelected: <span class="keyword">List</span> dari <span class="keyword">String</span>
-    kodeDiskon: <span class="keyword">String</span>
-    hargaAwal, totalAkhir, diskonPercent: <span class="keyword">Integer</span>
+    hargaAwal, totalAkhir: <span class="keyword">Integer</span>
     tiket: <span class="keyword">Objek</span> Tiket
 
 <span class="keyword">MULAI</span>:
-    <span class="keyword">BACA</span> pembeli, film, studio, jam, kursiSelected, kodeDiskon
-    
+    <span class="keyword">BACA</span> pembeli, film, studio, jam, kursiSelected
+
     <span class="keyword">JIKA</span> film == <span class="keyword">NULL</span> <span class="keyword">MAKA</span>
         <span class="keyword">TAMPILKAN</span> <span class="string">"Pilih film terlebih dahulu!"</span>
-        <span class="keyword">KELUAR</span>
+        <span class="keyword">SELESAI</span>
     <span class="keyword">AKHIR JIKA</span>
 
     <span class="keyword">JIKA</span> <span class="keyword">PANJANG</span>(kursiSelected) == <span class="number">0</span> <span class="keyword">MAKA</span>
         <span class="keyword">TAMPILKAN</span> <span class="string">"Pilih minimal 1 kursi!"</span>
-        <span class="keyword">KELUAR</span>
+        <span class="keyword">SELESAI</span>
     <span class="keyword">AKHIR JIKA</span>
 
     hargaAwal = <span class="number">0</span>
-    <span class="keyword">UNTUK SETIAP</span> kursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
-        hargaAwal = hargaAwal + kursi.harga
-    <span class="keyword">AKHIR UNTUK</span>
-    
-    hargaAwal = hargaAwal * studio.multiplier
 
-    <span class="keyword">JIKA</span> kodeDiskon <span class="keyword">VALID</span> <span class="keyword">DAN</span> MEMENUHI SYARAT <span class="keyword">MAKA</span>
-        diskonPercent = AmbilPersenDiskon(kodeDiskon)
-        totalAkhir = hargaAwal - (hargaAwal * diskonPercent / <span class="number">100</span>)
-    <span class="keyword">LAINNYA</span>
-        totalAkhir = hargaAwal
-    <span class="keyword">AKHIR JIKA</span>
+    <span class="keyword">UNTUK SETIAP</span> kursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
+        hargaAwal = hargaAwal + film.hargaPerTiket
+    <span class="keyword">AKHIR UNTUK</span>
+
+    hargaAwal = hargaAwal * studio.multiplier
+    totalAkhir = hargaAwal
 
     tiket = BUAT_TIKET(pembeli, film, studio, jam, kursiSelected, totalAkhir)
     <span class="keyword">SIMPAN</span> tiket <span class="keyword">KE</span> tiketList
-    
+
     <span class="keyword">UNTUK SETIAP</span> kursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
         <span class="keyword">SET</span> kursi.dipesan = <span class="keyword">TRUE</span>
     <span class="keyword">AKHIR UNTUK</span>
@@ -1384,90 +1355,13 @@ flowchart TD
     <span class="keyword">PANGGIL</span> renderTiket()
     <span class="keyword">PANGGIL</span> switchTab(<span class="string">"tiket"</span>)
     <span class="keyword">PANGGIL</span> resetBooking()
-<span class="keyword">SELESAI</span></pre>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab: Alur Diskon -->
-            <div class="diag-tab-content hidden-tab" id="diag-discount">
-                <div class="diag-split">
-                    <div class="diagram-card-wrapper">
-                        <button class="btn-zoom-diag" onclick="zoomDiagram('diag-discount', 'Alur Perhitungan Diskon')">🔍 Perbesar</button>
-                        <div class="mermaid-container">
-                            <div class="mermaid">
-flowchart TD
-    Start[Mulai Cek Diskon] --> InputCode[Input Kode Diskon]
-    InputCode --> CalcBase[Hitung Total Awal]
-    CalcBase --> CheckCode{Kode Cocok?}
-    
-    CheckCode -->|STUDENT10| C_Stud{Total lebih dari Rp 50000?}
-    CheckCode -->|FAMILY20| C_Fam{Total lebih dari Rp 100000?}
-    CheckCode -->|WEEKEND15| C_Wkend{Total lebih dari Rp 75000?}
-    CheckCode -->|Lainnya atau Kosong| NoDis[Diskon sama dengan 0]
-    
-    C_Stud -->|Ya| ApplyStud[Diskon 10 persen]
-    C_Stud -->|Tidak| NoDis
-    
-    C_Fam -->|Ya| ApplyFam[Diskon 20 persen]
-    C_Fam -->|Tidak| NoDis
-    
-    C_Wkend -->|Ya| ApplyWkend[Diskon 15 persen]
-    C_Wkend -->|Tidak| NoDis
-    
-    ApplyStud --> CalcFinal[Hitung Total Akhir]
-    ApplyFam --> CalcFinal
-    ApplyWkend --> CalcFinal
-    NoDis --> CalcFinal
-    
-    CalcFinal --> ShowSummary[Update Ringkasan dan Total Biaya]
-    ShowSummary --> SelesaiNode[Selesai]
-                            </div>
-                        </div>
-                    </div>
-                    <div class="pseudocode-wrapper">
-                        <div class="pseudocode-header">
-                            <div class="dots">
-                                <span class="dot red"></span>
-                                <span class="dot yellow"></span>
-                                <span class="dot green"></span>
-                            </div>
-                            <div class="title">📋 Pseudocode Perhitungan Diskon</div>
-                            <div style="width: 42px;"></div>
-                        </div>
-                        <pre><span class="comment">// Fungsi Hitung Diskon CineBook</span>
-<span class="keyword">FUNGSI</span> HitungDiskon(kodeDiskon: <span class="keyword">String</span>, totalAwal: <span class="keyword">Integer</span>) -> <span class="keyword">Integer</span>
-<span class="keyword">DEKLARASI</span>:
-    diskon: <span class="keyword">Integer</span>
-    
-<span class="keyword">MULAI</span>:
-    diskon = <span class="number">0</span>
-    
-    <span class="keyword">JIKA</span> kodeDiskon == <span class="string">"STUDENT10"</span> <span class="keyword">MAKA</span>
-        <span class="keyword">JIKA</span> totalAwal >= <span class="number">50000</span> <span class="keyword">MAKA</span>
-            diskon = totalAwal * <span class="number">10</span> / <span class="number">100</span>
-        <span class="keyword">AKHIR JIKA</span>
-    <span class="keyword">LAINNYA JIKA</span> kodeDiskon == <span class="string">"FAMILY20"</span> <span class="keyword">MAKA</span>
-        <span class="keyword">JIKA</span> totalAwal >= <span class="number">100000</span> <span class="keyword">MAKA</span>
-            diskon = totalAwal * <span class="number">20</span> / <span class="number">100</span>
-        <span class="keyword">AKHIR JIKA</span>
-    <span class="keyword">LAINNYA JIKA</span> kodeDiskon == <span class="string">"WEEKEND15"</span> <span class="keyword">MAKA</span>
-        <span class="keyword">JIKA</span> totalAwal >= <span class="number">75000</span> <span class="keyword">MAKA</span>
-            diskon = totalAwal * <span class="number">15</span> / <span class="number">100</span>
-        <span class="keyword">AKHIR JIKA</span>
-    <span class="keyword">LAINNYA</span>
-        diskon = <span class="number">0</span>
-    <span class="keyword">AKHIR JIKA</span>
-    
-    totalAkhir = totalAwal - diskon
-    <span class="keyword">KEMBALIKAN</span> totalAkhir
-<span class="keyword">SELESAI</span></pre>
-                    </div>
+<span class="keyword">SELESAI</span>
+    </pre>
+</div>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- ============================================================ -->
     <!-- TAB: SOURCE CODE -->
     <!-- ============================================================ -->
@@ -1702,12 +1596,6 @@ void main() {
         { nama: "Teater 3 (IMAX)", multiplier: 2.0 },
     ];
 
-    let diskonList = [
-        { kode: "STUDENT10", potongan: 10, minimal: 50000 },
-        { kode: "FAMILY20", potongan: 20, minimal: 100000 },
-        { kode: "WEEKEND15", potongan: 15, minimal: 75000 },
-    ];
-
     let tiketList = [];
 
     let pembeliList = [
@@ -1772,18 +1660,6 @@ void main() {
                 <div class="aksi">
                     <button class="btn btn-primary btn-small" onclick="pilihFilmDariHome(${f.id})">🎬 Booking</button>
                 </div>
-            </div>
-        `).join('');
-    }
-
-    function renderDiskon() {
-        const grid = document.getElementById('diskonGrid');
-        if (!grid) return;
-        grid.innerHTML = diskonList.map(d => `
-            <div class="diskon-card">
-                <div class="kode">${d.kode}</div>
-                <div class="potongan">${d.potongan}% OFF</div>
-                <div style="color:#888;font-size:12px;">Min. beli Rp ${d.minimal.toLocaleString()}</div>
             </div>
         `).join('');
     }
@@ -1932,8 +1808,6 @@ void main() {
             if (data) total += data.harga;
         }
         total = Math.floor(total * studios[selectedStudio].multiplier);
-
-        document.getElementById('summaryDiskon').textContent = '-';
         document.getElementById('summaryTotal').textContent = `Rp ${total.toLocaleString()}`;
     }
 
@@ -1967,7 +1841,6 @@ void main() {
             kursi: selectedSeats.join(', '),
             total: total,
             hargaAwal: total,
-            diskon: '-',
             tanggal: new Date().toLocaleDateString('id-ID'),
         };
 
@@ -2027,14 +1900,6 @@ void main() {
 
         let totalTiket = tiketList.length;
         let totalPendapatan = tiketList.reduce((sum, t) => sum + t.total, 0);
-        let totalDiskon = tiketList.reduce((sum, t) => {
-            if (t.diskon !== '-') {
-                let match = t.diskon.match(/Rp ([\d.]+)/);
-                return sum + (match ? parseInt(match[1].replace(/\./g, '')) : 0);
-            }
-            return sum;
-        }, 0);
-
         let byFilm = {};
         for (let t of tiketList) byFilm[t.film] = (byFilm[t.film] || 0) + 1;
         let byStudio = {};
@@ -2051,11 +1916,6 @@ void main() {
                     <div style="font-size:30px;">💰</div>
                     <div style="font-size:28px;font-weight:bold;color:#FFD700;">Rp ${totalPendapatan.toLocaleString()}</div>
                     <div style="color:#888;">Total Pendapatan</div>
-                </div>
-                <div style="background:rgba(52,152,219,0.1);padding:20px;border-radius:15px;text-align:center;">
-                    <div style="font-size:30px;">🎫</div>
-                    <div style="font-size:28px;font-weight:bold;color:#3498db;">Rp ${totalDiskon.toLocaleString()}</div>
-                    <div style="color:#888;">Total Diskon</div>
                 </div>
                 <div style="background:rgba(155,89,182,0.1);padding:20px;border-radius:15px;text-align:center;">
                     <div style="font-size:30px;">👤</div>
@@ -2198,7 +2058,6 @@ void main() {
     // ========================================================================
     renderFilms();
     renderBookingFilms();
-    renderDiskon();
     renderPembeli();
     initSeats();
     updateSummary();
@@ -2273,7 +2132,12 @@ void main() {
     }
     
     setTimeout(renderMermaidManual, 500);
+    
 </script>
 
 </body>
 </html>
+
+
+
+        
