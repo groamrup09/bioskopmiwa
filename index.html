@@ -727,10 +727,9 @@
         }
         
         .mermaid {
-            background: #0a0a22;
+            background: transparent;
+            border: none;
             padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #2a2a5a;
             display: flex;
             justify-content: center;
         }
@@ -816,9 +815,9 @@
             background: #111132;
             border: 2px solid #FFD700;
             border-radius: 16px;
-            width: 90%;
-            max-width: 900px;
-            height: 80vh;
+            width: 95%;
+            max-width: 1400px;
+            height: 90vh;
             display: flex;
             flex-direction: column;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.25);
@@ -857,6 +856,197 @@
             padding: 0;
             overflow: hidden;
             position: relative;
+        }
+
+        /* ==================== SPLIT DIAGRAM & PSEUDOCODE ==================== */
+        .diag-split {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+            align-items: stretch;
+            margin-top: 15px;
+        }
+        
+        .pseudocode-wrapper {
+            background: #0a0a22;
+            border: 1px solid #2a2a5a;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* IDE Window Header */
+        .pseudocode-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #2a2a5a;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .pseudocode-header .dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .pseudocode-header .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .pseudocode-header .dot.red { background: #ff5f56; }
+        .pseudocode-header .dot.yellow { background: #ffbd2e; }
+        .pseudocode-header .dot.green { background: #27c93f; }
+
+        .pseudocode-header .title {
+            color: #FFD700;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Segoe UI', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        /* Slim Custom Scrollbar */
+        .pseudocode-wrapper::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .pseudocode-wrapper::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+        .pseudocode-wrapper::-webkit-scrollbar-thumb {
+            background: #2a2a5a;
+            border-radius: 10px;
+            border: 2px solid #0a0a22;
+        }
+        .pseudocode-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #FFD700;
+        }
+
+        .pseudocode-wrapper pre {
+            margin: 0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #a0a0c0;
+            white-space: pre-wrap;
+        }
+        
+        .pseudocode-wrapper .keyword {
+            color: #ff79c6;
+            font-weight: bold;
+        }
+
+        .pseudocode-wrapper .comment {
+            color: #6272a4;
+            font-style: italic;
+        }
+
+        .pseudocode-wrapper .string {
+            color: #f1fa8c;
+        }
+
+        .pseudocode-wrapper .number {
+            color: #bd93f9;
+        }
+
+        @media (max-width: 992px) {
+            .diag-split {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==================== ZOOM DIAGRAM & RESPONSIVE MERMAID ==================== */
+        .diagram-card-wrapper {
+            position: relative;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .mermaid-container {
+            width: 100%;
+            overflow-x: auto;
+            background: #0a0a22;
+            border: 1px solid #2a2a5a;
+            border-radius: 12px;
+            min-width: 0;
+        }
+
+        .mermaid {
+            min-width: max-content;
+        }
+
+        .btn-zoom-diag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+            background: rgba(255, 215, 0, 0.1);
+            color: #FFD700;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(4px);
+        }
+
+        .btn-zoom-diag:hover {
+            background: #FFD700;
+            color: #0a0a22;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Slim Scrollbar for diagram container */
+        .mermaid-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .mermaid-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+        .mermaid-container::-webkit-scrollbar-thumb {
+            background: #2a2a5a;
+            border-radius: 10px;
+            border: 1.5px solid #0a0a22;
+        }
+        .mermaid-container::-webkit-scrollbar-thumb:hover {
+            background: #FFD700;
+        }
+
+        /* Mobile specific enhancements */
+        @media (max-width: 768px) {
+            .diag-tabs {
+                gap: 5px;
+                padding-bottom: 5px;
+            }
+            .diag-tab-btn {
+                padding: 6px 12px;
+                font-size: 11px;
+                flex: 1 1 auto;
+                text-align: center;
+            }
+            .pseudocode-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .pseudocode-header .dots {
+                margin-bottom: 4px;
+            }
+            .pseudocode-header .title {
+                font-size: 12px;
+            }
+            .pseudocode-header div[style*="width: 42px"] {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -1042,11 +1232,21 @@
         </div>
 
         <div class="simulator-panel">
-            <h2>📊 DIAGRAM KELAS (UML)</h2>
-            <div style="color: #888; font-size: 14px; margin-bottom: 20px;">Visualisasi diagram kelas OOP pada sistem CineBook.</div>
+            <h2>📊 DIAGRAM LOGIKA &amp; ALUR SISTEM</h2>
+            <div style="color: #888; font-size: 14px; margin-bottom: 20px;">Visualisasi diagram kelas OOP dan diagram alur pemesanan tiket pada sistem CineBook.</div>
             
+            <div class="diag-tabs">
+                <button class="diag-tab-btn active" onclick="switchDiagramTab(event, 'diag-uml')">Diagram Kelas (UML)</button>
+                <button class="diag-tab-btn" onclick="switchDiagramTab(event, 'diag-booking')">Alur Pemesanan (Flowchart)</button>
+                <button class="diag-tab-btn" onclick="switchDiagramTab(event, 'diag-discount')">Alur Perhitungan Diskon</button>
+            </div>
+
+            <!-- Tab: UML -->
             <div class="diag-tab-content active" id="diag-uml">
-                <div class="mermaid">
+                <div class="diagram-card-wrapper">
+                    <button class="btn-zoom-diag" onclick="zoomDiagram('diag-uml', 'Diagram Kelas (UML)')">🔍 Perbesar</button>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
 classDiagram
     class Film {
         +int id
@@ -1083,6 +1283,7 @@ classDiagram
         +String kursi
         +int total
         +int hargaAwal
+        +String diskon
         +String tanggal
         +cetak()
     }
@@ -1090,6 +1291,178 @@ classDiagram
     Tiket --> Film : Memesan
     Tiket --> Studio : Di
     Tiket --> Kursi : Memilih
+                </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Tab: Alur Pemesanan -->
+            <div class="diag-tab-content hidden-tab" id="diag-booking">
+                <div class="diag-split">
+                    <div class="diagram-card-wrapper">
+                        <button class="btn-zoom-diag" onclick="zoomDiagram('diag-booking', 'Alur Pemesanan (Flowchart)')">🔍 Perbesar</button>
+                        <div class="mermaid-container">
+                            <div class="mermaid">
+flowchart TD
+    Start[Mulai Pemesanan] --> Input[Pilih Pelanggan Film Studio Jam dan Kursi]
+    Input --> BtnClick[Klik PESAN TIKET]
+    BtnClick --> C1{Film Dipilih?}
+    C1 -->|Tidak| E1[Alert Pilih film terlebih dahulu]
+    E1 --> SelesaiNode[Selesai]
+    C1 -->|Ya| C2{Kursi Dipilih lebih dari 0?}
+    C2 -->|Tidak| E2[Alert Pilih minimal 1 kursi]
+    E2 --> SelesaiNode
+    C2 -->|Ya| CalcBase[Hitung Harga Awal]
+    CalcBase --> C3{Kode Diskon Valid dan Syarat Terpenuhi?}
+    C3 -->|Ya| ApplyDiskon[Potong Harga dan Catat Kode Diskon]
+    C3 -->|Tidak| NoDiskon[Gunakan Harga Awal Tanpa Potongan]
+    ApplyDiskon --> GenTicket[Buat Objek Tiket dengan ID Unik]
+    NoDiskon --> GenTicket
+    GenTicket --> SaveTicket[Simpan ke daftar tiket dan status kursi dipesan]
+    SaveTicket --> RefreshUI[Panggil renderTiket dan buka tab Tiket Saya]
+    RefreshUI --> ResetState[Panggil resetBooking]
+    ResetState --> SelesaiNode
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pseudocode-wrapper">
+                        <div class="pseudocode-header">
+                            <div class="dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="title">📋 Pseudocode Pemesanan Tiket</div>
+                            <div style="width: 42px;"></div>
+                        </div>
+                        <pre><span class="comment">// Algoritma Pemesanan Tiket CineBook</span>
+<span class="keyword">ALGORITMA</span> PemesananTiket
+<span class="keyword">DEKLARASI</span>:
+    pembeli: <span class="keyword">String</span>
+    film: <span class="keyword">Objek</span> Film
+    studio: <span class="keyword">Objek</span> Studio
+    jam: <span class="keyword">String</span>
+    kursiSelected: <span class="keyword">List</span> dari <span class="keyword">String</span>
+    kodeDiskon: <span class="keyword">String</span>
+    hargaAwal, totalAkhir, diskonPercent: <span class="keyword">Integer</span>
+    tiket: <span class="keyword">Objek</span> Tiket
+
+<span class="keyword">MULAI</span>:
+    <span class="keyword">BACA</span> pembeli, film, studio, jam, kursiSelected, kodeDiskon
+    
+    <span class="keyword">JIKA</span> film == <span class="keyword">NULL</span> <span class="keyword">MAKA</span>
+        <span class="keyword">TAMPILKAN</span> <span class="string">"Pilih film terlebih dahulu!"</span>
+        <span class="keyword">KELUAR</span>
+    <span class="keyword">AKHIR JIKA</span>
+
+    <span class="keyword">JIKA</span> <span class="keyword">PANJANG</span>(kursiSelected) == <span class="number">0</span> <span class="keyword">MAKA</span>
+        <span class="keyword">TAMPILKAN</span> <span class="string">"Pilih minimal 1 kursi!"</span>
+        <span class="keyword">KELUAR</span>
+    <span class="keyword">AKHIR JIKA</span>
+
+    hargaAwal = <span class="number">0</span>
+    <span class="keyword">UNTUK SETIAP</span> kursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
+        hargaAwal = hargaAwal + kursi.harga
+    <span class="keyword">AKHIR UNTUK</span>
+    
+    hargaAwal = hargaAwal * studio.multiplier
+
+    <span class="keyword">JIKA</span> kodeDiskon <span class="keyword">VALID</span> <span class="keyword">DAN</span> MEMENUHI SYARAT <span class="keyword">MAKA</span>
+        diskonPercent = AmbilPersenDiskon(kodeDiskon)
+        totalAkhir = hargaAwal - (hargaAwal * diskonPercent / <span class="number">100</span>)
+    <span class="keyword">LAINNYA</span>
+        totalAkhir = hargaAwal
+    <span class="keyword">AKHIR JIKA</span>
+
+    tiket = BUAT_TIKET(pembeli, film, studio, jam, kursiSelected, totalAkhir)
+    <span class="keyword">SIMPAN</span> tiket <span class="keyword">KE</span> tiketList
+    
+    <span class="keyword">UNTUK SETIAP</span> kursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
+        <span class="keyword">SET</span> kursi.dipesan = <span class="keyword">TRUE</span>
+    <span class="keyword">AKHIR UNTUK</span>
+
+    <span class="keyword">PANGGIL</span> renderTiket()
+    <span class="keyword">PANGGIL</span> switchTab(<span class="string">"tiket"</span>)
+    <span class="keyword">PANGGIL</span> resetBooking()
+<span class="keyword">SELESAI</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Alur Diskon -->
+            <div class="diag-tab-content hidden-tab" id="diag-discount">
+                <div class="diag-split">
+                    <div class="diagram-card-wrapper">
+                        <button class="btn-zoom-diag" onclick="zoomDiagram('diag-discount', 'Alur Perhitungan Diskon')">🔍 Perbesar</button>
+                        <div class="mermaid-container">
+                            <div class="mermaid">
+flowchart TD
+    Start[Mulai Cek Diskon] --> InputCode[Input Kode Diskon]
+    InputCode --> CalcBase[Hitung Total Awal]
+    CalcBase --> CheckCode{Kode Cocok?}
+    
+    CheckCode -->|STUDENT10| C_Stud{Total lebih dari Rp 50000?}
+    CheckCode -->|FAMILY20| C_Fam{Total lebih dari Rp 100000?}
+    CheckCode -->|WEEKEND15| C_Wkend{Total lebih dari Rp 75000?}
+    CheckCode -->|Lainnya atau Kosong| NoDis[Diskon sama dengan 0]
+    
+    C_Stud -->|Ya| ApplyStud[Diskon 10 persen]
+    C_Stud -->|Tidak| NoDis
+    
+    C_Fam -->|Ya| ApplyFam[Diskon 20 persen]
+    C_Fam -->|Tidak| NoDis
+    
+    C_Wkend -->|Ya| ApplyWkend[Diskon 15 persen]
+    C_Wkend -->|Tidak| NoDis
+    
+    ApplyStud --> CalcFinal[Hitung Total Akhir]
+    ApplyFam --> CalcFinal
+    ApplyWkend --> CalcFinal
+    NoDis --> CalcFinal
+    
+    CalcFinal --> ShowSummary[Update Ringkasan dan Total Biaya]
+    ShowSummary --> SelesaiNode[Selesai]
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pseudocode-wrapper">
+                        <div class="pseudocode-header">
+                            <div class="dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="title">📋 Pseudocode Perhitungan Diskon</div>
+                            <div style="width: 42px;"></div>
+                        </div>
+                        <pre><span class="comment">// Fungsi Hitung Diskon CineBook</span>
+<span class="keyword">FUNGSI</span> HitungDiskon(kodeDiskon: <span class="keyword">String</span>, totalAwal: <span class="keyword">Integer</span>) -> <span class="keyword">Integer</span>
+<span class="keyword">DEKLARASI</span>:
+    diskon: <span class="keyword">Integer</span>
+    
+<span class="keyword">MULAI</span>:
+    diskon = <span class="number">0</span>
+    
+    <span class="keyword">JIKA</span> kodeDiskon == <span class="string">"STUDENT10"</span> <span class="keyword">MAKA</span>
+        <span class="keyword">JIKA</span> totalAwal >= <span class="number">50000</span> <span class="keyword">MAKA</span>
+            diskon = totalAwal * <span class="number">10</span> / <span class="number">100</span>
+        <span class="keyword">AKHIR JIKA</span>
+    <span class="keyword">LAINNYA JIKA</span> kodeDiskon == <span class="string">"FAMILY20"</span> <span class="keyword">MAKA</span>
+        <span class="keyword">JIKA</span> totalAwal >= <span class="number">100000</span> <span class="keyword">MAKA</span>
+            diskon = totalAwal * <span class="number">20</span> / <span class="number">100</span>
+        <span class="keyword">AKHIR JIKA</span>
+    <span class="keyword">LAINNYA JIKA</span> kodeDiskon == <span class="string">"WEEKEND15"</span> <span class="keyword">MAKA</span>
+        <span class="keyword">JIKA</span> totalAwal >= <span class="number">75000</span> <span class="keyword">MAKA</span>
+            diskon = totalAwal * <span class="number">15</span> / <span class="number">100</span>
+        <span class="keyword">AKHIR JIKA</span>
+    <span class="keyword">LAINNYA</span>
+        diskon = <span class="number">0</span>
+    <span class="keyword">AKHIR JIKA</span>
+    
+    totalAkhir = totalAwal - diskon
+    <span class="keyword">KEMBALIKAN</span> totalAkhir
+<span class="keyword">SELESAI</span></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1269,12 +1642,24 @@ void main() {
 
     <!-- Modal Dartpad -->
     <div class="modal-overlay" id="codeModal">
-        <div class="modal-content" style="max-width: 900px; height: 80vh; display: flex; flex-direction: column;">
+        <div class="modal-content" style="max-width: 1400px; width: 95%; height: 90vh; display: flex; flex-direction: column;">
             <div class="modal-header">
                 <div class="modal-title">DARTPAD LIVE EDITOR</div>
                 <button class="close-modal" onclick="closeModal('codeModal')">&times;</button>
             </div>
             <div class="modal-body" style="flex: 1; padding: 0;" id="modalIframeContainer">
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Diagram Fullscreen -->
+    <div class="modal-overlay" id="diagramModal">
+        <div class="modal-content" style="max-width: 1400px; width: 95%; height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <div class="modal-title" id="diagramModalTitle">DETAIL DIAGRAM</div>
+                <button class="close-modal" onclick="closeModal('diagramModal')">&times;</button>
+            </div>
+            <div class="modal-body" style="flex: 1; padding: 20px; overflow: auto; display: flex; justify-content: center; align-items: flex-start; background: #0a0a22;" id="modalDiagramContainer">
             </div>
         </div>
     </div>
@@ -1732,8 +2117,33 @@ void main() {
             if (iframeContainer) {
                 iframeContainer.innerHTML = '';
             }
+            const diagramContainer = modal.querySelector('#modalDiagramContainer');
+            if (diagramContainer) {
+                diagramContainer.innerHTML = '';
+            }
         }, 300);
         document.body.style.overflow = "";
+    }
+
+    function zoomDiagram(containerId, title) {
+        const originalMermaid = document.querySelector(`#${containerId} .mermaid`);
+        if (!originalMermaid) return;
+        
+        const container = document.getElementById('modalDiagramContainer');
+        document.getElementById('diagramModalTitle').textContent = title || 'DETAIL DIAGRAM';
+        
+        container.innerHTML = originalMermaid.innerHTML;
+        
+        const svg = container.querySelector('svg');
+        if (svg) {
+            svg.removeAttribute('height');
+            svg.style.width = '100%';
+            svg.style.height = 'auto';
+            svg.style.maxWidth = '1200px';
+            svg.style.minWidth = '800px';
+        }
+        
+        openModal('diagramModal');
     }
 
     function copyCode(codeElementId) {
