@@ -1448,7 +1448,7 @@ class Tiket {
 // ==================== MAIN ====================
 void main() {
   print("=" * 50);
-  print("   🎬 CINEBOOK - SISTEM TIKET SEDERHANA");
+  print("   🎬 CINEBOOK - SISTEM TIKET BIOSKOP");
   print("=" * 50);
 
   final film = [
@@ -1464,6 +1464,7 @@ void main() {
   ];
 
   final kursi = <Kursi>[];
+
   for (final b in ['A', 'B', 'C', 'D', 'E', 'F']) {
     for (var i = 1; i <= 8; i++) {
       kursi.add(
@@ -1533,10 +1534,10 @@ void main() {
       continue;
     }
 
-    // ==================== FIXED LOGIC ====================
 
     int hargaAwal = f.harga * dipesan.length;
-    int total = (hargaAwal * s.multiplier).round();
+
+    int total = ((hargaAwal * s.multiplier).round()).toInt();
 
     for (final k in dipesan) {
       k.pesan();
@@ -1567,12 +1568,15 @@ void main() {
     }
   }
 
+  // ==================== FIX TYPE ERROR HERE ====================
+  num totalDana = 0; // FIX: num instead of int
+
   int totalTiket = 0;
-  int totalDana = 0;
   int totalPembeli = 0;
 
   for (final p in pembeli) {
     if (p.tiketList.isNotEmpty) totalPembeli++;
+
     for (final t in p.tiketList) {
       totalTiket++;
       totalDana += t.total;
