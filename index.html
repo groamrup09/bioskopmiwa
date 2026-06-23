@@ -1220,64 +1220,58 @@
                     <button class="btn-zoom-diag" onclick="zoomDiagram('diag-uml', 'Diagram Kelas (UML)')">🔍 Perbesar</button>
                     <div class="mermaid-container">
                         <div class="mermaid">
- class Film {
-        +String judul
-        +int harga
-        +info()
-    }
+classDiagram
 
-    class Studio {
-        +String nama
-        +double multiplier
-        +info()
-    }
+class Film {
+    +String judul
+    +int harga
+    +info()
+}
 
-    class Kursi {
-        +String kode
-        +bool dipesan
-        +isTersedia()
-        +pesan()
-        +batalPesan()
-    }
+class Studio {
+    +String nama
+    +double multiplier
+    +info()
+}
 
-    class Pembeli {
-        +String nama
-        +List tiketList
-        +beliTiket()
-        +totalTiket()
-    }
+class Kursi {
+    +String kode
+    +bool dipesan
+    +isTersedia()
+    +pesan()
+}
 
-    class Tiket {
-        +String id
-        +String nama
-        +String film
-        +String studio
-        +String jam
-        +String kursi
-        +int total
-        +int hargaAwal
-        +String tanggal
-        +cetak()
-    }
+class Pembeli {
+    +String nama
+    +List tiketList
+    +beliTiket()
+}
 
-    class BookingService {
-        +hitungHarga()
-        +cekKursi()
-        +prosesPesanan()
-        +buatTiket()
-    }
+class Tiket {
+    +String id
+    +String nama
+    +String film
+    +String studio
+    +String jam
+    +String kursi
+    +int total
+    +cetak()
+}
 
-    %% ================= RELASI =================
+class BookingService {
+    +hitungHarga()
+    +cekKursi()
+    +buatTiket()
+}
 
-    Film --> BookingService : digunakan untuk menghitung harga
-    Studio --> BookingService : menentukan multiplier harga
-    Kursi --> BookingService : dicek ketersediaannya
+%% RELASI PALING NATURAL (REKOMENDASI)
+Film --> BookingService : digunakan
+Studio --> BookingService : multiplier
+Kursi --> BookingService : dicek
 
-    BookingService --> Tiket : menghasilkan / membuat
-
-    Pembeli --> Tiket : memiliki / membeli
-
-    Kursi --> Tiket : dipilih untuk pemesanan
+BookingService --> Tiket : membuat
+Pembeli --> Tiket : memiliki
+Kursi --> Tiket : dipilih
                 </div>
                 </div>
                 </div>
