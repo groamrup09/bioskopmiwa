@@ -1221,57 +1221,48 @@
                     <div class="mermaid-container">
                         <div class="mermaid">
 classDiagram
-
-class Film {
-    +String judul
-    +int harga
-    +info()
-}
-
-class Studio {
-    +String nama
-    +double multiplier
-    +info()
-}
-
-class Kursi {
-    +String kode
-    +bool dipesan
-    +isTersedia()
-    +pesan()
-}
-
-class Pembeli {
-    +String nama
-    +List tiketList
-    +beliTiket()
-}
-
-class Tiket {
-    +String id
-    +String nama
-    +String film
-    +String studio
-    +String jam
-    +String kursi
-    +int total
-    +cetak()
-}
-
-class BookingService {
-    +hitungHarga()
-    +cekKursi()
-    +buatTiket()
-}
-
-%% RELASI PALING NATURAL (REKOMENDASI)
-Film --> BookingService : digunakan
-Studio --> BookingService : multiplier
-Kursi --> BookingService : dicek
-
-BookingService --> Tiket : membuat
-Pembeli --> Tiket : memiliki
-Kursi --> Tiket : dipilih
+    class Film {
+        +int id
+        +String judul
+        +int harga
+        +int rating
+        +String genre
+        +info()
+    }
+    class Studio {
+        +int id
+        +String nama
+        +double multiplier
+        +info()
+    }
+    class Kursi {
+        +String kode
+        +bool dipesan
+        +int harga
+        +String tipe
+        +pesan()
+        +batalPesan()
+    }
+    class Pembeli {
+        +String nama
+        +List tiketList
+        +beliTiket()
+    }
+    class Tiket {
+        +String id
+        +String nama
+        +String film
+        +String studio
+        +String kursi
+        +int total
+        +int hargaAwal
+        +String tanggal
+        +cetak()
+    }
+    Pembeli --> Tiket : Memiliki
+    Tiket --> Film : Memesan
+    Tiket --> Studio : Di
+    Tiket --> Kursi : Memilih
                 </div>
                 </div>
                 </div>
@@ -1285,42 +1276,26 @@ Kursi --> Tiket : dipilih
                         <div class="mermaid-container">
                             <div class="mermaid">
 flowchart TD
-    Start[Mulai Program] --> Init[Inisialisasi Film, Studio, Kursi, Pembeli]
+    Start[Mulai Pemesanan] --> Input[Pilih Pelanggan Film Studio Jam dan Kursi]
+    Input --> BtnClick[Klik PESAN TIKET]
 
-    Init --> Loop[Ambil Data Pesanan Satu per Satu]
+    BtnClick --> C1{Film Dipilih?}
 
-    Loop --> Select[Ambil Film, Studio, Jam, KursiSelected]
+    C1 -->|Tidak| E1[Alert: Pilih film terlebih dahulu]
+    E1 --> SelesaiNode[Selesai]
 
-    Select --> CheckInput{Film & Studio valid?}
+    C1 -->|Ya| C2{Kursi Dipilih lebih dari 0?}
 
-    CheckInput -->|Tidak| Fail[Pesanan Ditolak] --> Next
+    C2 -->|Tidak| E2[Alert: Pilih minimal 1 kursi]
+    E2 --> SelesaiNode
 
-    CheckInput -->|Ya| SeatLoop[Proses Setiap Kursi dalam KursiSelected]
+    C2 -->|Ya| CalcBase[Hitung Harga Awal]
+    CalcBase --> GenTicket[Generate Tiket]
 
-    SeatLoop --> CheckSeat{Kursi tersedia?}
-
-    CheckSeat -->|Tidak| Skip[Skip Kursi]
-
-    CheckSeat -->|Ya| Book[Pesan Kursi]
-
-    Skip --> MoreSeat{Masih ada kursi lain?}
-    Book --> MoreSeat
-
-    MoreSeat -->|Ya| SeatLoop
-    MoreSeat -->|Tidak| Calc[Hitung Harga = Film × Multiplier Studio]
-
-    Calc --> CreateTicket[Buat Tiket]
-
-    CreateTicket --> Save[Simpan ke Pembeli]
-
-    Save --> Next{Masih ada pesanan?}
-
-    Next -->|Ya| Loop
-    Next -->|Tidak| Report[Buat Laporan Penjualan]
-
-    Report --> Print[Cetak Semua Tiket]
-
-    Print --> End[Selesai]
+    GenTicket --> SaveTicket[Simpan ke daftar tiket dan status kursi dipesan]
+    SaveTicket --> RefreshUI[Panggil renderTiket dan buka tab Tiket Saya]
+    RefreshUI --> ResetState[Panggil resetBooking]
+    ResetState --> SelesaiNode
                             </div>
                         </div>
                     </div>
@@ -1345,7 +1320,6 @@ flowchart TD
     studio: <span class="keyword">Objek</span> Studio
     jam: <span class="keyword">String</span>
     kursiSelected: <span class="keyword">List</span> dari <span class="keyword">String</span>
-    kursi: <span class="keyword">Objek</span> Kursi
     hargaAwal, totalAkhir: <span class="keyword">Integer</span>
     tiket: <span class="keyword">Objek</span> Tiket
 
@@ -1357,11 +1331,6 @@ flowchart TD
         <span class="keyword">SELESAI</span>
     <span class="keyword">AKHIR JIKA</span>
 
-    <span class="keyword">JIKA</span> studio == <span class="keyword">NULL</span> <span class="keyword">MAKA</span>
-        <span class="keyword">TAMPILKAN</span> <span class="string">"Pilih studio terlebih dahulu!"</span>
-        <span class="keyword">SELESAI</span>
-    <span class="keyword">AKHIR JIKA</span>
-
     <span class="keyword">JIKA</span> <span class="keyword">PANJANG</span>(kursiSelected) == <span class="number">0</span> <span class="keyword">MAKA</span>
         <span class="keyword">TAMPILKAN</span> <span class="string">"Pilih minimal 1 kursi!"</span>
         <span class="keyword">SELESAI</span>
@@ -1369,34 +1338,23 @@ flowchart TD
 
     hargaAwal = <span class="number">0</span>
 
-    <span class="keyword">UNTUK SETIAP</span> kodeKursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
-        kursi = CARI_KURSI(kodeKursi)
-
-        <span class="keyword">JIKA</span> kursi.dipesan == <span class="keyword">TRUE</span> <span class="keyword">MAKA</span>
-            <span class="keyword">TAMPILKAN</span> <span class="string">"Kursi sudah dipesan: "</span> + kodeKursi
-        <span class="keyword">LAIN</span>
-            hargaAwal = hargaAwal + film.harga
-            kursi.dipesan = <span class="keyword">TRUE</span>
-        <span class="keyword">AKHIR JIKA</span>
+    <span class="keyword">UNTUK SETIAP</span> kursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
+        hargaAwal = hargaAwal + film.hargaPerTiket
     <span class="keyword">AKHIR UNTUK</span>
 
-    totalAkhir = hargaAwal * studio.multiplier
+    hargaAwal = hargaAwal * studio.multiplier
+    totalAkhir = hargaAwal
 
-    tiket = BUAT_TIKET(
-        pembeli,
-        film,
-        studio,
-        jam,
-        kursiSelected,
-        totalAkhir
-    )
+    tiket = BUAT_TIKET(pembeli, film, studio, jam, kursiSelected, totalAkhir)
+    <span class="keyword">SIMPAN</span> tiket <span class="keyword">KE</span> tiketList
 
-    SIMPAN tiket KE tiketList
+    <span class="keyword">UNTUK SETIAP</span> kursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
+        <span class="keyword">SET</span> kursi.dipesan = <span class="keyword">TRUE</span>
+    <span class="keyword">AKHIR UNTUK</span>
 
-    PANGGIL renderTiket()
-    PANGGIL switchTab(<span class="string">"tiket"</span>)
-    PANGGIL resetBooking()
-
+    <span class="keyword">PANGGIL</span> renderTiket()
+    <span class="keyword">PANGGIL</span> switchTab(<span class="string">"tiket"</span>)
+    <span class="keyword">PANGGIL</span> resetBooking()
 <span class="keyword">SELESAI</span>
     </pre>
 </div>
@@ -1425,6 +1383,8 @@ class Film {
   final String judul, genre;
 
   const Film(this.id, this.judul, this.harga, this.rating, this.genre);
+
+  String info() => "🎬 $judul | $genre | ⭐$rating/5 | Rp$harga";
 }
 
 class Studio {
@@ -1433,16 +1393,19 @@ class Studio {
   final double multiplier;
 
   const Studio(this.id, this.nama, this.multiplier);
+
+  String info() => "🏢 $nama (${multiplier}x)";
 }
 
 class Kursi {
-  final String kode;
-  final Map<String, bool> status = {};
+  final String kode, tipe;
+  final int harga;
+  bool dipesan;
 
-  Kursi(this.kode);
+  Kursi(this.kode, this.harga, this.tipe, {this.dipesan = false});
 
-  bool isTersedia(String key) => status[key] != true;
-  void pesan(String key) => status[key] = true;
+  void pesan() => dipesan = true;
+  void batalPesan() => dipesan = false;
 }
 
 class Pembeli {
@@ -1451,40 +1414,67 @@ class Pembeli {
 
   Pembeli(this.nama);
 
-  void beli(Tiket t) => tiketList.add(t);
+  void beliTiket(Tiket t) => tiketList.add(t);
 }
 
 class Tiket {
-  final String id;
-  final String nama;
-  final String kursi;
-  final int total;
+  final String id, nama, film, studio, kursi, tanggal;
+  final int total, hargaAwal;
 
-  const Tiket(this.id, this.nama, this.kursi, this.total);
+  const Tiket(
+    this.id,
+    this.nama,
+    this.film,
+    this.studio,
+    this.kursi,
+    this.total,
+    this.hargaAwal,
+    this.tanggal,
+  );
 
-  void cetak() {
-    print("$id | $nama | Kursi $kursi | Rp$total");
-  }
+  String cetak() => """
+┌─────────────────────────────────┐
+│        🎟️ TIKET BIOSKOP        │
+├─────────────────────────────────┤
+│ ID:$id | Nama:$nama
+│ Film:$film | Studio:$studio
+│ Kursi:$kursi | Tgl:$tanggal
+│ Harga Awal: Rp$hargaAwal
+│ TOTAL: Rp$total
+└─────────────────────────────────┘
+""";
 }
 
+// ==================== MAIN ====================
 void main() {
+  print("=" * 50);
+  print("   🎬 CINEBOOK - SISTEM TIKET SEDERHANA");
+  print("=" * 50);
+
   final film = [
-    Film(1, "Avengers", 50000, 5, "Action"),
-    Film(2, "Oppenheimer", 60000, 5, "Drama"),
-    Film(3, "Inside Out", 45000, 4, "Animation"),
+    const Film(1, "Avengers: Endgame", 50000, 5, "Action"),
+    const Film(2, "Oppenheimer", 60000, 5, "Drama"),
+    const Film(3, "Inside Out 2", 45000, 4, "Animation"),
   ];
 
   final studio = [
-    Studio(1, "Reguler", 1.0),
-    Studio(2, "VIP", 1.5),
-    Studio(3, "IMAX", 2.0),
+    const Studio(1, "Teater 1 (Reguler)", 1.0),
+    const Studio(2, "Teater 2 (VIP)", 1.5),
+    const Studio(3, "Teater 3 (IMAX)", 2.0),
   ];
 
-  // ✔ FIX: tambah B1–B5 agar tidak error
-  final kursi = [
-    ...List.generate(6, (i) => Kursi("A${i + 1}")),
-    ...List.generate(5, (i) => Kursi("B${i + 1}")),
-  ];
+  final kursi = <Kursi>[];
+  for (final b in ['A', 'B', 'C', 'D', 'E', 'F']) {
+    for (var i = 1; i <= 8; i++) {
+      kursi.add(
+        Kursi(
+          '$b$i',
+          (b == 'A' || b == 'B') ? 45000 : 75000,
+          (b == 'A' || b == 'B') ? 'Reguler' : 'VIP',
+        ),
+      );
+    }
+  }
 
   final pembeli = [
     Pembeli("Azriel"),
@@ -1499,53 +1489,102 @@ void main() {
     Pembeli("Maya"),
   ];
 
+  print("\n📽️ FILM:");
+  for (final f in film) {
+    print(f.info());
+  }
+
+  print("\n📋 PEMESANAN:");
+
   int counter = 1;
 
-  // ================== 10 TRANSAKSI ==================
   final pesanan = [
-    ["Azriel", 0, 0, "19:30", ["A1","A2"]],
-    ["Esti",   0, 0, "19:30", ["A3"]],
-    ["Ratu",   1, 1, "21:00", ["A4"]],
-    ["Alicia", 1, 1, "21:00", ["A5"]],
-    ["Budi",   0, 0, "19:30", ["A6"]],
-    ["Siti",   1, 1, "21:00", ["B1"]],
-    ["Andi",   2, 2, "15:00", ["B2"]],
-    ["Dewi",   2, 2, "15:00", ["B3"]],
-    ["Rizky",  0, 0, "19:30", ["B4"]],
-    ["Maya",   1, 1, "21:00", ["B5"]],
+    ["Azriel", 0, 0, "19:30", ["A1", "A2"]],
+    ["Esti", 0, 0, "19:30", ["A3"]],
+    ["Ratu", 1, 1, "21:00", ["C1", "C2"]],
+    ["Alicia", 1, 1, "21:00", ["C3"]],
+    ["Budi", 0, 0, "19:30", ["B1"]],
+    ["Siti", 1, 1, "21:00", ["D1", "D2"]],
+    ["Andi", 2, 2, "15:00", ["A1", "A2"]],
+    ["Dewi", 2, 2, "15:00", ["A3"]],
+    ["Rizky", 0, 0, "19:30", ["B2"]],
+    ["Maya", 1, 1, "21:00", ["E1"]],
   ];
 
   for (final p in pesanan) {
     final nama = p[0] as String;
     final f = film[p[1] as int];
     final s = studio[p[2] as int];
-    final jam = p[3] as String;
-    final listKursi = (p[4] as List).cast<String>();
+    final kodeKursi = (p[4] as List).cast<String>();
 
-    final pemb = pembeli.firstWhere((x) => x.nama == nama);
+    final beli = pembeli.firstWhere((x) => x.nama == nama);
 
-    for (final k in listKursi) {
-      final kursiObj = kursi.firstWhere((x) => x.kode == k);
+    final dipesan = <Kursi>[];
 
-      if (kursiObj.isTersedia(jam)) {
-        kursiObj.pesan(jam);
-
-        final total = (f.harga * s.multiplier).round();
-
-        final tiket = Tiket(
-          "TIX${counter.toString().padLeft(3, '0')}",
-          nama,
-          k,
-          total,
-        );
-
-        pemb.beli(tiket);
-
-        print("✔ $nama -> ${f.judul} | $k | Rp$total");
-        counter++;
+    for (final k in kodeKursi) {
+      final ks = kursi.firstWhere((x) => x.kode == k);
+      if (!ks.dipesan) {
+        dipesan.add(ks);
       }
     }
+
+    if (dipesan.isEmpty) {
+      print("   ❌ $nama: Gagal (kursi sudah dipesan)");
+      continue;
+    }
+
+    // ==================== FIXED LOGIC ====================
+
+    int hargaAwal = f.harga * dipesan.length;
+    int total = (hargaAwal * s.multiplier).round();
+
+    for (final k in dipesan) {
+      k.pesan();
+    }
+
+    final tiket = Tiket(
+      'TIX${counter.toString().padLeft(3, '0')}',
+      nama,
+      f.judul,
+      s.nama,
+      dipesan.map((k) => k.kode).join(', '),
+      total,
+      hargaAwal,
+      DateTime.now().toString().substring(0, 10),
+    );
+
+    counter++;
+    beli.beliTiket(tiket);
+
+    print("   ✅ $nama: ${f.judul} - ${tiket.kursi} (Rp$total)");
   }
+
+  print("\n🎟️ TIKET:");
+
+  for (final p in pembeli) {
+    for (final t in p.tiketList) {
+      print(t.cetak());
+    }
+  }
+
+  int totalTiket = 0;
+  int totalDana = 0;
+  int totalPembeli = 0;
+
+  for (final p in pembeli) {
+    if (p.tiketList.isNotEmpty) totalPembeli++;
+    for (final t in p.tiketList) {
+      totalTiket++;
+      totalDana += t.total;
+    }
+  }
+
+  print("\n📊 STATISTIK:");
+  print("Total tiket terjual: $totalTiket");
+  print("Total pendapatan: Rp$totalDana");
+  print("Total pembeli aktif: $totalPembeli");
+
+  print("\n🎬 TERIMA KASIH!");
 }</code></pre>
             </div>
         </div>
@@ -2154,7 +2193,5 @@ void main() {
 
 </body>
 </html>
-
-
 
         
