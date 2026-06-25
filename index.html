@@ -1226,47 +1226,94 @@
                         <div class="mermaid">
 classDiagram
     class Film {
-        +int id
-        +String judul
-        +int harga
-        +int rating
-        +String genre
-        +info()
+        -int _id
+        -String _judul
+        -int _harga
+        -int _rating
+        -String _genre
+        +getId() int
+        +getJudul() String
+        +getHarga() int
+        +getRating() int
+        +getGenre() String
+        +info() String
     }
+
     class Studio {
-        +int id
-        +String nama
-        +double multiplier
-        +info()
+        -int _id
+        -String _nama
+        -double _multiplier
+        +getId() int
+        +getNama() String
+        +getMultiplier() double
+        +info() String
     }
+
     class Kursi {
-        +String kode
-        +bool dipesan
-        +int harga
-        +String tipe
-        +pesan()
-        +batalPesan()
+        -String _kode
+        -String _tipe
+        -int _harga
+        -bool _dipesan
+        +getKode() String
+        +getTipe() String
+        +getHarga() int
+        +getDipesan() bool
+        +pesan() void
+        +batalPesan() void
     }
+
     class Pembeli {
-        +String nama
-        +List tiketList
-        +beliTiket()
+        -String _nama
+        -List~Tiket~ _tiketList
+        +getNama() String
+        +getTiketList() List~Tiket~
+        +beliTiket(Tiket) void
     }
+
     class Tiket {
-        +String id
-        +String nama
-        +String film
-        +String studio
-        +String kursi
-        +int total
-        +int hargaAwal
-        +String tanggal
-        +cetak()
+        -String _id
+        -String _namaPembeli
+        -String _judulFilm
+        -String _namaStudio
+        -String _kodeKursi
+        -int _total
+        -int _hargaAwal
+        -String _tanggal
+        +getId() String
+        +getNamaPembeli() String
+        +getJudulFilm() String
+        +getNamaStudio() String
+        +getKodeKursi() String
+        +getTotal() int
+        +getHargaAwal() int
+        +getTanggal() String
+        +cetak() String
     }
-    Pembeli --> Tiket : Memiliki
-    Tiket --> Film : Memesan
-    Tiket --> Studio : Di
-    Tiket --> Kursi : Memilih
+
+    class CineBookSystem {
+        -List~Film~ _filmList
+        -List~Studio~ _studioList
+        -List~Kursi~ _kursiList
+        -List~Pembeli~ _pembeliList
+        +getFilms() List~Film~
+        +getStudios() List~Studio~
+        +getKursi() List~Kursi~
+        +getPembeli() List~Pembeli~
+        +printDaftarFilm() void
+        +prosesBooking() bool
+        +cetakSemuaTiket() void
+        +cetakStatistik() void
+    }
+
+    %% Relasi (sesuai kode)
+    CineBookSystem "1" --> "*" Film : mengelola
+    CineBookSystem "1" --> "*" Studio : mengelola
+    CineBookSystem "1" --> "*" Kursi : mengelola
+    CineBookSystem "1" --> "*" Pembeli : mengelola
+    Pembeli "1" --> "*" Tiket : memiliki
+    Tiket ..> Film : menyimpan informasi
+    Tiket ..> Studio : menyimpan informasi
+    Tiket ..> Kursi : menyimpan informasi
                 </div>
                 </div>
                 </div>
