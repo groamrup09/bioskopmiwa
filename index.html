@@ -607,7 +607,7 @@
             }
         }
 
-       
+
 
         /* ==================== TABS ==================== */
         .tabs {
@@ -1073,6 +1073,8 @@
             <div class="film-grid" id="filmGrid"></div>
         </div>
 
+        
+
         <div class="simulator-panel">
             <h2>📌 CARA BOOKING</h2>
             <ol style="padding-left:20px; color:#aaa; line-height:2;">
@@ -1136,6 +1138,8 @@
                     </div>
                 </div>
             </div>
+
+
 
             <!-- RINGKASAN -->
             <div class="summary" id="bookingSummary">
@@ -1278,20 +1282,14 @@ classDiagram
 flowchart TD
     Start[Mulai Pemesanan] --> Input[Pilih Pelanggan Film Studio Jam dan Kursi]
     Input --> BtnClick[Klik PESAN TIKET]
-
     BtnClick --> C1{Film Dipilih?}
-
-    C1 -->|Tidak| E1[Alert: Pilih film terlebih dahulu]
+    C1 -->|Tidak| E1[Alert Pilih film terlebih dahulu]
     E1 --> SelesaiNode[Selesai]
-
     C1 -->|Ya| C2{Kursi Dipilih lebih dari 0?}
-
-    C2 -->|Tidak| E2[Alert: Pilih minimal 1 kursi]
+    C2 -->|Tidak| E2[Alert Pilih minimal 1 kursi]
     E2 --> SelesaiNode
-
     C2 -->|Ya| CalcBase[Hitung Harga Awal]
-    CalcBase --> GenTicket[Generate Tiket]
-
+    CalcBase --> GenTicket[Buat Objek Tiket dengan ID Unik]
     GenTicket --> SaveTicket[Simpan ke daftar tiket dan status kursi dipesan]
     SaveTicket --> RefreshUI[Panggil renderTiket dan buka tab Tiket Saya]
     RefreshUI --> ResetState[Panggil resetBooking]
@@ -1299,21 +1297,18 @@ flowchart TD
                             </div>
                         </div>
                     </div>
-                   <div class="pseudocode-wrapper">
-    <div class="pseudocode-header">
-        <div class="dots">
-            <span class="dot red"></span>
-            <span class="dot yellow"></span>
-            <span class="dot green"></span>
-        </div>
-        <div class="title">📋 Pseudocode Pemesanan Tiket</div>
-        <div style="width: 42px;"></div>
-    </div>
-
-    <pre>
-<span class="comment">// Algoritma Pemesanan Tiket CineBook</span>
+                    <div class="pseudocode-wrapper">
+                        <div class="pseudocode-header">
+                            <div class="dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="title">📋 Pseudocode Pemesanan Tiket</div>
+                            <div style="width: 42px;"></div>
+                        </div>
+                        <pre><span class="comment">// Algoritma Pemesanan Tiket CineBook</span>
 <span class="keyword">ALGORITMA</span> PemesananTiket
-
 <span class="keyword">DEKLARASI</span>:
     pembeli: <span class="keyword">String</span>
     film: <span class="keyword">Objek</span> Film
@@ -1325,29 +1320,28 @@ flowchart TD
 
 <span class="keyword">MULAI</span>:
     <span class="keyword">BACA</span> pembeli, film, studio, jam, kursiSelected
-
+    
     <span class="keyword">JIKA</span> film == <span class="keyword">NULL</span> <span class="keyword">MAKA</span>
         <span class="keyword">TAMPILKAN</span> <span class="string">"Pilih film terlebih dahulu!"</span>
-        <span class="keyword">SELESAI</span>
+        <span class="keyword">KELUAR</span>
     <span class="keyword">AKHIR JIKA</span>
 
     <span class="keyword">JIKA</span> <span class="keyword">PANJANG</span>(kursiSelected) == <span class="number">0</span> <span class="keyword">MAKA</span>
         <span class="keyword">TAMPILKAN</span> <span class="string">"Pilih minimal 1 kursi!"</span>
-        <span class="keyword">SELESAI</span>
+        <span class="keyword">KELUAR</span>
     <span class="keyword">AKHIR JIKA</span>
 
     hargaAwal = <span class="number">0</span>
-
     <span class="keyword">UNTUK SETIAP</span> kursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
-        hargaAwal = hargaAwal + film.hargaPerTiket
+        hargaAwal = hargaAwal + kursi.harga
     <span class="keyword">AKHIR UNTUK</span>
-
+    
     hargaAwal = hargaAwal * studio.multiplier
     totalAkhir = hargaAwal
 
     tiket = BUAT_TIKET(pembeli, film, studio, jam, kursiSelected, totalAkhir)
     <span class="keyword">SIMPAN</span> tiket <span class="keyword">KE</span> tiketList
-
+    
     <span class="keyword">UNTUK SETIAP</span> kursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
         <span class="keyword">SET</span> kursi.dipesan = <span class="keyword">TRUE</span>
     <span class="keyword">AKHIR UNTUK</span>
@@ -1355,13 +1349,14 @@ flowchart TD
     <span class="keyword">PANGGIL</span> renderTiket()
     <span class="keyword">PANGGIL</span> switchTab(<span class="string">"tiket"</span>)
     <span class="keyword">PANGGIL</span> resetBooking()
-<span class="keyword">SELESAI</span>
-    </pre>
-</div>
+<span class="keyword">SELESAI</span></pre>
+                    </div>
                 </div>
             </div>
+
+            </div>
         </div>
-    </div>
+
     <!-- ============================================================ -->
     <!-- TAB: SOURCE CODE -->
     <!-- ============================================================ -->
@@ -1376,219 +1371,321 @@ flowchart TD
                     <button class="btn-copy" onclick="copyCode('code-dart')">COPY CODE</button>
                 </div>
                 <pre><code id="code-dart">// ==================== CINEBOOK - SI2A ====================
-// Nama: Azriel Miracle Yuandre & Esti Anggraini
+// Nama: Azriel Miracle Yuandre &amp; Esti Anggraini
 
 class Film {
-  final int id, harga, rating;
-  final String judul, genre;
+  final int _id;
+  final String _judul;
+  final int _harga;
+  final int _rating;
+  final String _genre;
 
-  const Film(this.id, this.judul, this.harga, this.rating, this.genre);
+  const Film(this._id, this._judul, this._harga, this._rating, this._genre);
 
-  String info() => "🎬 $judul | $genre | ⭐$rating/5 | Rp$harga";
+  int get id =&gt; _id;
+  String get judul =&gt; _judul;
+  int get harga =&gt; _harga;
+  int get rating =&gt; _rating;
+  String get genre =&gt; _genre;
+
+  String info() =&gt; &quot;🎬 $_judul | $_genre | ⭐$_rating/5 | Rp$_harga&quot;;
 }
 
 class Studio {
-  final int id;
-  final String nama;
-  final double multiplier;
+  final int _id;
+  final String _nama;
+  final double _multiplier;
 
-  const Studio(this.id, this.nama, this.multiplier);
+  const Studio(this._id, this._nama, this._multiplier);
 
-  String info() => "🏢 $nama (${multiplier}x)";
+  int get id =&gt; _id;
+  String get nama =&gt; _nama;
+  double get multiplier =&gt; _multiplier;
+
+  String info() =&gt; &quot;🏢 $_nama (${_multiplier}x)&quot;;
 }
 
 class Kursi {
-  final String kode, tipe;
-  final int harga;
-  bool dipesan;
+  final String _kode;
+  final String _tipe;
+  final int _harga;
+  bool _dipesan;
 
-  Kursi(this.kode, this.harga, this.tipe, {this.dipesan = false});
+  Kursi(this._kode, this._harga, this._tipe, {bool dipesan = false}) : _dipesan = dipesan;
 
-  void pesan() => dipesan = true;
-  void batalPesan() => dipesan = false;
+  String get kode =&gt; _kode;
+  String get tipe =&gt; _tipe;
+  int get harga =&gt; _harga;
+  bool get dipesan =&gt; _dipesan;
+
+  void pesan() =&gt; _dipesan = true;
+  void batalPesan() =&gt; _dipesan = false;
 }
 
 class Pembeli {
-  final String nama;
-  final List<Tiket> tiketList = [];
+  final String _nama;
+  final List&lt;Tiket&gt; _tiketList = [];
 
-  Pembeli(this.nama);
+  Pembeli(this._nama);
 
-  void beliTiket(Tiket t) => tiketList.add(t);
+  String get nama =&gt; _nama;
+  List&lt;Tiket&gt; get tiketList =&gt; List.unmodifiable(_tiketList);
+
+  void beliTiket(Tiket t) =&gt; _tiketList.add(t);
 }
 
 class Tiket {
-  final String id, nama, film, studio, kursi, tanggal;
-  final int total, hargaAwal;
+  final String _id;
+  final String _namaPembeli;
+  final String _judulFilm;
+  final String _namaStudio;
+  final String _kodeKursi;
+  final int _total;
+  final int _hargaAwal;
+  final String _tanggal;
 
   const Tiket(
-    this.id,
-    this.nama,
-    this.film,
-    this.studio,
-    this.kursi,
-    this.total,
-    this.hargaAwal,
-    this.tanggal,
+    this._id,
+    this._namaPembeli,
+    this._judulFilm,
+    this._namaStudio,
+    this._kodeKursi,
+    this._total,
+    this._hargaAwal,
+    this._tanggal,
   );
 
-  String cetak() => """
+  String get id =&gt; _id;
+  String get namaPembeli =&gt; _namaPembeli;
+  String get judulFilm =&gt; _judulFilm;
+  String get namaStudio =&gt; _namaStudio;
+  String get kodeKursi =&gt; _kodeKursi;
+  int get total =&gt; _total;
+  int get hargaAwal =&gt; _hargaAwal;
+  String get tanggal =&gt; _tanggal;
+
+  String cetak() =&gt; &quot;&quot;&quot;
 ┌─────────────────────────────────┐
 │        🎟️ TIKET BIOSKOP        │
 ├─────────────────────────────────┤
-│ ID:$id | Nama:$nama
-│ Film:$film | Studio:$studio
-│ Kursi:$kursi | Tgl:$tanggal
-│ Harga Awal: Rp$hargaAwal
-│ TOTAL: Rp$total
+│ ID:$_id | Nama:$_namaPembeli
+│ Film:$_judulFilm | Studio:$_namaStudio
+│ Kursi:$_kodeKursi | Tgl:$_tanggal
+│ Harga Awal: Rp$_hargaAwal
+│ TOTAL: Rp$_total
 └─────────────────────────────────┘
-""";
+&quot;&quot;&quot;;
 }
 
-// ==================== MAIN ====================
-void main() {
-  print("=" * 50);
-  print("   🎬 CINEBOOK - SISTEM TIKET BIOSKOP");
-  print("=" * 50);
+class CineBookSystem {
+  final List&lt;Film&gt; _filmList = [];
+  final List&lt;Studio&gt; _studioList = [];
+  final List&lt;Kursi&gt; _kursiList = [];
+  final List&lt;Pembeli&gt; _pembeliList = [];
 
-  final film = [
-    const Film(1, "Avengers: Endgame", 50000, 5, "Action"),
-    const Film(2, "Oppenheimer", 60000, 5, "Drama"),
-    const Film(3, "Inside Out 2", 45000, 4, "Animation"),
-  ];
-
-  final studio = [
-    const Studio(1, "Teater 1 (Reguler)", 1.0),
-    const Studio(2, "Teater 2 (VIP)", 1.5),
-    const Studio(3, "Teater 3 (IMAX)", 2.0),
-  ];
-
-  final kursi = <Kursi>[];
-
-  for (final b in ['A', 'B', 'C', 'D', 'E', 'F']) {
-    for (var i = 1; i <= 8; i++) {
-      kursi.add(
-        Kursi(
-          '$b$i',
-          (b == 'A' || b == 'B') ? 45000 : 75000,
-          (b == 'A' || b == 'B') ? 'Reguler' : 'VIP',
-        ),
-      );
-    }
+  CineBookSystem() {
+    _initData();
   }
 
-  final pembeli = [
-    Pembeli("Azriel"),
-    Pembeli("Esti"),
-    Pembeli("Ratu"),
-    Pembeli("Alicia"),
-    Pembeli("Budi"),
-    Pembeli("Siti"),
-    Pembeli("Andi"),
-    Pembeli("Dewi"),
-    Pembeli("Rizky"),
-    Pembeli("Maya"),
-  ];
+  void _initData() {
+    _filmList.addAll([
+      const Film(1, &quot;Avengers: Endgame&quot;, 50000, 5, &quot;Action&quot;),
+      const Film(2, &quot;Oppenheimer&quot;, 60000, 5, &quot;Drama&quot;),
+      const Film(3, &quot;Inside Out 2&quot;, 45000, 4, &quot;Animation&quot;),
+    ]);
 
-  print("\n📽️ FILM:");
-  for (final f in film) {
-    print(f.info());
-  }
+    _studioList.addAll([
+      const Studio(1, &quot;Teater 1 (Reguler)&quot;, 1.0),
+      const Studio(2, &quot;Teater 2 (VIP)&quot;, 1.5),
+      const Studio(3, &quot;Teater 3 (IMAX)&quot;, 2.0),
+    ]);
 
-  print("\n📋 PEMESANAN:");
-
-  int counter = 1;
-
-  final pesanan = [
-    ["Azriel", 0, 0, "19:30", ["A1", "A2"]],
-    ["Esti", 0, 0, "19:30", ["A3"]],
-    ["Ratu", 1, 1, "21:00", ["C1", "C2"]],
-    ["Alicia", 1, 1, "21:00", ["C3"]],
-    ["Budi", 0, 0, "19:30", ["B1"]],
-    ["Siti", 1, 1, "21:00", ["D1", "D2"]],
-    ["Andi", 2, 2, "15:00", ["A1", "A2"]],
-    ["Dewi", 2, 2, "15:00", ["A3"]],
-    ["Rizky", 0, 0, "19:30", ["B2"]],
-    ["Maya", 1, 1, "21:00", ["E1"]],
-  ];
-
-  for (final p in pesanan) {
-    final nama = p[0] as String;
-    final f = film[p[1] as int];
-    final s = studio[p[2] as int];
-    final kodeKursi = (p[4] as List).cast<String>();
-
-    final beli = pembeli.firstWhere((x) => x.nama == nama);
-
-    final dipesan = <Kursi>[];
-
-    for (final k in kodeKursi) {
-      final ks = kursi.firstWhere((x) => x.kode == k);
-      if (!ks.dipesan) {
-        dipesan.add(ks);
+    for (final b in [&#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;, &#x27;D&#x27;, &#x27;E&#x27;, &#x27;F&#x27;]) {
+      for (var i = 1; i &lt;= 8; i++) {
+        _kursiList.add(
+          Kursi(
+            &#x27;$b$i&#x27;,
+            (b == &#x27;A&#x27; || b == &#x27;B&#x27;) ? 45000 : 75000,
+            (b == &#x27;A&#x27; || b == &#x27;B&#x27;) ? &#x27;Reguler&#x27; : &#x27;VIP&#x27;,
+          ),
+        );
       }
     }
 
-    if (dipesan.isEmpty) {
-      print("   ❌ $nama: Gagal (kursi sudah dipesan)");
-      continue;
+    _pembeliList.addAll([
+      Pembeli(&quot;Azriel&quot;),
+      Pembeli(&quot;Esti&quot;),
+      Pembeli(&quot;Ratu&quot;),
+      Pembeli(&quot;Alicia&quot;),
+      Pembeli(&quot;Budi&quot;),
+      Pembeli(&quot;Siti&quot;),
+      Pembeli(&quot;Andi&quot;),
+      Pembeli(&quot;Dewi&quot;),
+      Pembeli(&quot;Rizky&quot;),
+      Pembeli(&quot;Maya&quot;),
+    ]);
+  }
+
+  List&lt;Film&gt; get films =&gt; List.unmodifiable(_filmList);
+  List&lt;Studio&gt; get studios =&gt; List.unmodifiable(_studioList);
+  List&lt;Kursi&gt; get kursi =&gt; List.unmodifiable(_kursiList);
+  List&lt;Pembeli&gt; get pembeli =&gt; List.unmodifiable(_pembeliList);
+
+  void printDaftarFilm() {
+    print(&quot;
+📽️ FILM:&quot;);
+    for (final f in _filmList) {
+      print(f.info());
+    }
+  }
+
+  bool prosesBooking({
+    required String namaPembeli,
+    required int filmIndex,
+    required int studioIndex,
+    required List&lt;String&gt; kodeKursiList,
+    required String ticketId,
+  }) {
+    final pembeliObj = _pembeliList.firstWhere(
+      (x) =&gt; x.nama == namaPembeli,
+      orElse: () =&gt; throw Exception(&quot;Pembeli tidak ditemukan: $namaPembeli&quot;),
+    );
+
+    if (filmIndex &lt; 0 || filmIndex &gt;= _filmList.length) return false;
+    if (studioIndex &lt; 0 || studioIndex &gt;= _studioList.length) return false;
+
+    final filmObj = _filmList[filmIndex];
+    final studioObj = _studioList[studioIndex];
+
+    final dipesanList = &lt;Kursi&gt;[];
+    for (final k in kodeKursiList) {
+      final ks = _kursiList.firstWhere(
+        (x) =&gt; x.kode == k,
+        orElse: () =&gt; throw Exception(&quot;Kursi $k tidak ditemukan&quot;),
+      );
+      if (!ks.dipesan) {
+        dipesanList.add(ks);
+      }
     }
 
+    if (dipesanList.isEmpty || dipesanList.length != kodeKursiList.length) {
+      print(&quot;   ❌ $namaPembeli: Gagal (kursi sudah dipesan)&quot;);
+      return false;
+    }
 
-    int hargaAwal = f.harga * dipesan.length;
+    // Hitung harga awal: (harga film + harga kursi) untuk setiap tiket
+    int hargaAwal = 0;
+    for (final k in dipesanList) {
+      hargaAwal += filmObj.harga + k.harga;
+    }
 
-    int total = ((hargaAwal * s.multiplier).round()).toInt();
+    // Terapkan multiplier studio
+    int totalAkhir = (hargaAwal * studioObj.multiplier).round();
 
-    for (final k in dipesan) {
+    for (final k in dipesanList) {
       k.pesan();
     }
 
     final tiket = Tiket(
-      'TIX${counter.toString().padLeft(3, '0')}',
-      nama,
-      f.judul,
-      s.nama,
-      dipesan.map((k) => k.kode).join(', '),
-      total,
+      ticketId,
+      pembeliObj.nama,
+      filmObj.judul,
+      studioObj.nama,
+      dipesanList.map((k) =&gt; k.kode).join(&#x27;, &#x27;),
+      totalAkhir,
       hargaAwal,
       DateTime.now().toString().substring(0, 10),
     );
 
-    counter++;
-    beli.beliTiket(tiket);
-
-    print("   ✅ $nama: ${f.judul} - ${tiket.kursi} (Rp$total)");
+    pembeliObj.beliTiket(tiket);
+    print(&quot;   ✅ $namaPembeli: ${filmObj.judul} - ${tiket.kodeKursi} (Rp$totalAkhir)&quot;);
+    return true;
   }
 
-  print("\n🎟️ TIKET:");
-
-  for (final p in pembeli) {
-    for (final t in p.tiketList) {
-      print(t.cetak());
+  void cetakSemuaTiket() {
+    print(&quot;
+🎟️ TIKET:&quot;);
+    for (final p in _pembeliList) {
+      for (final t in p.tiketList) {
+        print(t.cetak());
+      }
     }
   }
 
+  void cetakStatistik() {
+    int totalTiket = 0;
+    num totalDana = 0;
+    int totalPembeliAktif = 0;
 
-  num totalDana = 0; // FIX: num instead of int
+    for (final p in _pembeliList) {
+      if (p.tiketList.isNotEmpty) {
+        totalPembeliAktif++;
+        totalTiket += p.tiketList.length;
+        for (final t in p.tiketList) {
+          totalDana += t.total;
+        }
+      }
+    }
 
-  int totalTiket = 0;
-  int totalPembeli = 0;
+    print(&quot;
+📊 STATISTIK:&quot;);
+    print(&quot;Total tiket terjual: $totalTiket&quot;);
+    print(&quot;Total pendapatan: Rp$totalDana&quot;);
+    print(&quot;Total pembeli aktif: $totalPembeliAktif&quot;);
+  }
+}
 
-  for (final p in pembeli) {
-    if (p.tiketList.isNotEmpty) totalPembeli++;
+void main() {
+  print(&quot;=&quot; * 50);
+  print(&quot;   🎬 CINEBOOK - SISTEM TIKET BIOSKOP (OOP SOLID)&quot;);
+  print(&quot;=&quot; * 50);
 
-    for (final t in p.tiketList) {
-      totalTiket++;
-      totalDana += t.total;
+  final system = CineBookSystem();
+  system.printDaftarFilm();
+
+  print(&quot;
+📋 PEMESANAN:&quot;);
+
+  final pesanan = [
+    [&quot;Azriel&quot;, 0, 0, &quot;19:30&quot;, [&quot;A1&quot;, &quot;A2&quot;]],
+    [&quot;Esti&quot;, 0, 0, &quot;19:30&quot;, [&quot;A3&quot;]],
+    [&quot;Ratu&quot;, 1, 1, &quot;21:00&quot;, [&quot;C1&quot;, &quot;C2&quot;]],
+    [&quot;Alicia&quot;, 1, 1, &quot;21:00&quot;, [&quot;C3&quot;]],
+    [&quot;Budi&quot;, 0, 0, &quot;19:30&quot;, [&quot;B1&quot;]],
+    [&quot;Siti&quot;, 1, 1, &quot;21:00&quot;, [&quot;D1&quot;, &quot;D2&quot;]],
+    [&quot;Andi&quot;, 2, 2, &quot;15:00&quot;, [&quot;A1&quot;, &quot;A2&quot;]],
+    [&quot;Dewi&quot;, 2, 2, &quot;15:00&quot;, [&quot;A3&quot;]],
+    [&quot;Rizky&quot;, 0, 0, &quot;19:30&quot;, [&quot;B2&quot;]],
+    [&quot;Maya&quot;, 1, 1, &quot;21:00&quot;, [&quot;E1&quot;]],
+  ];
+
+  int counter = 1;
+  for (final p in pesanan) {
+    final nama = p[0] as String;
+    final filmIndex = p[1] as int;
+    final studioIndex = p[2] as int;
+    final kodeKursi = List&lt;String&gt;.from(p[4] as List);
+
+    final ticketId = &#x27;TIX${counter.toString().padLeft(3, &#x27;0&#x27;)}&#x27;;
+    
+    final sukses = system.prosesBooking(
+      namaPembeli: nama,
+      filmIndex: filmIndex,
+      studioIndex: studioIndex,
+      kodeKursiList: kodeKursi,
+      ticketId: ticketId,
+    );
+
+    if (sukses) {
+      counter++;
     }
   }
 
-  print("\n📊 STATISTIK:");
-  print("Total tiket terjual: $totalTiket");
-  print("Total pendapatan: Rp$totalDana");
-  print("Total pembeli aktif: $totalPembeli");
+  system.cetakSemuaTiket();
+  system.cetakStatistik();
 
-  print("\n🎬 TERIMA KASIH!");
+  print(&quot;
+🎬 TERIMA KASIH!&quot;);
 }</code></pre>
             </div>
         </div>
@@ -1640,407 +1737,506 @@ void main() {
 
 <script>
     // ========================================================================
-    // DATA
+    // MODEL CLASS (OOP SOLID)
     // ========================================================================
-    let films = [
-        { id: 1, judul: "Avengers: Endgame", emoji: "🦸", genre: "Action", rating: 5, harga: 50000 },
-        { id: 2, judul: "Oppenheimer", emoji: "💣", genre: "Drama", rating: 5, harga: 60000 },
-        { id: 3, judul: "Inside Out 2", emoji: "😊", genre: "Animation", rating: 4, harga: 45000 },
-        { id: 4, judul: "Spider-Man", emoji: "🕷️", genre: "Action", rating: 5, harga: 50000 },
-        { id: 5, judul: "Joker 2", emoji: "🤡", genre: "Drama", rating: 4, harga: 55000 },
-    ];
-
-    let studios = [
-        { nama: "Teater 1 (Reguler)", multiplier: 1.0 },
-        { nama: "Teater 2 (VIP)", multiplier: 1.5 },
-        { nama: "Teater 3 (IMAX)", multiplier: 2.0 },
-    ];
-
-    let tiketList = [];
-
-    let pembeliList = [
-        "Azriel", "Esti", "Ratu", "Alicia", "Budi",
-        "Siti", "Andi", "Dewi", "Rizky", "Maya",
-        "Doni", "Nina", "Fajar", "Lina", "Rizki"
-    ];
-
-    // ========================================================================
-    // STATE BOOKING
-    // ========================================================================
-    let selectedPembeli = "Azriel";
-    let selectedFilm = null;
-    let selectedStudio = 0;
-    let selectedTime = "19:30";
-    let selectedSeats = [];
-    let kursiData = [];
-
-    // ========================================================================
-    // FUNGSI BANTUAN
-    // ========================================================================
-    function log(msg, type = "info") {
-        const container = document.getElementById('logContainer');
-        const div = document.createElement('div');
-        div.className = `log-line ${type}`;
-        div.textContent = msg;
-        container.appendChild(div);
-        container.scrollTop = container.scrollHeight;
-    }
-
-    function clearLog() {
-        document.getElementById('logContainer').innerHTML = `
-            <div class="log-line info">>>> LOG DI-BERSIHKAN <<<</div>
-            <div class="log-line dim">Silakan mulai booking...</div>
-        `;
-    }
-
-    function alertMessage(msg, type = "success") {
-        log(`>>> ${msg}`, type);
-    }
-
-    function switchTab(tab) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(`tab-${tab}`).classList.add('active');
-        document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
-        if (tab === 'tiket') renderTiket();
-        if (tab === 'laporan') renderLaporan();
-    }
-
-    // ========================================================================
-    // RENDER FUNGSI
-    // ========================================================================
-    function renderFilms() {
-        const grid = document.getElementById('filmGrid');
-        grid.innerHTML = films.map(f => `
-            <div class="film-card">
-                <span class="type-badge regular">🎬 ${f.genre}</span>
-                <div class="judul">${f.emoji} ${f.judul}</div>
-                <div class="info-row"><span class="label">Rating</span><span class="value gold">⭐ ${f.rating}/5</span></div>
-                <div class="info-row"><span class="label">Harga</span><span class="value gold">Rp ${f.harga.toLocaleString()}</span></div>
-                <div class="aksi">
-                    <button class="btn btn-primary btn-small" onclick="pilihFilmDariHome(${f.id})">🎬 Booking</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function renderPembeli() {
-        const grid = document.getElementById('pembeliGrid');
-        grid.innerHTML = pembeliList.map(nama => `
-            <div class="pembeli-card ${selectedPembeli === nama ? 'active' : ''}" onclick="pilihPembeli('${nama}')">
-                <div class="nama">👤 ${nama}</div>
-                <div class="email">${nama.toLowerCase()}@cinebook.com</div>
-                <div class="tiket-count active">Tiket: 0</div>
-            </div>
-        `).join('');
-    }
-
-    function renderBookingFilms() {
-        const grid = document.getElementById('bookingFilmGrid');
-        grid.innerHTML = films.map(f => `
-            <div class="film-card ${selectedFilm?.id === f.id ? 'selected' : ''}" style="${selectedFilm?.id === f.id ? 'border-color:#FFD700;background:rgba(255,215,0,0.05);' : ''}" onclick="pilihFilmBooking(${f.id})">
-                <div style="font-size:30px;">${f.emoji}</div>
-                <div class="judul" style="font-size:14px;">${f.judul}</div>
-                <div class="info-row"><span class="label">Harga</span><span class="value gold">Rp ${f.harga.toLocaleString()}</span></div>
-            </div>
-        `).join('');
-    }
-
-    // ========================================================================
-    // SEAT MAP
-    // ========================================================================
-    function initSeats() {
-        const rows = ["A", "B", "C", "D", "E", "F"];
-        kursiData = [];
-        for (let r of rows) {
-            for (let i = 1; i <= 8; i++) {
-                let kode = r + i;
-                let harga = (r === "A" || r === "B") ? 45000 : 75000;
-                let booked = (r === "C" && i === 3) || (r === "D" && i === 5) || (r === "B" && i === 4);
-                kursiData.push({ kode, harga, dipesan: booked, tipe: (r === "A" || r === "B") ? "Reguler" : "VIP" });
-            }
+    class Film {
+        constructor(id, judul, emoji, genre, rating, harga) {
+            this._id = id;
+            this._judul = judul;
+            this._emoji = emoji;
+            this._genre = genre;
+            this._rating = rating;
+            this._harga = harga;
         }
-        selectedSeats = [];
-        renderSeats();
-        updateSummary();
+        get id() { return this._id; }
+        get judul() { return this._judul; }
+        get emoji() { return this._emoji; }
+        get genre() { return this._genre; }
+        get rating() { return this._rating; }
+        get harga() { return this._harga; }
     }
 
-    function renderSeats() {
-        const map = document.getElementById('seatMap');
-        const rows = ["A", "B", "C", "D", "E", "F"];
-        let html = '';
-        for (let r of rows) {
-            html += `<div class="seat-row"><div class="seat-row-label">${r}</div>`;
-            for (let i = 1; i <= 8; i++) {
-                let kode = r + i;
-                let data = kursiData.find(k => k.kode === kode);
-                let isSelected = selectedSeats.includes(kode);
-                if (data.dipesan) {
-                    html += `<div class="seat booked" title="Kursi ${kode} sudah dipesan">${kode}</div>`;
-                } else {
-                    let kelas = 'seat available';
-                    if (isSelected) kelas = 'seat selected';
-                    if (data.tipe === 'VIP') kelas += ' vip';
-                    html += `<div class="${kelas}" onclick="toggleSeat('${kode}')">${kode}</div>`;
+    class Studio {
+        constructor(id, nama, multiplier) {
+            this._id = id;
+            this._nama = nama;
+            this._multiplier = multiplier;
+        }
+        get id() { return this._id; }
+        get nama() { return this._nama; }
+        get multiplier() { return this._multiplier; }
+    }
+
+    class Kursi {
+        constructor(kode, harga, tipe, dipesan = false) {
+            this._kode = kode;
+            this._harga = harga;
+            this._tipe = tipe;
+            this._dipesan = dipesan;
+        }
+        get kode() { return this._kode; }
+        get harga() { return this._harga; }
+        get tipe() { return this._tipe; }
+        get dipesan() { return this._dipesan; }
+        pesan() { this._dipesan = true; }
+        batalPesan() { this._dipesan = false; }
+    }
+
+    class Pembeli {
+        constructor(nama) {
+            this._nama = nama;
+            this._tiketList = [];
+        }
+        get nama() { return this._nama; }
+        get tiketList() { return this._tiketList; }
+        beliTiket(tiket) { this._tiketList.push(tiket); }
+    }
+
+    class Tiket {
+        constructor(id, namaPembeli, judulFilm, emoji, namaStudio, jamTayang, kodeKursi, total, hargaAwal, tanggal) {
+            this._id = id;
+            this._namaPembeli = namaPembeli;
+            this._judulFilm = judulFilm;
+            this._emoji = emoji;
+            this._namaStudio = namaStudio;
+            this._jamTayang = jamTayang;
+            this._kodeKursi = kodeKursi;
+            this._total = total;
+            this._hargaAwal = hargaAwal;
+            this._tanggal = tanggal;
+        }
+        get id() { return this._id; }
+        get namaPembeli() { return this._namaPembeli; }
+        get judulFilm() { return this._judulFilm; }
+        get emoji() { return this._emoji; }
+        get namaStudio() { return this._namaStudio; }
+        get jamTayang() { return this._jamTayang; }
+        get kodeKursi() { return this._kodeKursi; }
+        get total() { return this._total; }
+        get hargaAwal() { return this._hargaAwal; }
+        get tanggal() { return this._tanggal; }
+    }
+
+    // ========================================================================
+    // SYSTEM COORDINATOR (OOP SOLID)
+    // ========================================================================
+    class CineBookSystem {
+        constructor() {
+            this._films = [];
+            this._studios = [];
+            this._kursiData = [];
+            this._pembeliList = [];
+            this._tiketList = [];
+
+            // UI States
+            this._selectedPembeli = "Azriel";
+            this._selectedFilm = null;
+            this._selectedStudioIndex = 0;
+            this._selectedTime = "19:30";
+            this._selectedSeats = [];
+        }
+
+        get films() { return this._films; }
+        get studios() { return this._studios; }
+        get kursiData() { return this._kursiData; }
+        get pembeliList() { return this._pembeliList; }
+        get tiketList() { return this._tiketList; }
+        
+        get selectedPembeli() { return this._selectedPembeli; }
+        set selectedPembeli(val) { this._selectedPembeli = val; }
+        
+        get selectedFilm() { return this._selectedFilm; }
+        set selectedFilm(val) { this._selectedFilm = val; }
+        
+        get selectedStudioIndex() { return this._selectedStudioIndex; }
+        set selectedStudioIndex(val) { this._selectedStudioIndex = val; }
+        
+        get selectedTime() { return this._selectedTime; }
+        set selectedTime(val) { this._selectedTime = val; }
+        
+        get selectedSeats() { return this._selectedSeats; }
+        set selectedSeats(val) { this._selectedSeats = val; }
+
+        initData() {
+            this._films = [
+                new Film(1, "Avengers: Endgame", "🦸", "Action", 5, 50000),
+                new Film(2, "Oppenheimer", "💣", "Drama", 5, 60000),
+                new Film(3, "Inside Out 2", "😊", "Animation", 4, 45000),
+                new Film(4, "Spider-Man", "🕷️", "Action", 5, 50000),
+                new Film(5, "Joker 2", "🤡", "Drama", 4, 55000)
+            ];
+
+            this._studios = [
+                new Studio(1, "Teater 1 (Reguler)", 1.0),
+                new Studio(2, "Teater 2 (VIP)", 1.5),
+                new Studio(3, "Teater 3 (IMAX)", 2.0)
+            ];
+
+            const rows = ["A", "B", "C", "D", "E", "F"];
+            this._kursiData = [];
+            for (let r of rows) {
+                for (let i = 1; i <= 8; i++) {
+                    let kode = r + i;
+                    let harga = (r === "A" || r === "B") ? 45000 : 75000;
+                    let booked = (r === "C" && i === 3) || (r === "D" && i === 5) || (r === "B" && i === 4);
+                    this._kursiData.push(new Kursi(kode, harga, (r === "A" || r === "B") ? "Reguler" : "VIP", booked));
                 }
             }
-            html += '</div>';
-        }
-        map.innerHTML = html;
-    }
 
-    function toggleSeat(kode) {
-        let data = kursiData.find(k => k.kode === kode);
-        if (data.dipesan) {
-            alertMessage(`❌ Kursi ${kode} sudah dipesan oleh orang lain!`, "error");
-            return;
+            const pembeliNames = [
+                "Azriel", "Esti", "Ratu", "Alicia", "Budi",
+                "Siti", "Andi", "Dewi", "Rizky", "Maya"
+            ];
+            this._pembeliList = pembeliNames.map(name => new Pembeli(name));
+            this._selectedPembeli = "Azriel";
+            this._selectedFilm = this._films[0];
+            this._selectedSeats = [];
         }
-        let idx = selectedSeats.indexOf(kode);
-        if (idx > -1) {
-            selectedSeats.splice(idx, 1);
-        } else {
-            if (selectedSeats.length >= 5) {
-                alertMessage("❌ Maksimal 5 tiket per transaksi!", "error");
+
+        switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+            if (tab === 'tiket') this.renderTiket();
+            if (tab === 'laporan') this.renderLaporan();
+        }
+
+        renderFilms() {
+            const grid = document.getElementById('filmGrid');
+            if (!grid) return;
+            grid.innerHTML = this._films.map(f => `
+                <div class="film-card">
+                    <span class="type-badge regular">🎬 ${f.genre}</span>
+                    <div class="judul">${f.emoji} ${f.judul}</div>
+                    <div class="info-row"><span class="label">Rating</span><span class="value gold">⭐ ${f.rating}/5</span></div>
+                    <div class="info-row"><span class="label">Harga</span><span class="value gold">Rp ${f.harga.toLocaleString()}</span></div>
+                    <div class="aksi">
+                        <button class="btn btn-primary btn-small" onclick="pilihFilmDariHome(${f.id})">🎬 Booking</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        renderBookingFilms() {
+            const grid = document.getElementById('bookingFilmGrid');
+            if (!grid) return;
+            grid.innerHTML = this._films.map(f => `
+                <div class="film-card ${this._selectedFilm?.id === f.id ? 'selected' : ''}" style="${this._selectedFilm?.id === f.id ? 'border-color:#FFD700;background:rgba(255,215,0,0.05);' : ''}" onclick="pilihFilmBooking(${f.id})">
+                    <div style="font-size:30px;">${f.emoji}</div>
+                    <div class="judul" style="font-size:14px;">${f.judul}</div>
+                    <div class="info-row"><span class="label">Harga</span><span class="value gold">Rp ${f.harga.toLocaleString()}</span></div>
+                </div>
+            `).join('');
+        }
+
+
+
+        renderPembeli() {
+            const grid = document.getElementById('pembeliGrid');
+            if (!grid) return;
+            grid.innerHTML = this._pembeliList.map(p => {
+                const count = p.tiketList.length;
+                return `
+                    <div class="pembeli-card ${this._selectedPembeli === p.nama ? 'active' : ''}" onclick="pilihPembeli('${p.nama}')">
+                        <div class="nama">👤 ${p.nama}</div>
+                        <div class="email">${p.nama.toLowerCase()}@cinebook.com</div>
+                        <div class="tiket-count ${count > 0 ? 'active' : ''}">Tiket: ${count}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        renderSeats() {
+            const map = document.getElementById('seatMap');
+            if (!map) return;
+            const rows = ["A", "B", "C", "D", "E", "F"];
+            let html = '';
+            for (let r of rows) {
+                html += `<div class="seat-row"><div class="seat-row-label">${r}</div>`;
+                for (let i = 1; i <= 8; i++) {
+                    let kode = r + i;
+                    let data = this._kursiData.find(k => k.kode === kode);
+                    let isSelected = this._selectedSeats.includes(kode);
+                    if (data.dipesan) {
+                        html += `<div class="seat booked" title="Kursi ${kode} sudah dipesan">${kode}</div>`;
+                    } else {
+                        let kelas = 'seat available';
+                        if (isSelected) kelas = 'seat selected';
+                        if (data.tipe === 'VIP') kelas += ' vip';
+                        html += `<div class="${kelas}" onclick="toggleSeat('${kode}')">${kode}</div>`;
+                    }
+                }
+                html += '</div>';
+            }
+            map.innerHTML = html;
+        }
+
+        toggleSeat(kode) {
+            let data = this._kursiData.find(k => k.kode === kode);
+            if (data.dipesan) {
+                alertMessage(`❌ Kursi ${kode} sudah dipesan oleh orang lain!`, "error");
                 return;
             }
-            selectedSeats.push(kode);
-        }
-        renderSeats();
-        updateSummary();
-    }
-
-    // ========================================================================
-    // FUNGSI PILIH
-    // ========================================================================
-    function pilihPembeli(nama) {
-        selectedPembeli = nama;
-        renderPembeli();
-        updateSummary();
-        alertMessage(`✅ Pembeli ${nama} dipilih`, "success");
-    }
-
-    function pilihFilmDariHome(id) {
-        const film = films.find(f => f.id === id);
-        selectedFilm = film;
-        switchTab('booking');
-        renderBookingFilms();
-        renderPembeli();
-        initSeats();
-        updateSummary();
-        alertMessage(`🎬 Film ${film.judul} dipilih!`, "success");
-    }
-
-    function pilihFilmBooking(id) {
-        selectedFilm = films.find(f => f.id === id);
-        renderBookingFilms();
-        initSeats();
-        updateSummary();
-        alertMessage(`🎬 Film ${selectedFilm.judul} dipilih!`, "success");
-    }
-
-    function pilihStudio(index) {
-        selectedStudio = index;
-        document.querySelectorAll('#studioOptions .btn').forEach(b => b.classList.remove('selected'));
-        document.querySelectorAll('#studioOptions .btn')[index].classList.add('selected');
-        updateSummary();
-    }
-
-    function pilihWaktu(time) {
-        selectedTime = time;
-        document.querySelectorAll('#timeOptions .btn').forEach(b => b.classList.remove('selected'));
-        document.querySelector(`#timeOptions .btn[data-time="${time}"]`).classList.add('selected');
-        updateSummary();
-    }
-
-    // ========================================================================
-    // UPDATE SUMMARY
-    // ========================================================================
-    function updateSummary() {
-        document.getElementById('summaryPembeli').textContent = selectedPembeli || '-';
-        document.getElementById('summaryFilm').textContent = selectedFilm ? selectedFilm.judul : '-';
-        document.getElementById('summaryStudio').textContent = studios[selectedStudio].nama;
-        document.getElementById('summaryTime').textContent = selectedTime;
-        document.getElementById('summarySeats').textContent = selectedSeats.length ? selectedSeats.join(', ') : '-';
-
-        let total = 0;
-        for (let kode of selectedSeats) {
-            let data = kursiData.find(k => k.kode === kode);
-            if (data) total += data.harga;
-        }
-        total = Math.floor(total * studios[selectedStudio].multiplier);
-        document.getElementById('summaryTotal').textContent = `Rp ${total.toLocaleString()}`;
-    }
-
-    // ========================================================================
-    // PESAN TIKET
-    // ========================================================================
-    function pesanTiket() {
-        if (!selectedFilm) {
-            alertMessage("❌ Pilih film terlebih dahulu!", "error");
-            return;
-        }
-        if (selectedSeats.length === 0) {
-            alertMessage("❌ Pilih minimal 1 kursi!", "error");
-            return;
+            let idx = this._selectedSeats.indexOf(kode);
+            if (idx > -1) {
+                this._selectedSeats.splice(idx, 1);
+            } else {
+                if (this._selectedSeats.length >= 5) {
+                    alertMessage("❌ Maksimal 5 tiket per transaksi!", "error");
+                    return;
+                }
+                this._selectedSeats.push(kode);
+            }
+            this.renderSeats();
+            this.updateSummary();
         }
 
-        let total = 0;
-        for (let kode of selectedSeats) {
-            let data = kursiData.find(k => k.kode === kode);
-            if (data) total += data.harga;
-        }
-        total = Math.floor(total * studios[selectedStudio].multiplier);
-
-        let tiket = {
-            id: 'TIX' + Date.now().toString().slice(-8),
-            nama: selectedPembeli,
-            film: selectedFilm.judul,
-            emoji: selectedFilm.emoji,
-            studio: studios[selectedStudio].nama,
-            jam: selectedTime,
-            kursi: selectedSeats.join(', '),
-            total: total,
-            hargaAwal: total,
-            tanggal: new Date().toLocaleDateString('id-ID'),
-        };
-
-        tiketList.push(tiket);
-
-        for (let kode of selectedSeats) {
-            let data = kursiData.find(k => k.kode === kode);
-            if (data) data.dipesan = true;
+        pilihPembeli(nama) {
+            this._selectedPembeli = nama;
+            this.renderPembeli();
+            this.updateSummary();
+            alertMessage(`✅ Pembeli ${nama} dipilih`, "success");
         }
 
-        log(`✅ TRANSAKSI BERHASIL: ${selectedPembeli} memesan ${selectedFilm.judul} - Kursi ${selectedSeats.join(', ')} - Total Rp ${total.toLocaleString()}`, "success");
-        alertMessage(`✅ Tiket ${selectedFilm.judul} berhasil dipesan!`, "success");
-        renderTiket();
-        switchTab('tiket');
-        resetBooking();
-    }
-
-    // ========================================================================
-    // RENDER TIKET
-    // ========================================================================
-    function renderTiket() {
-        const container = document.getElementById('tiketList');
-        if (tiketList.length === 0) {
-            container.innerHTML = `<p style="color:#888; text-align:center; padding:40px;">Belum ada tiket. Silakan booking terlebih dahulu!</p>`;
-            return;
+        pilihFilmDariHome(id) {
+            const film = this._films.find(f => f.id === id);
+            this._selectedFilm = film;
+            this.switchTab('booking');
+            this.renderBookingFilms();
+            this.renderPembeli();
+            this._selectedSeats = [];
+            this.renderSeats();
+            this.updateSummary();
+            alertMessage(`🎬 Film ${film.judul} dipilih!`, "success");
         }
 
-        container.innerHTML = tiketList.map(t => `
-            <div class="tiket-card">
-                <div class="tiket-header">
-                    <h3>${t.emoji} ${t.film}</h3>
-                    <span style="background:#2ecc71;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:bold;color:#fff;">✅ LUNAS</span>
-                </div>
-                <div class="tiket-body">
-                    <span class="label">ID Tiket</span><span class="value">${t.id}</span>
-                    <span class="label">Nama</span><span class="value">${t.nama}</span>
-                    <span class="label">Studio</span><span class="value">${t.studio}</span>
-                    <span class="label">Jam</span><span class="value">${t.jam}</span>
-                    <span class="label">Kursi</span><span class="value">${t.kursi}</span>
-                    <span class="label">Tanggal</span><span class="value">${t.tanggal}</span>
-                    <span class="label">Harga Awal</span><span class="value">Rp ${t.hargaAwal.toLocaleString()}</span>
-                    <span class="label">Total</span><span class="value" style="color:#FFD700;">Rp ${t.total.toLocaleString()}</span>
-                </div>
-                <div class="tiket-barcode" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed rgba(255,215,0,0.3); display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                    <img src="https://bwipjs-api.metafloor.com/?bcid=code128&text=${t.id}&scale=2&height=10&includetext=true&backgroundcolor=ffffff" alt="Barcode ${t.id}" style="height: 60px; background: white; padding: 6px; border-radius: 6px; display: block; margin: 0 auto;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${t.id}'">
-                    <span style="font-family:'Courier New', monospace; font-size: 11px; color: #8888bb; letter-spacing: 1px;">PINDAI TIKET DI PINTU MASUK</span>
-                </div>
-            </div>
-        `).join('');
-    }
+        pilihFilmBooking(id) {
+            this._selectedFilm = this._films.find(f => f.id === id);
+            this.renderBookingFilms();
+            this._selectedSeats = [];
+            this.renderSeats();
+            this.updateSummary();
+            alertMessage(`🎬 Film ${this._selectedFilm.judul} dipilih!`, "success");
+        }
 
-    // ========================================================================
-    // LAPORAN
-    // ========================================================================
-    function renderLaporan() {
-        const container = document.getElementById('laporanContainer');
+        pilihStudio(index) {
+            this._selectedStudioIndex = index;
+            document.querySelectorAll('#studioOptions .btn').forEach(b => b.classList.remove('selected'));
+            document.querySelectorAll('#studioOptions .btn')[index].classList.add('selected');
+            this.updateSummary();
+        }
 
-        let totalTiket = tiketList.length;
-        let totalPendapatan = tiketList.reduce((sum, t) => sum + t.total, 0);
-        let byFilm = {};
-        for (let t of tiketList) byFilm[t.film] = (byFilm[t.film] || 0) + 1;
-        let byStudio = {};
-        for (let t of tiketList) byStudio[t.studio] = (byStudio[t.studio] || 0) + 1;
+        pilihWaktu(time) {
+            this._selectedTime = time;
+            document.querySelectorAll('#timeOptions .btn').forEach(b => b.classList.remove('selected'));
+            document.querySelector(`#timeOptions .btn[data-time="${time}"]`).classList.add('selected');
+            this.updateSummary();
+        }
 
-        let html = `
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;margin:20px 0;">
-                <div style="background:rgba(46,204,113,0.1);padding:20px;border-radius:15px;text-align:center;">
-                    <div style="font-size:30px;">🎟️</div>
-                    <div style="font-size:28px;font-weight:bold;color:#2ecc71;">${totalTiket}</div>
-                    <div style="color:#888;">Total Tiket Terjual</div>
-                </div>
-                <div style="background:rgba(255,215,0,0.1);padding:20px;border-radius:15px;text-align:center;">
-                    <div style="font-size:30px;">💰</div>
-                    <div style="font-size:28px;font-weight:bold;color:#FFD700;">Rp ${totalPendapatan.toLocaleString()}</div>
-                    <div style="color:#888;">Total Pendapatan</div>
-                </div>
-                <div style="background:rgba(155,89,182,0.1);padding:20px;border-radius:15px;text-align:center;">
-                    <div style="font-size:30px;">👤</div>
-                    <div style="font-size:28px;font-weight:bold;color:#9b59b6;">${tiketList.length > 0 ? new Set(tiketList.map(t => t.nama)).size : 0}</div>
-                    <div style="color:#888;">Jumlah Pembeli</div>
-                </div>
-            </div>
-            <h3 style="color:#FFD700;">📊 Per Film</h3>
-            <div style="display:flex;gap:15px;flex-wrap:wrap;margin:10px 0 20px;">
-                ${Object.entries(byFilm).map(([film, count]) => `
-                    <div style="background:rgba(255,255,255,0.05);padding:10px 20px;border-radius:10px;">
-                        ${film}: <strong>${count}</strong> tiket
+        updateSummary() {
+            document.getElementById('summaryPembeli').textContent = this._selectedPembeli || '-';
+            document.getElementById('summaryFilm').textContent = this._selectedFilm ? this._selectedFilm.judul : '-';
+            document.getElementById('summaryStudio').textContent = this._studios[this._selectedStudioIndex].nama;
+            document.getElementById('summaryTime').textContent = this._selectedTime;
+            document.getElementById('summarySeats').textContent = this._selectedSeats.length ? this._selectedSeats.join(', ') : '-';
+
+            let hargaAwal = 0;
+            if (this._selectedFilm) {
+                for (let kode of this._selectedSeats) {
+                    let data = this._kursiData.find(k => k.kode === kode);
+                    if (data) {
+                        hargaAwal += this._selectedFilm.harga + data.harga;
+                    }
+                }
+            }
+            
+            let totalAkhir = Math.floor(hargaAwal * this._studios[this._selectedStudioIndex].multiplier);
+
+            document.getElementById('summaryTotal').textContent = `Rp ${totalAkhir.toLocaleString()}`;
+        }
+
+        pesanTiket() {
+            if (!this._selectedFilm) {
+                alertMessage("❌ Pilih film terlebih dahulu!", "error");
+                return;
+            }
+            if (this._selectedSeats.length === 0) {
+                alertMessage("❌ Pilih minimal 1 kursi!", "error");
+                return;
+            }
+
+            let hargaAwal = 0;
+            for (let kode of this._selectedSeats) {
+                let data = this._kursiData.find(k => k.kode === kode);
+                if (data) hargaAwal += this._selectedFilm.harga + data.harga;
+            }
+
+            let totalAkhir = Math.floor(hargaAwal * this._studios[this._selectedStudioIndex].multiplier);
+
+            const pembeliObj = this._pembeliList.find(p => p.nama === this._selectedPembeli);
+            if (!pembeliObj) return;
+
+            let tiketId = 'TIX' + Date.now().toString().slice(-8);
+            let tiket = new Tiket(
+                tiketId,
+                this._selectedPembeli,
+                this._selectedFilm.judul,
+                this._selectedFilm.emoji,
+                this._studios[this._selectedStudioIndex].nama,
+                this._selectedTime,
+                this._selectedSeats.join(', '),
+                totalAkhir,
+                hargaAwal,
+                new Date().toLocaleDateString('id-ID')
+            );
+
+            this._tiketList.push(tiket);
+            pembeliObj.beliTiket(tiket);
+
+            for (let kode of this._selectedSeats) {
+                let data = this._kursiData.find(k => k.kode === kode);
+                if (data) data.pesan();
+            }
+
+            log(`✅ TRANSAKSI BERHASIL: ${this._selectedPembeli} memesan ${this._selectedFilm.judul} - Kursi ${this._selectedSeats.join(', ')} - Total Rp ${totalAkhir.toLocaleString()}`, "success");
+            alertMessage(`✅ Tiket ${this._selectedFilm.judul} berhasil dipesan!`, "success");
+            
+            this.renderTiket();
+            this.renderPembeli();
+            this.switchTab('tiket');
+            this.resetBooking();
+        }
+
+        renderTiket() {
+            const container = document.getElementById('tiketList');
+            if (!container) return;
+            if (this._tiketList.length === 0) {
+                container.innerHTML = `<p style="color:#888; text-align:center; padding:40px;">Belum ada tiket. Silakan booking terlebih dahulu!</p>`;
+                return;
+            }
+
+            container.innerHTML = this._tiketList.map(t => `
+                <div class="tiket-card">
+                    <div class="tiket-header">
+                        <h3>${t.emoji} ${t.judulFilm}</h3>
+                        <span style="background:#2ecc71;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:bold;color:#fff;">✅ LUNAS</span>
                     </div>
-                `).join('')}
-            </div>
-            <h3 style="color:#FFD700;">🏢 Per Studio</h3>
-            <div style="display:flex;gap:15px;flex-wrap:wrap;margin:10px 0 20px;">
-                ${Object.entries(byStudio).map(([studio, count]) => `
-                    <div style="background:rgba(255,255,255,0.05);padding:10px 20px;border-radius:10px;">
-                        ${studio}: <strong>${count}</strong> tiket
+                    <div class="tiket-body">
+                        <span class="label">ID Tiket</span><span class="value">${t.id}</span>
+                        <span class="label">Nama</span><span class="value">${t.namaPembeli}</span>
+                        <span class="label">Studio</span><span class="value">${t.namaStudio}</span>
+                        <span class="label">Jam</span><span class="value">${t.jamTayang}</span>
+                        <span class="label">Kursi</span><span class="value">${t.kodeKursi}</span>
+                        <span class="label">Tanggal</span><span class="value">${t.tanggal}</span>
+                        <span class="label">Harga Awal</span><span class="value">Rp ${t.hargaAwal.toLocaleString()}</span>
+                        <span class="label">Total</span><span class="value" style="color:#FFD700;">Rp ${t.total.toLocaleString()}</span>
                     </div>
-                `).join('')}
-            </div>
-        `;
+                    <div class="tiket-barcode" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed rgba(255,215,0,0.3); display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <img src="https://bwipjs-api.metafloor.com/?bcid=code128&text=${t.id}&scale=2&height=10&includetext=true&backgroundcolor=ffffff" alt="Barcode ${t.id}" style="height: 60px; background: white; padding: 6px; border-radius: 6px; display: block; margin: 0 auto;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${t.id}'">
+                        <span style="font-family:'Courier New', monospace; font-size: 11px; color: #8888bb; letter-spacing: 1px;">PINDAI TIKET DI PINTU MASUK</span>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-        container.innerHTML = html;
+        renderLaporan() {
+            const container = document.getElementById('laporanContainer');
+            if (!container) return;
+
+            let totalTiket = this._tiketList.length;
+            let totalPendapatan = this._tiketList.reduce((sum, t) => sum + t.total, 0);
+
+            let byFilm = {};
+            for (let t of this._tiketList) byFilm[t.judulFilm] = (byFilm[t.judulFilm] || 0) + 1;
+            let byStudio = {};
+            for (let t of this._tiketList) byStudio[t.namaStudio] = (byStudio[t.namaStudio] || 0) + 1;
+
+            let activeBuyers = new Set(this._tiketList.map(t => t.namaPembeli)).size;
+
+            let html = `
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;margin:20px 0;">
+                    <div style="background:rgba(46,204,113,0.1);padding:20px;border-radius:15px;text-align:center;">
+                        <div style="font-size:30px;">🎟️</div>
+                        <div style="font-size:28px;font-weight:bold;color:#2ecc71;">${totalTiket}</div>
+                        <div style="color:#888;">Total Tiket Terjual</div>
+                    </div>
+                    <div style="background:rgba(255,215,0,0.1);padding:20px;border-radius:15px;text-align:center;">
+                        <div style="font-size:30px;">💰</div>
+                        <div style="font-size:28px;font-weight:bold;color:#FFD700;">Rp ${totalPendapatan.toLocaleString()}</div>
+                        <div style="color:#888;">Total Pendapatan</div>
+                    </div>
+                    <div style="background:rgba(155,89,182,0.1);padding:20px;border-radius:15px;text-align:center;">
+                        <div style="font-size:30px;">👤</div>
+                        <div style="font-size:28px;font-weight:bold;color:#9b59b6;">${activeBuyers}</div>
+                        <div style="color:#888;">Jumlah Pembeli Aktif</div>
+                    </div>
+                </div>
+                <h3 style="color:#FFD700;">📊 Per Film</h3>
+                <div style="display:flex;gap:15px;flex-wrap:wrap;margin:10px 0 20px;">
+                    ${Object.entries(byFilm).length > 0 ? Object.entries(byFilm).map(([film, count]) => `
+                        <div style="background:rgba(255,255,255,0.05);padding:10px 20px;border-radius:10px;">
+                            ${film}: <strong>${count}</strong> tiket
+                        </div>
+                    `).join('') : '<div style="color:#666;">Belum ada penjualan per film.</div>'}
+                </div>
+                <h3 style="color:#FFD700;">🏢 Per Studio</h3>
+                <div style="display:flex;gap:15px;flex-wrap:wrap;margin:10px 0 20px;">
+                    ${Object.entries(byStudio).length > 0 ? Object.entries(byStudio).map(([studio, count]) => `
+                        <div style="background:rgba(255,255,255,0.05);padding:10px 20px;border-radius:10px;">
+                            ${studio}: <strong>${count}</strong> tiket
+                        </div>
+                    `).join('') : '<div style="color:#666;">Belum ada penjualan per studio.</div>'}
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        resetBooking() {
+            this._selectedSeats = [];
+            this.renderBookingFilms();
+            this.renderSeats();
+            this.updateSummary();
+            alertMessage("🔄 Booking direset", "warning");
+        }
     }
 
-    // ========================================================================
-    // RESET
-    // ========================================================================
-    function resetBooking() {
-        selectedFilm = null;
-        selectedSeats = [];
-        renderBookingFilms();
-        initSeats();
-        updateSummary();
-        alertMessage("🔄 Booking direset", "warning");
-    }
+    const system = new CineBookSystem();
 
-    // ========================================================================
-    // CODE VIEWER & MODAL FUNCTIONS
-    // ========================================================================
+    function switchTab(tab) { system.switchTab(tab); }
+    function renderFilms() { system.renderFilms(); }
+
+    function renderPembeli() { system.renderPembeli(); }
+    function renderBookingFilms() { system.renderBookingFilms(); }
+    function initSeats() { system.renderSeats(); }
+    function toggleSeat(kode) { system.toggleSeat(kode); }
+    function pilihPembeli(nama) { system.pilihPembeli(nama); }
+    function pilihFilmDariHome(id) { system.pilihFilmDariHome(id); }
+    function pilihFilmBooking(id) { system.pilihFilmBooking(id); }
+    function pilihStudio(index) { system.pilihStudio(index); }
+    function pilihWaktu(time) { system.pilihWaktu(time); }
+    function updateSummary() { system.updateSummary(); }
+    function pesanTiket() { system.pesanTiket(); }
+    function resetBooking() { system.resetBooking(); }
+
     function openModal(id) {
         const modal = document.getElementById(id);
         modal.style.display = "flex";
-        setTimeout(() => {
-            modal.classList.add('active');
-        }, 10);
+        setTimeout(() => { modal.classList.add('active'); }, 10);
         document.body.style.overflow = "hidden";
     }
 
+    // Modal close
     function closeModal(id) {
         const modal = document.getElementById(id);
         modal.classList.remove('active');
         setTimeout(() => {
             modal.style.display = "none";
             const iframeContainer = modal.querySelector('#modalIframeContainer');
-            if (iframeContainer) {
-                iframeContainer.innerHTML = '';
-            }
+            if (iframeContainer) iframeContainer.innerHTML = '';
             const diagramContainer = modal.querySelector('#modalDiagramContainer');
-            if (diagramContainer) {
-                diagramContainer.innerHTML = '';
-            }
+            if (diagramContainer) diagramContainer.innerHTML = '';
         }, 300);
         document.body.style.overflow = "";
     }
@@ -2048,12 +2244,9 @@ void main() {
     function zoomDiagram(containerId, title) {
         const originalMermaid = document.querySelector(`#${containerId} .mermaid`);
         if (!originalMermaid) return;
-        
         const container = document.getElementById('modalDiagramContainer');
         document.getElementById('diagramModalTitle').textContent = title || 'DETAIL DIAGRAM';
-        
         container.innerHTML = originalMermaid.innerHTML;
-        
         const svg = container.querySelector('svg');
         if (svg) {
             svg.removeAttribute('height');
@@ -2062,7 +2255,6 @@ void main() {
             svg.style.maxWidth = '1200px';
             svg.style.minWidth = '800px';
         }
-        
         openModal('diagramModal');
     }
 
@@ -2071,14 +2263,13 @@ void main() {
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(codeText).then(() => {
                 alert("Kode berhasil disalin!");
-            }).catch(err => {
-                fallbackCopyText(codeText);
-            });
+            }).catch(err => { fallbackCopyText(codeText); });
         } else {
             fallbackCopyText(codeText);
         }
     }
 
+    // fallback copy
     function fallbackCopyText(text) {
         const textSpace = document.createElement("textarea");
         textSpace.value = text;
@@ -2090,11 +2281,8 @@ void main() {
         textSpace.select();
         try {
             const successful = document.execCommand('copy');
-            if (successful) {
-                alert("Kode berhasil disalin!");
-            } else {
-                alert("Gagal menyalin kode.");
-            }
+            if (successful) alert("Kode berhasil disalin!");
+            else alert("Gagal menyalin kode.");
         } catch (err) {
             alert("Gagal menyalin kode: " + err);
         }
@@ -2113,30 +2301,23 @@ void main() {
         openModal('codeModal');
     }
 
-    // ========================================================================
-    // INIT
-    // ========================================================================
-    renderFilms();
-    renderBookingFilms();
-    renderPembeli();
-    initSeats();
-    updateSummary();
+    system.initData();
+    system.renderFilms();
+    system.renderBookingFilms();
+    system.renderPembeli();
+    system.renderSeats();
+    system.updateSummary();
 
-    // ========================================================================
-    // DIAGRAM TABS CONTROLLER & MERMAID INITIALIZATION
-    // ========================================================================
     function switchDiagramTab(evt, tabId) {
         const contents = document.getElementsByClassName('diag-tab-content');
         for (let i = 0; i < contents.length; i++) {
             contents[i].classList.remove('active');
             contents[i].classList.add('hidden-tab');
         }
-
         const buttons = document.getElementsByClassName('diag-tab-btn');
         for (let i = 0; i < buttons.length; i++) {
             buttons[i].classList.remove('active');
         }
-
         const activeContent = document.getElementById(tabId);
         activeContent.classList.remove('hidden-tab');
         activeContent.classList.add('active');
@@ -2192,10 +2373,7 @@ void main() {
     }
     
     setTimeout(renderMermaidManual, 500);
-    
 </script>
 
 </body>
 </html>
-
-        
