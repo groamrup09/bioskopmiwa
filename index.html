@@ -1374,8 +1374,13 @@ flowchart TD
     <span class="keyword">BACA</span> namaPembeli, filmIndex, studioIndex, kodeKursiList, ticketId
     
     pembeliObj = <span class="keyword">CARI</span> pembeli <span class="keyword">DI</span> _pembeliList <span class="keyword">DENGAN</span> nama == namaPembeli
+    <span class="keyword">JIKA TIDAK DITEMUKAN MAKA THROW EXCEPTION</span>
     
-    <span class="keyword">JIKA</span> filmIndex <span class="keyword">TIDAK VALID</span> <span class="keyword">ATAU</span> studioIndex <span class="keyword">TIDAK VALID</span> <span class="keyword">MAKA</span>
+    <span class="keyword">JIKA</span> filmIndex <span class="keyword">TIDAK VALID MAKA</span>
+        <span class="keyword">RETURN FALSE</span>
+    <span class="keyword">AKHIR JIKA</span>
+
+    <span class="keyword">JIKA</span> studioIndex <span class="keyword">TIDAK VALID MAKA</span>
         <span class="keyword">RETURN FALSE</span>
     <span class="keyword">AKHIR JIKA</span>
 
@@ -1385,6 +1390,8 @@ flowchart TD
 
     <span class="keyword">UNTUK SETIAP</span> k <span class="keyword">DI</span> kodeKursiList <span class="keyword">LAKUKAN</span>
         kursi = <span class="keyword">CARI</span> kursi <span class="keyword">DI</span> _kursiList <span class="keyword">DENGAN</span> kode == k
+        <span class="keyword">JIKA TIDAK DITEMUKAN MAKA THROW EXCEPTION</span>
+        
         <span class="keyword">JIKA</span> kursi.dipesan == <span class="keyword">FALSE MAKA</span>
             <span class="keyword">TAMBAHKAN</span> kursi <span class="keyword">KE</span> dipesanList
         <span class="keyword">AKHIR JIKA</span>
@@ -1406,10 +1413,11 @@ flowchart TD
         <span class="keyword">PANGGIL</span> k.pesan()
     <span class="keyword">AKHIR UNTUK</span>
 
-    tiket = BUAT_TIKET(ticketId, pembeliObj.nama, filmObj.judul, studioObj.nama, totalAkhir)
+    strKursi = GABUNG(dipesanList.kode, <span class="string">", "</span>)
+    tiket = <span class="keyword">BUAT_OBJEK</span> Tiket(ticketId, pembeliObj.nama, filmObj.judul, studioObj.nama, strKursi, totalAkhir, hargaAwal, TANGGAL_SEKARANG)
     <span class="keyword">PANGGIL</span> pembeliObj.beliTiket(tiket)
     
-    <span class="keyword">TAMPILKAN</span> <span class="string">"Sukses memesan tiket"</span>
+    <span class="keyword">TAMPILKAN</span> <span class="string">"✅ "</span> + namaPembeli + <span class="string">": "</span> + filmObj.judul + <span class="string">" - "</span> + tiket.kodeKursi + <span class="string">" (Rp"</span> + totalAkhir + <span class="string">")"</span>
     <span class="keyword">RETURN TRUE</span>
 <span class="keyword">SELESAI</span></pre>
                     </div>
