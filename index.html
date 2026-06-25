@@ -1231,11 +1231,11 @@ classDiagram
         -int _harga
         -int _rating
         -String _genre
-        +getId() int
-        +getJudul() String
-        +getHarga() int
-        +getRating() int
-        +getGenre() String
+        +id() int
+        +judul() String
+        +harga() int
+        +rating() int
+        +genre() String
         +info() String
     }
 
@@ -1243,9 +1243,9 @@ classDiagram
         -int _id
         -String _nama
         -double _multiplier
-        +getId() int
-        +getNama() String
-        +getMultiplier() double
+        +id() int
+        +nama() String
+        +multiplier() double
         +info() String
     }
 
@@ -1254,10 +1254,10 @@ classDiagram
         -String _tipe
         -int _harga
         -bool _dipesan
-        +getKode() String
-        +getTipe() String
-        +getHarga() int
-        +getDipesan() bool
+        +kode() String
+        +tipe() String
+        +harga() int
+        +dipesan() bool
         +pesan() void
         +batalPesan() void
     }
@@ -1265,8 +1265,8 @@ classDiagram
     class Pembeli {
         -String _nama
         -List~Tiket~ _tiketList
-        +getNama() String
-        +getTiketList() List~Tiket~
+        +nama() String
+        +tiketList() List~Tiket~
         +beliTiket(Tiket) void
     }
 
@@ -1279,14 +1279,14 @@ classDiagram
         -int _total
         -int _hargaAwal
         -String _tanggal
-        +getId() String
-        +getNamaPembeli() String
-        +getJudulFilm() String
-        +getNamaStudio() String
-        +getKodeKursi() String
-        +getTotal() int
-        +getHargaAwal() int
-        +getTanggal() String
+        +id() String
+        +namaPembeli() String
+        +judulFilm() String
+        +namaStudio() String
+        +kodeKursi() String
+        +total() int
+        +hargaAwal() int
+        +tanggal() String
         +cetak() String
     }
 
@@ -1295,12 +1295,12 @@ classDiagram
         -List~Studio~ _studioList
         -List~Kursi~ _kursiList
         -List~Pembeli~ _pembeliList
-        +getFilms() List~Film~
-        +getStudios() List~Studio~
-        +getKursi() List~Kursi~
-        +getPembeli() List~Pembeli~
+        +films() List~Film~
+        +studios() List~Studio~
+        +kursi() List~Kursi~
+        +pembeli() List~Pembeli~
         +printDaftarFilm() void
-        +prosesBooking() bool
+        +prosesBooking(namaPembeli, filmIndex, studioIndex, kodeKursiList, ticketId) bool
         +cetakSemuaTiket() void
         +cetakStatistik() void
     }
@@ -1327,20 +1327,23 @@ classDiagram
                         <div class="mermaid-container">
                             <div class="mermaid">
 flowchart TD
-    Start[Mulai Pemesanan] --> Input[Pilih Pelanggan Film Studio Jam dan Kursi]
-    Input --> BtnClick[Klik PESAN TIKET]
-    BtnClick --> C1{Film Dipilih?}
-    C1 -->|Tidak| E1[Alert Pilih film terlebih dahulu]
-    E1 --> SelesaiNode[Selesai]
-    C1 -->|Ya| C2{Kursi Dipilih lebih dari 0?}
-    C2 -->|Tidak| E2[Alert Pilih minimal 1 kursi]
-    E2 --> SelesaiNode
-    C2 -->|Ya| CalcBase[Hitung Harga Awal]
-    CalcBase --> GenTicket[Buat Objek Tiket dengan ID Unik]
-    GenTicket --> SaveTicket[Simpan ke daftar tiket dan status kursi dipesan]
-    SaveTicket --> RefreshUI[Panggil renderTiket dan buka tab Tiket Saya]
-    RefreshUI --> ResetState[Panggil resetBooking]
-    ResetState --> SelesaiNode
+    Start[Mulai prosesBooking] --> Input[Terima nama, filmIndex, studioIndex, kodeKursiList, ticketId]
+    Input --> FindPembeli[Cari Pembeli berdasarkan nama]
+    FindPembeli --> C1{Index Film & Studio Valid?}
+    C1 -->|Tidak| Gagal1[Return false]
+    C1 -->|Ya| CekKursi[Cek ketersediaan setiap Kursi]
+    CekKursi --> C2{Semua Kursi Tersedia?}
+    C2 -->|Tidak| Gagal2[Print Gagal & Return false]
+    C2 -->|Ya| HitungHarga[Hitung Harga Awal: sum film.harga + kursi.harga]
+    HitungHarga --> HitungTotal[Hitung Total Akhir: Harga Awal * studio.multiplier]
+    HitungTotal --> PesanKursi[Ubah status kursi menjadi dipesan]
+    PesanKursi --> BuatTiket[Buat Objek Tiket]
+    BuatTiket --> SimpanTiket[Tambahkan Tiket ke tiketList Pembeli]
+    SimpanTiket --> Berhasil[Print Sukses & Return true]
+    
+    Gagal1 --> Selesai[Selesai]
+    Gagal2 --> Selesai
+    Berhasil --> Selesai
                             </div>
                         </div>
                     </div>
@@ -1354,48 +1357,60 @@ flowchart TD
                             <div class="title">📋 Pseudocode Pemesanan Tiket</div>
                             <div style="width: 42px;"></div>
                         </div>
-                        <pre><span class="comment">// Algoritma Pemesanan Tiket CineBook</span>
-<span class="keyword">ALGORITMA</span> PemesananTiket
+                        <pre><span class="comment">// Algoritma prosesBooking() pada class CineBookSystem</span>
+<span class="keyword">ALGORITMA</span> prosesBooking
 <span class="keyword">DEKLARASI</span>:
-    pembeli: <span class="keyword">String</span>
-    film: <span class="keyword">Objek</span> Film
-    studio: <span class="keyword">Objek</span> Studio
-    jam: <span class="keyword">String</span>
-    kursiSelected: <span class="keyword">List</span> dari <span class="keyword">String</span>
+    namaPembeli, ticketId: <span class="keyword">String</span>
+    filmIndex, studioIndex: <span class="keyword">Integer</span>
+    kodeKursiList: <span class="keyword">List</span> dari <span class="keyword">String</span>
+    pembeliObj: <span class="keyword">Objek</span> Pembeli
+    filmObj: <span class="keyword">Objek</span> Film
+    studioObj: <span class="keyword">Objek</span> Studio
+    dipesanList: <span class="keyword">List</span> dari <span class="keyword">Objek</span> Kursi
     hargaAwal, totalAkhir: <span class="keyword">Integer</span>
     tiket: <span class="keyword">Objek</span> Tiket
 
 <span class="keyword">MULAI</span>:
-    <span class="keyword">BACA</span> pembeli, film, studio, jam, kursiSelected
+    <span class="keyword">BACA</span> namaPembeli, filmIndex, studioIndex, kodeKursiList, ticketId
     
-    <span class="keyword">JIKA</span> film == <span class="keyword">NULL</span> <span class="keyword">MAKA</span>
-        <span class="keyword">TAMPILKAN</span> <span class="string">"Pilih film terlebih dahulu!"</span>
-        <span class="keyword">KELUAR</span>
+    pembeliObj = <span class="keyword">CARI</span> pembeli <span class="keyword">DI</span> _pembeliList <span class="keyword">DENGAN</span> nama == namaPembeli
+    
+    <span class="keyword">JIKA</span> filmIndex <span class="keyword">TIDAK VALID</span> <span class="keyword">ATAU</span> studioIndex <span class="keyword">TIDAK VALID</span> <span class="keyword">MAKA</span>
+        <span class="keyword">RETURN FALSE</span>
     <span class="keyword">AKHIR JIKA</span>
 
-    <span class="keyword">JIKA</span> <span class="keyword">PANJANG</span>(kursiSelected) == <span class="number">0</span> <span class="keyword">MAKA</span>
-        <span class="keyword">TAMPILKAN</span> <span class="string">"Pilih minimal 1 kursi!"</span>
-        <span class="keyword">KELUAR</span>
+    filmObj = _filmList[filmIndex]
+    studioObj = _studioList[studioIndex]
+    dipesanList = <span class="keyword">LIST KOSONG</span>
+
+    <span class="keyword">UNTUK SETIAP</span> k <span class="keyword">DI</span> kodeKursiList <span class="keyword">LAKUKAN</span>
+        kursi = <span class="keyword">CARI</span> kursi <span class="keyword">DI</span> _kursiList <span class="keyword">DENGAN</span> kode == k
+        <span class="keyword">JIKA</span> kursi.dipesan == <span class="keyword">FALSE MAKA</span>
+            <span class="keyword">TAMBAHKAN</span> kursi <span class="keyword">KE</span> dipesanList
+        <span class="keyword">AKHIR JIKA</span>
+    <span class="keyword">AKHIR UNTUK</span>
+
+    <span class="keyword">JIKA PANJANG</span>(dipesanList) != <span class="keyword">PANJANG</span>(kodeKursiList) <span class="keyword">MAKA</span>
+        <span class="keyword">TAMPILKAN</span> <span class="string">"Gagal (kursi sudah dipesan)"</span>
+        <span class="keyword">RETURN FALSE</span>
     <span class="keyword">AKHIR JIKA</span>
 
     hargaAwal = <span class="number">0</span>
-    <span class="keyword">UNTUK SETIAP</span> kursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
-        hargaAwal = hargaAwal + kursi.harga
+    <span class="keyword">UNTUK SETIAP</span> k <span class="keyword">DI</span> dipesanList <span class="keyword">LAKUKAN</span>
+        hargaAwal = hargaAwal + filmObj.harga + k.harga
     <span class="keyword">AKHIR UNTUK</span>
     
-    hargaAwal = hargaAwal * studio.multiplier
-    totalAkhir = hargaAwal
+    totalAkhir = BULATKAN(hargaAwal * studioObj.multiplier)
 
-    tiket = BUAT_TIKET(pembeli, film, studio, jam, kursiSelected, totalAkhir)
-    <span class="keyword">SIMPAN</span> tiket <span class="keyword">KE</span> tiketList
-    
-    <span class="keyword">UNTUK SETIAP</span> kursi <span class="keyword">DI</span> kursiSelected <span class="keyword">LAKUKAN</span>
-        <span class="keyword">SET</span> kursi.dipesan = <span class="keyword">TRUE</span>
+    <span class="keyword">UNTUK SETIAP</span> k <span class="keyword">DI</span> dipesanList <span class="keyword">LAKUKAN</span>
+        <span class="keyword">PANGGIL</span> k.pesan()
     <span class="keyword">AKHIR UNTUK</span>
 
-    <span class="keyword">PANGGIL</span> renderTiket()
-    <span class="keyword">PANGGIL</span> switchTab(<span class="string">"tiket"</span>)
-    <span class="keyword">PANGGIL</span> resetBooking()
+    tiket = BUAT_TIKET(ticketId, pembeliObj.nama, filmObj.judul, studioObj.nama, totalAkhir)
+    <span class="keyword">PANGGIL</span> pembeliObj.beliTiket(tiket)
+    
+    <span class="keyword">TAMPILKAN</span> <span class="string">"Sukses memesan tiket"</span>
+    <span class="keyword">RETURN TRUE</span>
 <span class="keyword">SELESAI</span></pre>
                     </div>
                 </div>
