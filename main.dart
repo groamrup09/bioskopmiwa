@@ -64,41 +64,46 @@ class Pembeli {
 
 class Tiket {
   final String _id;
-  final String _namaPembeli;
-  final String _judulFilm;
-  final String _namaStudio;
-  final String _kodeKursi;
+  final Pembeli _pembeli;
+  final Film _film;
+  final Studio _studio;
+  final List<Kursi> _kursiList;
   final int _total;
   final int _hargaAwal;
   final String _tanggal;
 
-  const Tiket(
+  Tiket(
     this._id,
-    this._namaPembeli,
-    this._judulFilm,
-    this._namaStudio,
-    this._kodeKursi,
+    this._pembeli,
+    this._film,
+    this._studio,
+    this._kursiList,
     this._total,
     this._hargaAwal,
     this._tanggal,
   );
 
   String get id => _id;
-  String get namaPembeli => _namaPembeli;
-  String get judulFilm => _judulFilm;
-  String get namaStudio => _namaStudio;
-  String get kodeKursi => _kodeKursi;
+  Pembeli get pembeli => _pembeli;
+  Film get film => _film;
+  Studio get studio => _studio;
+  List<Kursi> get kursiList => List.unmodifiable(_kursiList);
   int get total => _total;
   int get hargaAwal => _hargaAwal;
   String get tanggal => _tanggal;
+
+  String get namaPembeli => _pembeli.nama;
+  String get judulFilm => _film.judul;
+  String get namaStudio => _studio.nama;
+  String get kodeKursi => _kursiList.map((k) => k.kode).join(', ');
 
   String cetak() => """
 ┌─────────────────────────────────┐
 │        🎟️ TIKET BIOSKOP        │
 ├─────────────────────────────────┤
-│ ID:$_id | Nama:$_namaPembeli
-│ Film:$_judulFilm | Studio:$_namaStudio
-│ Kursi:$_kodeKursi | Tgl:$_tanggal
+│ ID:$_id | Nama:$namaPembeli
+│ Film:$judulFilm | Studio:$namaStudio
+│ Kursi:$kodeKursi | Tgl:$_tanggal
 │ Harga Awal: Rp$_hargaAwal
 │ TOTAL: Rp$_total
 └─────────────────────────────────┘
@@ -215,10 +220,10 @@ class CineBookSystem {
 
     final tiket = Tiket(
       ticketId,
-      pembeliObj.nama,
-      filmObj.judul,
-      studioObj.nama,
-      dipesanList.map((k) => k.kode).join(', '),
+      pembeliObj,
+      filmObj,
+      studioObj,
+      dipesanList,
       totalAkhir,
       hargaAwal,
       DateTime.now().toString().substring(0, 10),
