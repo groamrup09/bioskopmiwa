@@ -1231,11 +1231,11 @@ classDiagram
         -int _harga
         -int _rating
         -String _genre
-        +id() int
-        +judul() String
-        +harga() int
-        +rating() int
-        +genre() String
+        +id: int
+        +judul: String
+        +harga: int
+        +rating: int
+        +genre: String
         +info() String
     }
 
@@ -1243,9 +1243,9 @@ classDiagram
         -int _id
         -String _nama
         -double _multiplier
-        +id() int
-        +nama() String
-        +multiplier() double
+        +id: int
+        +nama: String
+        +multiplier: double
         +info() String
     }
 
@@ -1254,10 +1254,10 @@ classDiagram
         -String _tipe
         -int _harga
         -bool _dipesan
-        +kode() String
-        +tipe() String
-        +harga() int
-        +dipesan() bool
+        +kode: String
+        +tipe: String
+        +harga: int
+        +dipesan: bool
         +pesan() void
         +batalPesan() void
     }
@@ -1265,28 +1265,32 @@ classDiagram
     class Pembeli {
         -String _nama
         -List~Tiket~ _tiketList
-        +nama() String
-        +tiketList() List~Tiket~
-        +beliTiket(Tiket) void
+        +nama: String
+        +tiketList: List~Tiket~
+        +beliTiket(Tiket t) void
     }
 
     class Tiket {
         -String _id
-        -String _namaPembeli
-        -String _judulFilm
-        -String _namaStudio
-        -String _kodeKursi
+        -Pembeli _pembeli
+        -Film _film
+        -Studio _studio
+        -List~Kursi~ _kursiList
         -int _total
         -int _hargaAwal
         -String _tanggal
-        +id() String
-        +namaPembeli() String
-        +judulFilm() String
-        +namaStudio() String
-        +kodeKursi() String
-        +total() int
-        +hargaAwal() int
-        +tanggal() String
+        +id: String
+        +pembeli: Pembeli
+        +film: Film
+        +studio: Studio
+        +kursiList: List~Kursi~
+        +total: int
+        +hargaAwal: int
+        +tanggal: String
+        +namaPembeli: String
+        +judulFilm: String
+        +namaStudio: String
+        +kodeKursi: String
         +cetak() String
     }
 
@@ -1295,27 +1299,28 @@ classDiagram
         -List~Studio~ _studioList
         -List~Kursi~ _kursiList
         -List~Pembeli~ _pembeliList
-        +films() List~Film~
-        +studios() List~Studio~
-        +kursi() List~Kursi~
-        +pembeli() List~Pembeli~
+        +films: List~Film~
+        +studios: List~Studio~
+        +kursi: List~Kursi~
+        +pembeli: List~Pembeli~
         +printDaftarFilm() void
-        +prosesBooking(namaPembeli, filmIndex, studioIndex, kodeKursiList, ticketId) bool
+        +prosesBooking(String namaPembeli, int filmIndex, int studioIndex, List~String~ kodeKursiList, String ticketId) bool
         +cetakSemuaTiket() void
         +cetakStatistik() void
     }
 
-    %% Relasi (sesuai kode)
-    CineBookSystem "1" --> "*" Film : mengelola
-    CineBookSystem "1" --> "*" Studio : mengelola
-    CineBookSystem "1" --> "*" Kursi : mengelola
-    CineBookSystem "1" --> "*" Pembeli : mengelola
-    Pembeli "1" --> "*" Tiket : memiliki
-    Tiket ..> Film : menyimpan informasi
-    Tiket ..> Studio : menyimpan informasi
-    Tiket ..> Kursi : menyimpan informasi
-                </div>
-                </div>
+    %% Relasi (sesuai prinsip OOP solid)
+    CineBookSystem "1" *-- "*" Film : mengelola (Composition)
+    CineBookSystem "1" *-- "*" Studio : mengelola (Composition)
+    CineBookSystem "1" *-- "*" Kursi : mengelola (Composition)
+    CineBookSystem "1" *-- "*" Pembeli : mengelola (Composition)
+    Pembeli "1" *-- "*" Tiket : memiliki (Composition)
+    Tiket "1" --> "1" Pembeli : mereferensikan
+    Tiket "1" --> "1" Film : mereferensikan
+    Tiket "1" --> "1" Studio : mereferensikan
+    Tiket "1" --> "*" Kursi : mereferensikan
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1327,23 +1332,46 @@ classDiagram
                         <div class="mermaid-container">
                             <div class="mermaid">
 flowchart TD
-    Start[Mulai prosesBooking] --> Input[Terima nama, filmIndex, studioIndex, kodeKursiList, ticketId]
-    Input --> FindPembeli[Cari Pembeli berdasarkan nama]
-    FindPembeli --> C1{Index Film & Studio Valid?}
-    C1 -->|Tidak| Gagal1[Return false]
-    C1 -->|Ya| CekKursi[Cek ketersediaan setiap Kursi]
-    CekKursi --> C2{Semua Kursi Tersedia?}
-    C2 -->|Tidak| Gagal2[Print Gagal & Return false]
-    C2 -->|Ya| HitungHarga[Hitung Harga Awal: sum film.harga + kursi.harga]
-    HitungHarga --> HitungTotal[Hitung Total Akhir: Harga Awal * studio.multiplier]
-    HitungTotal --> PesanKursi[Ubah status kursi menjadi dipesan]
-    PesanKursi --> BuatTiket[Buat Objek Tiket]
-    BuatTiket --> SimpanTiket[Tambahkan Tiket ke tiketList Pembeli]
-    SimpanTiket --> Berhasil[Print Sukses & Return true]
+    Start([Mulai prosesBooking]) --> Input[/Terima: namaPembeli, filmIndex, studioIndex, kodeKursiList, ticketId/]
+    Input --> FindPembeli[Cari Pembeli berdasarkan namaPembeli]
+    FindPembeli --> C0{Pembeli Ditemukan?}
+    C0 -->|Tidak| ThrowE1[Lempar Exception: Pembeli tidak ditemukan]
+    C0 -->|Ya| C1{filmIndex & studioIndex Valid?}
     
-    Gagal1 --> Selesai[Selesai]
-    Gagal2 --> Selesai
-    Berhasil --> Selesai
+    C1 -->|Tidak| ReturnFalse1[Return false]
+    C1 -->|Ya| InitList[Inisialisasi dipesanList = List kosong]
+    
+    InitList --> LoopStart{Untuk setiap kode dalam kodeKursiList}
+    LoopStart --> FindKursi[Cari Kursi berdasarkan kode]
+    FindKursi --> C2{Kursi Ditemukan?}
+    
+    C2 -->|Tidak| ThrowE2[Lempar Exception: Kursi tidak ditemukan]
+    C2 -->|Ya| C3{Apakah Kursi belum dipesan?}
+    
+    C3 -->|Ya| AddToList[Tambahkan Kursi ke dipesanList]
+    C3 -->|Tidak| LoopNext[Lanjutkan ke kursi berikutnya]
+    
+    AddToList --> LoopNext
+    LoopNext --> LoopEnd{Semua kursi diperiksa?}
+    LoopEnd -->|Tidak| LoopStart
+    
+    LoopEnd -->|Ya| C4{Jumlah dipesanList == kodeKursiList?}
+    C4 -->|Tidak| GagalBooking["Tampilkan 'Gagal (kursi sudah dipesan)'"]
+    GagalBooking --> ReturnFalse2[Return false]
+    
+    C4 -->|Ya| HitungHarga[Hitung hargaAwal = sum film.harga + kursi.harga]
+    HitungHarga --> HitungTotal[Hitung totalAkhir = hargaAwal * studio.multiplier]
+    HitungTotal --> BookSeats[Ubah status kursi di dipesanList menjadi dipesan]
+    BookSeats --> CreateTiket[Buat objek Tiket dengan referensi objek asli]
+    CreateTiket --> AddTiket[Tambahkan Tiket ke tiketList Pembeli]
+    AddTiket --> PrintSukses[Tampilkan 'Transaksi Berhasil']
+    PrintSukses --> ReturnTrue[Return true]
+    
+    ThrowE1 --> Selesai([Selesai])
+    ThrowE2 --> Selesai
+    ReturnFalse1 --> Selesai
+    ReturnFalse2 --> Selesai
+    ReturnTrue --> Selesai
                             </div>
                         </div>
                     </div>
@@ -1413,8 +1441,7 @@ flowchart TD
         <span class="keyword">PANGGIL</span> k.pesan()
     <span class="keyword">AKHIR UNTUK</span>
 
-    strKursi = GABUNG(dipesanList.kode, <span class="string">", "</span>)
-    tiket = <span class="keyword">BUAT_OBJEK</span> Tiket(ticketId, pembeliObj.nama, filmObj.judul, studioObj.nama, strKursi, totalAkhir, hargaAwal, TANGGAL_SEKARANG)
+    tiket = <span class="keyword">BUAT_OBJEK</span> Tiket(ticketId, pembeliObj, filmObj, studioObj, dipesanList, totalAkhir, hargaAwal, TANGGAL_SEKARANG)
     <span class="keyword">PANGGIL</span> pembeliObj.beliTiket(tiket)
     
     <span class="keyword">TAMPILKAN</span> <span class="string">"✅ "</span> + namaPembeli + <span class="string">": "</span> + filmObj.judul + <span class="string">" - "</span> + tiket.kodeKursi + <span class="string">" (Rp"</span> + totalAkhir + <span class="string">")"</span>
@@ -1506,41 +1533,46 @@ class Pembeli {
 
 class Tiket {
   final String _id;
-  final String _namaPembeli;
-  final String _judulFilm;
-  final String _namaStudio;
-  final String _kodeKursi;
+  final Pembeli _pembeli;
+  final Film _film;
+  final Studio _studio;
+  final List&lt;Kursi&gt; _kursiList;
   final int _total;
   final int _hargaAwal;
   final String _tanggal;
 
-  const Tiket(
+  Tiket(
     this._id,
-    this._namaPembeli,
-    this._judulFilm,
-    this._namaStudio,
-    this._kodeKursi,
+    this._pembeli,
+    this._film,
+    this._studio,
+    this._kursiList,
     this._total,
     this._hargaAwal,
     this._tanggal,
   );
 
   String get id =&gt; _id;
-  String get namaPembeli =&gt; _namaPembeli;
-  String get judulFilm =&gt; _judulFilm;
-  String get namaStudio =&gt; _namaStudio;
-  String get kodeKursi =&gt; _kodeKursi;
+  Pembeli get pembeli =&gt; _pembeli;
+  Film get film =&gt; _film;
+  Studio get studio =&gt; _studio;
+  List&lt;Kursi&gt; get kursiList =&gt; List.unmodifiable(_kursiList);
   int get total =&gt; _total;
   int get hargaAwal =&gt; _hargaAwal;
   String get tanggal =&gt; _tanggal;
+
+  String get namaPembeli =&gt; _pembeli.nama;
+  String get judulFilm =&gt; _film.judul;
+  String get namaStudio =&gt; _studio.nama;
+  String get kodeKursi =&gt; _kursiList.map((k) =&gt; k.kode).join(&#x27;, &#x27;);
 
   String cetak() =&gt; &quot;&quot;&quot;
 ┌─────────────────────────────────┐
 │        🎟️ TIKET BIOSKOP        │
 ├─────────────────────────────────┤
-│ ID:$_id | Nama:$_namaPembeli
-│ Film:$_judulFilm | Studio:$_namaStudio
-│ Kursi:$_kodeKursi | Tgl:$_tanggal
+│ ID:$_id | Nama:$namaPembeli
+│ Film:$judulFilm | Studio:$namaStudio
+│ Kursi:$kodeKursi | Tgl:$_tanggal
 │ Harga Awal: Rp$_hargaAwal
 │ TOTAL: Rp$_total
 └─────────────────────────────────┘
@@ -1658,10 +1690,10 @@ class CineBookSystem {
 
     final tiket = Tiket(
       ticketId,
-      pembeliObj.nama,
-      filmObj.judul,
-      studioObj.nama,
-      dipesanList.map((k) =&gt; k.kode).join(&#x27;, &#x27;),
+      pembeliObj,
+      filmObj,
+      studioObj,
+      dipesanList,
       totalAkhir,
       hargaAwal,
       DateTime.now().toString().substring(0, 10),
